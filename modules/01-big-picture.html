@@ -1,0 +1,303 @@
+<section class="module" id="module-1">
+
+  <!-- ==================== SCREEN 1: HOOK ==================== -->
+  <div class="module-header">
+    <span class="module-number">Module 1</span>
+    <h2 class="module-title">The Big Picture</h2>
+    <p class="module-subtitle">A self-hosted call center platform — seven programs, three protocols, one click.</p>
+  </div>
+
+  <div class="module-content">
+
+    <div class="callout callout-accent" style="margin-bottom: var(--space-8);">
+      <span class="callout-icon">📞</span>
+      <div class="callout-content">
+        <span class="callout-title">The green button</span>
+        <p>Every day, someone clicks a green button in a browser tab, hears a ring, and talks to a customer. That single click crosses seven programs and three protocols in under a second. This course follows that click.</p>
+      </div>
+    </div>
+
+    <p style="max-width: 600px;">This platform is a <strong>self-hosted call center</strong> built on top of <span class="term" data-definition="An open-source telephony platform that handles the actual audio of phone calls — like the runways and terminals of an airport.">FreeSWITCH</span> and <span class="term" data-definition="An open-source web admin for FreeSWITCH — like the airport management office that configures gates, schedules, and staff.">FusionPBX</span>. Instead of one big box, it is a team of specialized programs working together.</p>
+
+    <p style="max-width: 600px; color: var(--color-text-secondary); font-size: var(--text-sm);">Why does this matter? When someone says "calls are dropping," your first job is knowing <em>which program</em> to look at. This module gives you that map.</p>
+
+  </div>
+
+  <!-- ==================== SCREEN 2: JOURNEY OF ONE CALL ==================== -->
+  <div class="module-content" style="margin-top: var(--space-12);">
+
+    <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">The Journey of One Call</h3>
+    <p style="max-width: 600px; margin-bottom: var(--space-8);">Think of this platform as an <strong>airport</strong>. The agent is the traveler, the <span class="term" data-definition="A software phone that runs inside the browser — the app where agents make and receive calls.">softphone</span> is their boarding-pass app, <span class="term" data-definition="A SIP router and load balancer — like the security checkpoint funneling passengers to the right gates.">Kamailio</span> is the security checkpoint, FreeSWITCH is the terminal, and FusionPBX is the management office.</p>
+
+    <div class="flow-animation" data-steps='[
+      {"highlight":"flow-actor-1","label":"Agent clicks Call in the browser softphone"},
+      {"highlight":"flow-actor-1","label":"Browser sends a SIP INVITE over a secure WebSocket to Kamailio","packet":true,"from":"actor-1","to":"actor-2"},
+      {"highlight":"flow-actor-2","label":"Kamailio routes the call to an available FreeSWITCH node","packet":true,"from":"actor-2","to":"actor-3"},
+      {"highlight":"flow-actor-3","label":"FreeSWITCH dials out to the customer phone","packet":true,"from":"actor-3","to":"actor-4"},
+      {"highlight":"flow-actor-4","label":"Voice streams (RTP) established directly between FreeSWITCH and the customer phone"},
+      {"highlight":"flow-actor-1","label":"Call ends — BYE sent, resources freed"}
+    ]'>
+      <div class="flow-actors">
+        <div class="flow-actor" id="flow-actor-1">
+          <div class="flow-actor-icon">🖥️</div>
+          <span>Browser</span>
+        </div>
+        <div class="flow-actor" id="flow-actor-2">
+          <div class="flow-actor-icon">🔀</div>
+          <span>Kamailio</span>
+        </div>
+        <div class="flow-actor" id="flow-actor-3">
+          <div class="flow-actor-icon">📞</div>
+          <span>FreeSWITCH</span>
+        </div>
+        <div class="flow-actor" id="flow-actor-4">
+          <div class="flow-actor-icon">📱</div>
+          <span>Customer Phone</span>
+        </div>
+      </div>
+
+      <div class="flow-packet" id="flow-packet"></div>
+
+      <div class="flow-step-label" id="flow-label">Click "Next Step" to begin</div>
+
+      <div class="flow-controls">
+        <button class="btn flow-next-btn">Next Step</button>
+        <button class="btn flow-reset-btn">Restart</button>
+        <span class="flow-progress"></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== SCREEN 3: THE CAST ==================== -->
+  <div class="module-content" style="margin-top: var(--space-12);">
+
+    <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">The Cast</h3>
+    <p style="max-width: 600px; margin-bottom: var(--space-8);">Every component has one job — like crew members in an airport, each with a clear role.</p>
+
+    <div class="icon-rows">
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">🏗️</div>
+        <div>
+          <strong>pbx</strong>
+          <p><span class="term" data-definition="The telephony engine — like the airport terminal where flights (calls) actually depart and land.">The terminal</span> (FreeSWITCH + FusionPBX + Lua call logic + Fail2ban)</p>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">🗼</div>
+        <div>
+          <strong>fsextension</strong>
+          <p><span class="term" data-definition="The Java backend that manages agents, queues, and dialplans — the control tower directing traffic.">The control tower</span> (Java backend managing agents, queues, dialplans)</p>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">📡</div>
+        <div>
+          <strong>fsevents</strong>
+          <p><span class="term" data-definition="The Go event forwarder — like a flight-tracker wire that broadcasts every event in real time.">The flight-tracker wire</span> (Go event forwarder)</p>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">🌡️</div>
+        <div>
+          <strong>fsagent</strong>
+          <p><span class="term" data-definition="The Go quality metrics service — like a weather-and-turbulence sensor monitoring call quality.">The turbulence sensor</span> (Go quality metrics)</p>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">🎫</div>
+        <div>
+          <strong>sip.js-worker</strong>
+          <p><span class="term" data-definition="The browser softphone library — the boarding-pass app agents use to make calls from their browser.">The boarding-pass app</span> (browser softphone)</p>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">🔗</div>
+        <div>
+          <strong>shared.io</strong>
+          <p>Keeps your app logged in across tabs (shared WebSocket connection)</p>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">🏢</div>
+        <div>
+          <strong>fusionpbx</strong>
+          <p><span class="term" data-definition="A PHP web admin UI for managing FreeSWITCH — the airport management office.">The management office</span> (PHP web admin UI)</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ==================== SCREEN 4: CODE TRANSLATIONS ==================== -->
+  <div class="module-content" style="margin-top: var(--space-12);">
+
+    <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">Seeing It in Code</h3>
+    <p style="max-width: 600px; margin-bottom: var(--space-8);">The "terminal" is just containers on a server. Here is how it is defined.</p>
+
+    <!-- Translation 1: docker-compose -->
+    <div class="translation-block animate-in">
+      <div class="translation-code">
+        <span class="translation-label">CODE</span>
+        <pre><code>
+<span class="code-line"><span class="code-property">services</span>:</span>
+<span class="code-line">  <span class="code-property">postgres</span>:</span>
+<span class="code-line">    <span class="code-property">image</span>: <span class="code-string">luongld/postgres:14</span></span>
+<span class="code-line">    <span class="code-property">container_name</span>: <span class="code-string">postgres_140</span></span>
+<span class="code-line">  <span class="code-property">pbx</span>:</span>
+<span class="code-line">    <span class="code-property">image</span>: <span class="code-string">luongld/pbx:1.10.8</span></span>
+<span class="code-line">    <span class="code-property">container_name</span>: <span class="code-string">pbx_1108</span></span>
+        </code></pre>
+      </div>
+      <div class="translation-english">
+        <span class="translation-label">PLAIN ENGLISH</span>
+        <div class="translation-lines">
+          <p class="tl">Define the services (programs) that make up the terminal...</p>
+          <p class="tl">PostgreSQL — the filing cabinet where call records are stored...</p>
+          <p class="tl">Use the Docker image called "luongld/postgres" version 14...</p>
+          <p class="tl">Name this container "postgres_140" so we can find it later...</p>
+          <p class="tl">FreeSWITCH + FusionPBX — the actual telephony engine...</p>
+          <p class="tl">Use the Docker image called "luongld/pbx" version 1.10.8...</p>
+          <p class="tl">Name this container "pbx_1108"</p>
+        </div>
+      </div>
+    </div>
+
+    <p style="max-width: 600px; margin-top: var(--space-8); margin-bottom: var(--space-2);">And here is how the browser softphone registers itself — the traveler picking up a boarding pass.</p>
+
+    <!-- Translation 2: sip.js-worker -->
+    <div class="translation-block animate-in">
+      <div class="translation-code">
+        <span class="translation-label">CODE</span>
+        <pre><code>
+<span class="code-line"><span class="code-property">sipClient</span>.<span class="code-function">register</span>({</span>
+<span class="code-line">  <span class="code-property">uri</span>: <span class="code-string">'sip:username@domain.com'</span>,</span>
+<span class="code-line">  <span class="code-property">username</span>: <span class="code-string">'username'</span>,</span>
+<span class="code-line">  <span class="code-property">password</span>: <span class="code-string">'password'</span>,</span>
+<span class="code-line">  <span class="code-property">displayName</span>: <span class="code-string">'Display Name'</span></span>
+<span class="code-line">}, {</span>
+<span class="code-line">  <span class="code-property">server</span>: <span class="code-string">'wss://domain.com:443'</span>,</span>
+<span class="code-line">  <span class="code-property">secure</span>: <span class="code-keyword">true</span></span>
+<span class="code-line">});</span>
+        </code></pre>
+      </div>
+      <div class="translation-english">
+        <span class="translation-label">PLAIN ENGLISH</span>
+        <div class="translation-lines">
+          <p class="tl">Tell the softphone to register (sign in) to the server...</p>
+          <p class="tl">The agent's SIP address — like an email address but for phone calls...</p>
+          <p class="tl">The agent's username for authentication...</p>
+          <p class="tl">The agent's password...</p>
+          <p class="tl">The name shown to the other end of the call...</p>
+          <p class="tl">Now the connection settings...</p>
+          <p class="tl">Connect over <span class="term" data-definition="WebSocket Secure — the browser speaks the phone protocol (SIP) over an encrypted WebSocket connection instead of a phone cable.">WSS</span> (secure WebSocket) on port 443...</p>
+          <p class="tl">Yes, use encryption (TLS) — never send calls in plain text</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- What is NOT in this repo -->
+    <div class="callout callout-info" style="margin-top: var(--space-8);">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-content">
+        <span class="callout-title">What is NOT in this repo</span>
+        <p><span class="term" data-definition="An open-source SIP router and load balancer — sits between the browser and FreeSWITCH, routing calls to the right server.">Kamailio</span> (the SIP router) and the <span class="term" data-definition="The connection to the public telephone network — like the airline partnerships that let your airport connect to flights worldwide.">carrier SIP trunk</span> exist in production but live outside this codebase. They are the roads that connect this airport to the rest of the world.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== SCREEN 5: QUIZ ==================== -->
+  <div class="module-content" style="margin-top: var(--space-12);">
+
+    <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-8);">Check Your Understanding</h3>
+
+    <div class="quiz-container" id="quiz-module1">
+
+      <!-- Q1: Scenario -->
+      <div class="quiz-question-block"
+           data-correct="option-b"
+           data-explanation-right="Exactly! fsagent is the turbulence sensor — it measures voice quality metrics like jitter, packet loss, and latency. When audio is choppy, fsagent has the data to tell you whether the problem is network congestion, a bad codec, or something else."
+           data-explanation-wrong="Not quite. shared.io handles cross-tab login sessions, not audio quality. The web frontend renders the UI but has no insight into voice streams. Fail2ban blocks brute-force attacks. Think about which component is specifically designed to monitor call quality."
+        >
+        <h3 class="quiz-question">Audio is choppy on calls. A teammate asks you to investigate. Which component most likely holds the clues?</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>shared.io — it manages the WebSocket connections</span>
+          </button>
+          <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>fsagent — it measures voice quality metrics</span>
+          </button>
+          <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>Fail2ban — it might be blocking packets</span>
+          </button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+      <!-- Q2: Architecture -->
+      <div class="quiz-question-block"
+           data-correct="option-c"
+           data-explanation-right="Correct! Kamailio is a critical part of the platform, but it lives outside this repo — it runs as its own service. This repo contains FreeSWITCH, the Java backend, the Go services, and the browser softphone. Knowing what is in versus out of the repo helps you know where to look when something breaks."
+           data-explanation-wrong="All three of those do live in this repo. FreeSWITCH is in the pbx directory (docker setup), fsextension is the Java backend, and fsevents is the Go event forwarder. Kamailio, however, is deployed separately — it is not part of this codebase."
+        >
+        <h3 class="quiz-question">Which of these does NOT live inside this repo?</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>The FreeSWITCH docker setup (pbx)</span>
+          </button>
+          <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>The Java backend (fsextension)</span>
+          </button>
+          <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>Kamailio (the SIP router)</span>
+          </button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+      <!-- Q3: Component ownership / architecture smell -->
+      <div class="quiz-question-block"
+           data-correct="option-b"
+           data-explanation-right="Exactly. fsextension serves the XML dialplan, and the Lua scripts in FreeSWITCH execute it. They form a clean pipeline: one defines the plan, the other runs it. If you duplicate the logic in both places, you create a maintenance nightmare — change a rule in one place and forget the other, and now you have two conflicting versions of the same behavior."
+           data-explanation-wrong="Think about responsibility. fsextension serves the XML dialplan to FreeSWITCH, and Lua scripts execute that plan. Putting the same logic in both places means you have to keep two copies in sync — when one changes, the other might not, creating silent bugs. That is the architecture smell."
+        >
+        <h3 class="quiz-question">A teammate proposes adding dialplan logic to both fsextension AND Lua scripts. Why is that an architecture smell?</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>Lua is too slow for dialplan logic — it should only run in Java</span>
+          </button>
+          <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>Dialplan decisions should live in one place — duplicating logic creates maintenance bugs</span>
+          </button>
+          <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>Lua scripts cannot access the dialplan XML</span>
+          </button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+      <button class="quiz-check-btn" onclick="checkQuiz('quiz-module1')">Check Answers</button>
+      <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module1')">Try Again</button>
+    </div>
+
+  </div>
+
+</section>

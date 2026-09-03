@@ -1,0 +1,326 @@
+<section class="module" id="module-3">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">03</span>
+      <h1 class="module-title">The Control Tower</h1>
+      <p class="module-subtitle">The Java brain behind the telephony brawn.</p>
+    </header>
+
+    <div class="module-body">
+
+      <!-- SCREEN 1: Hook -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">The Java brain behind the telephony brawn</h2>
+        <p>Module 2 showed you the engine that makes calls happen. But who <em>decides</em> how calls are routed? Who keeps the list of agents, queues, and extensions? Who remembers every call after it ends?</p>
+        <p>That is <strong>fsextension</strong> &mdash; the management layer that sits between humans configuring the system and FreeSWITCH executing calls. Think of it as an <span class="term" data-definition="An air traffic control tower decides which planes land where, keeps the flight plan database, and pushes updated schedules to the runway. Without the tower, planes still fly &mdash; but nobody knows who landed, where, or when.">air traffic control tower</span>. FreeSWITCH is the runway where planes actually land, but fsextension is the tower &mdash; it decides which planes land where, keeps the flight plan database, pushes updated schedules to the runway, and records every landing in the logbook.</p>
+
+        <div class="callout callout-accent animate-in">
+          <div class="callout-icon">&#x1F4CB;</div>
+          <div class="callout-content">
+            <strong class="callout-title">Why should I care?</strong>
+            <p>When someone says &ldquo;I added a new queue but calls are not routing to it,&rdquo; the problem is almost certainly in fsextension. Understanding its architecture means you know exactly where to look.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: Spring Boot & FreeswitchController -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Spring Boot: the framework that builds the backend</h2>
+        <p>fsextension is built on <span class="term" data-definition="Spring Boot is a Java framework that makes it easy to build web servers and APIs. It handles the boring plumbing (starting the server, connecting to databases) so developers can focus on the actual logic.">Spring Boot</span> &mdash; a Java framework that handles the boring plumbing so developers can focus on business logic. Its entry point is a single annotated class, and its controllers receive <span class="term" data-definition="A REST API is a way for programs to talk to each other over HTTP &mdash; the same protocol web browsers use. You send a request to a URL and get data back. Think of it as a drive-through window for software.">REST API</span> requests and route them to the right handler.</p>
+        <p>Here is the controller that handles dialplan scripts. Notice how every request flows through the command bus:</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code><span class="code-line"><span class="code-attr">@PostMapping</span>(<span class="code-string">"/script"</span>)</span>
+<span class="code-line"><span class="code-keyword">public</span> Boolean <span class="code-function">createScript</span>(</span>
+<span class="code-line">        <span class="code-attr">@RequestBody</span> GenerateScriptCommand cmd,</span>
+<span class="code-line">        <span class="code-attr">@RequestHeader</span>(<span class="code-string">"Domain-Name"</span>) String domainName) <span class="code-keyword">throws</span> JsonProcessingException {</span>
+<span class="code-line"></span>
+<span class="code-line">    cmd = cmd.<span class="code-function">domainName</span>(domainName);</span>
+<span class="code-line">    log.<span class="code-function">debug</span>(<span class="code-string">"createScript > Script with id: {} data: {}"</span>, cmd.<span class="code-function">getUniqueId</span>(), objectMapper.<span class="code-function">writeValueAsString</span>(cmd));</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">return</span> bus.<span class="code-function">execute</span>(cmd);</span>
+<span class="code-line">}</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">When someone POSTs a new dialplan script&hellip;</p>
+              <p class="tl">&hellip;this method receives the HTTP request and its JSON body.</p>
+              <p class="tl">The <code>Domain-Name</code> header tells us which tenant (client) this is for &mdash; this is a <span class="term" data-definition="Multi-tenant means one shared system serves many different customers (tenants). Each tenant sees only their own data, like apartments in the same building &mdash; same structure, separate locks.">multi-tenant</span> system.</p>
+              <p class="tl">Stamp the command with the tenant&rsquo;s domain name&hellip;</p>
+              <p class="tl">&hellip;log the details for debugging&hellip;</p>
+              <p class="tl">&hellip;and hand it to the command bus. The <code>bus.execute(command)</code> is <span class="term" data-definition="CQRS (Command Query Responsibility Segregation) separates operations that change state (commands) from operations that read state (queries). Like a restaurant with separate doors for the kitchen (orders in) and the dining room (food out) &mdash; never mix the two.">CQRS</span> &mdash; commands go IN through this door, queries come OUT through another. Never mixed.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: CQRS Pattern -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">CQRS: commands go IN, queries come OUT</h2>
+        <p><span class="term" data-definition="CQRS (Command Query Responsibility Segregation) separates operations that change state (commands) from operations that read state (queries). It is like having a separate door for incoming mail and outgoing mail &mdash; each flows in one direction, never both.">CQRS</span> is an architectural pattern that separates two fundamentally different operations: <strong>changing data</strong> (commands) and <strong>reading data</strong> (queries). In fsextension, every HTTP endpoint that creates or updates something goes through <code>bus.execute(command)</code>.</p>
+        <p>Here is another example &mdash; registering a new phone number follows the exact same pattern:</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code><span class="code-line"><span class="code-attr">@PostMapping</span>(<span class="code-string">"/dialed-number"</span>)</span>
+<span class="code-line"><span class="code-keyword">public</span> UUID <span class="code-function">createDialedNumber</span>(</span>
+<span class="code-line">        <span class="code-attr">@RequestHeader</span>(<span class="code-string">"Domain-Name"</span>) String domainName,</span>
+<span class="code-line">        <span class="code-attr">@RequestAttribute</span>(<span class="code-string">"Domain-Id"</span>) String domainId,</span>
+<span class="code-line">        <span class="code-attr">@RequestBody</span> CreateDialedNumberCommand command) {</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">if</span> (command.<span class="code-function">getDomainId</span>() == <span class="code-keyword">null</span>) {</span>
+<span class="code-line">        command = command.<span class="code-function">domainId</span>(domainId);</span>
+<span class="code-line">    }</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">return</span> bus.<span class="code-function">execute</span>(command).<span class="code-function">getId</span>();</span>
+<span class="code-line">}</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">Registering a new phone number (dialed number) follows the same pattern.</p>
+              <p class="tl">The domain is extracted from HTTP headers &mdash; this is how the system knows which tenant owns the number.</p>
+              <p class="tl">If the command did not already carry a domain ID, stamp it with the one from the request.</p>
+              <p class="tl">Hand the command to the bus. Same door, same pattern, every time.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-info animate-in">
+          <div class="callout-icon">&#x1F3AF;</div>
+          <div class="callout-content">
+            <strong class="callout-title">Why separate commands from queries?</strong>
+            <p>Commands change state and need validation, logging, and authorization. Queries are read-only and can be cached or optimized independently. Mixing them makes it hard to scale reads vs. writes &mdash; and that is exactly what CQRS solves.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: Kafka Integration -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Kafka: the event streaming backbone</h2>
+        <p><span class="term" data-definition="Apache Kafka is a distributed event streaming platform &mdash; think of it as a post office that delivers messages between software components. Each message goes into a named channel (topic) and any number of workers can read from it.">Kafka</span> is the system that carries event messages between components. fsextension uses it to stream call detail records and recording events across the platform. Here is the configuration class:</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code><span class="code-line"><span class="code-attr">@Configuration</span></span>
+<span class="code-line"><span class="code-attr">@Conditional</span>(kafkaCondition.<span class="code-keyword">class</span>)</span>
+<span class="code-line"><span class="code-keyword">public class</span> <span class="code-function">KafkaConfiguration</span> {</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">private final</span> List&lt;NewTopic&gt; queueTopics;</span>
+<span class="code-line">    <span class="code-keyword">private final</span> KafkaProperties kafkaProperties;</span>
+<span class="code-line">    <span class="code-keyword">private final</span> Map&lt;String, Object&gt; producerProperties;</span>
+<span class="code-line">    <span class="code-keyword">private final</span> Map&lt;String, Object&gt; consumerProperties;</span>
+<span class="code-line">    <span class="code-keyword">private final</span> String schemaRegistryUrl;</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">private final</span> Logger log = LoggerFactory.<span class="code-function">getLogger</span>(<span class="code-keyword">this</span>.getClass());</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">public</span> <span class="code-function">KafkaConfiguration</span>(</span>
+<span class="code-line">            KafkaProperties kafkaProperties,</span>
+<span class="code-line">            <span class="code-attr">@Value</span>(<span class="code-string">"${app.call_recording_topic:call_recording}"</span>) String callRecordingTopic,</span>
+<span class="code-line">            <span class="code-attr">@Value</span>(<span class="code-string">"${app.call_aggregated_topic:call_aggregated}"</span>) String callAggregatedTopic,</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">This class configures Kafka &mdash; the message delivery system between components.</p>
+              <p class="tl"><code>@Conditional</code> means Kafka is <span class="term" data-definition="A conditional component is one that only activates when a specific condition is met &mdash; like a light switch that only works when the breaker is on. If the condition fails, the component simply does not exist at runtime.">optional</span>. If Kafka is not running, fsextension still works &mdash; just without event streaming.</p>
+              <p class="tl">These fields hold the Kafka topics (named channels) and connection settings.</p>
+              <p class="tl">The topics &mdash; <code>call_recording</code> and <code>call_aggregated</code> &mdash; are named channels where specific types of <span class="term" data-definition="A CDR (Call Detail Record) is the receipt for a phone call &mdash; who called whom, when, how long, and what happened. Every phone system generates one after every call.">CDR</span> events flow.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 5: JsonCdrConsumer -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Listening for call records</h2>
+        <p>The <code>JsonCdrConsumer</code> listens on the <code>json_cdr</code> Kafka <span class="term" data-definition="A topic is a named channel in Kafka where messages of a specific type are published &mdash; like a labeled mailbox. Producers put mail in; consumers pull mail out.">topic</span> for call detail records. Notice the double gating &mdash; it only activates when both conditions are met:</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code><span class="code-line"><span class="code-attr">@Component</span></span>
+<span class="code-line"><span class="code-attr">@Conditional</span>(kafkaCondition.<span class="code-keyword">class</span>)</span>
+<span class="code-line"><span class="code-attr">@ConditionalOnProperty</span>(value = <span class="code-string">"app.json_cdr_queued"</span>, havingValue = <span class="code-string">"true"</span>)</span>
+<span class="code-line"><span class="code-keyword">public class</span> <span class="code-function">JsonCdrConsumer</span> {</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">private final</span> Bus bus;</span>
+<span class="code-line">    <span class="code-keyword">private final</span> KafkaTemplate&lt;Object, Object&gt; kafkaTemplate;</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">This consumer listens on the <code>json_cdr</code> Kafka topic for call detail records.</p>
+              <p class="tl">First gate: Kafka must be available (the <code>@Conditional</code> annotation).</p>
+              <p class="tl">Second gate: the config flag <code>app.json_cdr_queued</code> must be set to <code>true</code>.</p>
+              <p class="tl">Double-gating means the system <strong>degrades gracefully</strong> &mdash; if Kafka is down, CDRs still get processed another way (direct file import). Nothing breaks.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-accent animate-in">
+          <div class="callout-icon">&#x1F4A1;</div>
+          <div class="callout-content">
+            <strong class="callout-title">Graceful degradation</strong>
+            <p>Two independent conditions must be true for this consumer to activate. If either fails, the system falls back to a simpler path instead of crashing. This is a common pattern in production systems &mdash; always have a Plan B.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 6: Data Flow Animation -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">How a configuration change reaches FreeSWITCH</h2>
+        <p>When an admin creates a new queue, here is the full journey &mdash; from the web UI all the way to FreeSWITCH loading the updated dialplan:</p>
+
+        <div class="flow-animation" data-steps='[
+          {"highlight":"flow-m3-actor-1","label":"Admin creates a new queue via the REST API"},
+          {"highlight":"flow-m3-actor-2","label":"fsextension stores the queue in PostgreSQL","packet":true,"from":"m3-actor-1","to":"m3-actor-2"},
+          {"highlight":"flow-m3-actor-2","label":"fsextension generates dialplan XML","packet":true,"from":"m3-actor-2","to":"m3-actor-3"},
+          {"highlight":"flow-m3-actor-2","label":"fsextension pushes XML to FreeSWITCH via SFTP","packet":true,"from":"m3-actor-2","to":"m3-actor-5"},
+          {"highlight":"flow-m3-actor-5","label":"FreeSWITCH loads the new dialplan","packet":true,"from":"m3-actor-5","to":"m3-actor-5"},
+          {"highlight":"flow-m3-actor-4","label":"Call events flow back through Kafka to PostgreSQL","packet":true,"from":"m3-actor-4","to":"m3-actor-3"}
+        ]'>
+          <div class="flow-actors">
+            <div class="flow-actor" id="flow-m3-actor-1">
+              <div class="flow-actor-icon">&#x1F464;</div>
+              <span>Admin</span>
+            </div>
+            <div class="flow-actor" id="flow-m3-actor-2">
+              <div class="flow-actor-icon">&#x2615;</div>
+              <span>fsextension</span>
+            </div>
+            <div class="flow-actor" id="flow-m3-actor-3">
+              <div class="flow-actor-icon">&#x1F4BE;</div>
+              <span>PostgreSQL</span>
+            </div>
+            <div class="flow-actor" id="flow-m3-actor-4">
+              <div class="flow-actor-icon">&#x1F4E8;</div>
+              <span>Kafka</span>
+            </div>
+            <div class="flow-actor" id="flow-m3-actor-5">
+              <div class="flow-actor-icon">&#x1F4DE;</div>
+              <span>FreeSWITCH</span>
+            </div>
+          </div>
+
+          <div class="flow-packet" id="flow-m3-packet"></div>
+          <div class="flow-step-label" id="flow-m3-label">Click &ldquo;Next Step&rdquo; to trace the journey</div>
+
+          <div class="flow-controls">
+            <button class="btn flow-next-btn">Next Step</button>
+            <button class="btn flow-reset-btn">Restart</button>
+            <span class="flow-progress"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 7: SFTP & Flyway -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">SFTP and Flyway: the plumbing behind the scenes</h2>
+        <p>Two more pieces of the puzzle that keep fsextension running smoothly:</p>
+
+        <div class="pattern-cards stagger-children">
+          <div class="pattern-card animate-in">
+            <div class="pattern-icon">&#x1F4E5;</div>
+            <h3 class="pattern-title"><span class="term" data-definition="SFTP (SSH File Transfer Protocol) is a secure way to copy files between computers over a network &mdash; like a locked courier delivering documents between offices. fsextension uses it to push dialplan XML and recordings to FreeSWITCH.">SFTP</span> Provisioning</h3>
+            <p class="pattern-desc">fsextension pushes dialplan XML and recordings to FreeSWITCH via <span class="term" data-definition="mod_xml_curl is a FreeSWITCH module that fetches its dialplan (call routing rules) from an external server via HTTP &mdash; instead of reading a static file on disk. fsextension generates the XML, and FreeSWITCH pulls it when needed.">mod_xml_curl</span>. When FreeSWITCH needs to know how to route a call, it fetches the dialplan from fsextension over <span class="term" data-definition="HTTP is the protocol web browsers use to request web pages. When software talks to a REST API, it is using HTTP &mdash; the same technology that loads every website you visit.">HTTP</span>, or fsextension pushes it proactively via SFTP. Either way, the dialplan stays in sync.</p>
+          </div>
+          <div class="pattern-card animate-in">
+            <div class="pattern-icon">&#x1F5C3;</div>
+            <h3 class="pattern-title"><span class="term" data-definition="Flyway is a database migration tool. Each migration is a numbered SQL file that changes the database schema (add a table, rename a column). Flyway tracks which migrations have run and applies new ones in order &mdash; like a changelog that writes itself.">Flyway</span> Migrations</h3>
+            <p class="pattern-desc">When fsextension needs a new database table or column, the change is defined as a <span class="term" data-definition="A migration is a versioned script that changes the database schema &mdash; adding tables, renaming columns, or altering data. Each migration is numbered so they run in order, and Flyway remembers which ones have already been applied.">migration</span> &mdash; a numbered SQL file. Flyway applies them in order, tracks which ones have run, and never re-runs an old one. This means the database schema evolves safely across deployments without anyone losing data.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 8: Quiz -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Test your understanding</h2>
+
+        <div class="quiz-container" id="quiz-module3">
+
+          <!-- Q1: CQRS architecture -->
+          <div class="quiz-question-block"
+               data-correct="option-b"
+               data-explanation-right="Exactly! Commands change state and need validation, logging, and authorization. Queries are read-only and can be cached or scaled independently. Mixing them makes it hard to optimize reads vs. writes &mdash; CQRS solves that by giving each its own bus."
+               data-explanation-wrong="Think about the difference between changing data and reading data. Commands (create, update, delete) need validation and logging; queries (list, get, search) are read-only and can be optimized differently. Why would you want separate lanes for these two very different operations?"
+          >
+            <h3 class="quiz-question">Why does fsextension use CQRS (separate command and query buses) instead of regular method calls?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>It is a Spring Boot requirement &mdash; all controllers must use a bus</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Commands change state and need validation/logging; queries are read-only and can be cached or scaled independently</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>It makes the code run faster by parallelizing all operations</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <!-- Q2: SFTP / dialplan debugging -->
+          <div class="quiz-question-block"
+               data-correct="option-a"
+               data-explanation-right="Exactly! fsextension generates the dialplan XML, but FreeSWITCH needs to actually receive and load it. The SFTP push (or mod_xml_curl fetch) is the delivery mechanism. If fsextension saved the queue but the XML never reached FreeSWITCH, the new dialplan will not take effect. Check the SFTP logs and FreeSWITCH xml_curl response."
+               data-explanation-wrong="The queue was saved in fsextension, so the database is fine. The problem is getting the updated dialplan TO FreeSWITCH. How does fsextension deliver the XML to FreeSWITCH? Think about the delivery mechanism between those two components."
+          >
+            <h3 class="quiz-question">A new dialplan was saved in fsextension but FreeSWITCH does not use it. What do you check?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The SFTP connection &mdash; did fsextension successfully push the XML to FreeSWITCH?</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The PostgreSQL database &mdash; maybe the save failed silently</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The Kafka topic &mdash; maybe the event was not published</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <!-- Q3: Kafka conditional -->
+          <div class="quiz-question-block"
+               data-correct="option-c"
+               data-explanation-right="Exactly! The double-gating (@Conditional on Kafka availability AND @ConditionalOnProperty on app.json_cdr_queued) is designed for graceful degradation. When you set the flag to false, the Kafka consumer simply does not activate &mdash; but CDRs still get processed through the direct JSON CDR file import path. Nothing breaks."
+               data-explanation-wrong="Think about what @ConditionalOnProperty means. It is a safety switch &mdash; when you flip it off, the component does not activate, but the system continues to work through an alternative path. What is the alternative way CDRs get processed when Kafka is not involved?"
+          >
+            <h3 class="quiz-question">The JsonCdrConsumer has @ConditionalOnProperty. What happens if you set app.json_cdr_queued=false?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>fsextension crashes on startup because the consumer bean cannot be created</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>All CDR processing stops entirely &mdash; no call records are saved</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>CDRs stop flowing through Kafka but still get processed by the direct JSON CDR file import path</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <button class="quiz-check-btn" onclick="checkQuiz('quiz-module3')">Check Answers</button>
+          <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module3')">Try Again</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</section>

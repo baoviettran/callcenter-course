@@ -1,0 +1,2619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Call Center Platform: From Click to Conversation</title>
+
+  <!-- Google Fonts: Bricolage Grotesque · DM Sans · JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    :root {
+      --color-accent:       #2A7B9B;
+      --color-accent-hover: #1F6280;
+      --color-accent-light: #E4F2F7;
+      --color-accent-muted: #5A9DB8;
+    }
+  </style>
+
+  <script src="main.js" defer></script>
+</head>
+<body>
+
+  <nav class="nav" id="nav">
+    <div class="progress-bar" id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    <div class="nav-inner">
+      <span class="nav-title">Call Center Platform</span>
+      <div class="nav-dots" id="nav-dots" role="tablist">
+        <button class="nav-dot" data-target="module-1" data-tooltip="The Big Picture" role="tab" aria-label="Module 1: The Big Picture"></button>
+        <button class="nav-dot" data-target="module-2" data-tooltip="The Telephony Engine" role="tab" aria-label="Module 2: The Telephony Engine"></button>
+        <button class="nav-dot" data-target="module-3" data-tooltip="The Control Tower" role="tab" aria-label="Module 3: The Control Tower"></button>
+        <button class="nav-dot" data-target="module-4" data-tooltip="The Event Wire" role="tab" aria-label="Module 4: The Event Wire"></button>
+        <button class="nav-dot" data-target="module-5" data-tooltip="Browser Integration" role="tab" aria-label="Module 5: Browser Integration"></button>
+        <button class="nav-dot" data-target="module-6" data-tooltip="The Quality Scoreboard" role="tab" aria-label="Module 6: The Quality Scoreboard"></button>
+        <button class="nav-dot" data-target="module-7" data-tooltip="When Things Break" role="tab" aria-label="Module 7: When Things Break"></button>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main">
+<section class="module" id="module-1">
+
+  <!-- ==================== SCREEN 1: HOOK ==================== -->
+  <div class="module-header">
+    <span class="module-number">Module 1</span>
+    <h2 class="module-title">The Big Picture</h2>
+    <p class="module-subtitle">A self-hosted call center platform — seven programs, three protocols, one click.</p>
+  </div>
+
+  <div class="module-content">
+
+    <div class="callout callout-accent" style="margin-bottom: var(--space-8);">
+      <span class="callout-icon">📞</span>
+      <div class="callout-content">
+        <span class="callout-title">The green button</span>
+        <p>Every day, someone clicks a green button in a browser tab, hears a ring, and talks to a customer. That single click crosses seven programs and three protocols in under a second. This course follows that click.</p>
+      </div>
+    </div>
+
+    <p style="max-width: 600px;">This platform is a <strong>self-hosted call center</strong> built on top of <span class="term" data-definition="An open-source telephony platform that handles the actual audio of phone calls — like the runways and terminals of an airport.">FreeSWITCH</span> and <span class="term" data-definition="An open-source web admin for FreeSWITCH — like the airport management office that configures gates, schedules, and staff.">FusionPBX</span>. Instead of one big box, it is a team of specialized programs working together.</p>
+
+    <p style="max-width: 600px; color: var(--color-text-secondary); font-size: var(--text-sm);">Why does this matter? When someone says "calls are dropping," your first job is knowing <em>which program</em> to look at. This module gives you that map.</p>
+
+  </div>
+
+  <!-- ==================== SCREEN 2: JOURNEY OF ONE CALL ==================== -->
+  <div class="module-content" style="margin-top: var(--space-12);">
+
+    <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">The Journey of One Call</h3>
+    <p style="max-width: 600px; margin-bottom: var(--space-8);">Think of this platform as an <strong>airport</strong>. The agent is the traveler, the <span class="term" data-definition="A software phone that runs inside the browser — the app where agents make and receive calls.">softphone</span> is their boarding-pass app, <span class="term" data-definition="A SIP router and load balancer — like the security checkpoint funneling passengers to the right gates.">Kamailio</span> is the security checkpoint, FreeSWITCH is the terminal, and FusionPBX is the management office.</p>
+
+    <div class="flow-animation" data-steps='[
+      {"highlight":"flow-actor-1","label":"Agent clicks Call in the browser softphone"},
+      {"highlight":"flow-actor-1","label":"Browser sends a SIP INVITE over a secure WebSocket to Kamailio","packet":true,"from":"actor-1","to":"actor-2"},
+      {"highlight":"flow-actor-2","label":"Kamailio routes the call to an available FreeSWITCH node","packet":true,"from":"actor-2","to":"actor-3"},
+      {"highlight":"flow-actor-3","label":"FreeSWITCH dials out to the customer phone","packet":true,"from":"actor-3","to":"actor-4"},
+      {"highlight":"flow-actor-4","label":"Voice streams (RTP) established directly between FreeSWITCH and the customer phone"},
+      {"highlight":"flow-actor-1","label":"Call ends — BYE sent, resources freed"}
+    ]'>
+      <div class="flow-actors">
+        <div class="flow-actor" id="flow-actor-1">
+          <div class="flow-actor-icon">🖥️</div>
+          <span>Browser</span>
+        </div>
+        <div class="flow-actor" id="flow-actor-2">
+          <div class="flow-actor-icon">🔀</div>
+          <span>Kamailio</span>
+        </div>
+        <div class="flow-actor" id="flow-actor-3">
+          <div class="flow-actor-icon">📞</div>
+          <span>FreeSWITCH</span>
+        </div>
+        <div class="flow-actor" id="flow-actor-4">
+          <div class="flow-actor-icon">📱</div>
+          <span>Customer Phone</span>
+        </div>
+      </div>
+
+      <div class="flow-packet" id="flow-packet"></div>
+
+      <div class="flow-step-label" id="flow-label">Click "Next Step" to begin</div>
+
+      <div class="flow-controls">
+        <button class="btn flow-next-btn">Next Step</button>
+        <button class="btn flow-reset-btn">Restart</button>
+        <span class="flow-progress"></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== SCREEN 3: THE CAST ==================== -->
+  <div class="module-content" style="margin-top: var(--space-12);">
+
+    <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">The Cast</h3>
+    <p style="max-width: 600px; margin-bottom: var(--space-8);">Every component has one job — like crew members in an airport, each with a clear role.</p>
+
+    <div class="icon-rows">
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">🏗️</div>
+        <div>
+          <strong>pbx</strong>
+          <p><span class="term" data-definition="The telephony engine — like the airport terminal where flights (calls) actually depart and land.">The terminal</span> (FreeSWITCH + FusionPBX + Lua call logic + Fail2ban)</p>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">🗼</div>
+        <div>
+          <strong>fsextension</strong>
+          <p><span class="term" data-definition="The Java backend that manages agents, queues, and dialplans — the control tower directing traffic.">The control tower</span> (Java backend managing agents, queues, dialplans)</p>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">📡</div>
+        <div>
+          <strong>fsevents</strong>
+          <p><span class="term" data-definition="The Go event forwarder — like a flight-tracker wire that broadcasts every event in real time.">The flight-tracker wire</span> (Go event forwarder)</p>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">🌡️</div>
+        <div>
+          <strong>fsagent</strong>
+          <p><span class="term" data-definition="The Go quality metrics service — like a weather-and-turbulence sensor monitoring call quality.">The turbulence sensor</span> (Go quality metrics)</p>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">🎫</div>
+        <div>
+          <strong>sip.js-worker</strong>
+          <p><span class="term" data-definition="The browser softphone library — the boarding-pass app agents use to make calls from their browser.">The boarding-pass app</span> (browser softphone)</p>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">🔗</div>
+        <div>
+          <strong>shared.io</strong>
+          <p>Keeps your app logged in across tabs (shared WebSocket connection)</p>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-circle" style="background: var(--color-accent-light);">🏢</div>
+        <div>
+          <strong>fusionpbx</strong>
+          <p><span class="term" data-definition="A PHP web admin UI for managing FreeSWITCH — the airport management office.">The management office</span> (PHP web admin UI)</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ==================== SCREEN 4: CODE TRANSLATIONS ==================== -->
+  <div class="module-content" style="margin-top: var(--space-12);">
+
+    <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">Seeing It in Code</h3>
+    <p style="max-width: 600px; margin-bottom: var(--space-8);">The "terminal" is just containers on a server. Here is how it is defined.</p>
+
+    <!-- Translation 1: docker-compose -->
+    <div class="translation-block animate-in">
+      <div class="translation-code">
+        <span class="translation-label">CODE</span>
+        <pre><code>
+<span class="code-line"><span class="code-property">services</span>:</span>
+<span class="code-line">  <span class="code-property">postgres</span>:</span>
+<span class="code-line">    <span class="code-property">image</span>: <span class="code-string">luongld/postgres:14</span></span>
+<span class="code-line">    <span class="code-property">container_name</span>: <span class="code-string">postgres_140</span></span>
+<span class="code-line">  <span class="code-property">pbx</span>:</span>
+<span class="code-line">    <span class="code-property">image</span>: <span class="code-string">luongld/pbx:1.10.8</span></span>
+<span class="code-line">    <span class="code-property">container_name</span>: <span class="code-string">pbx_1108</span></span>
+        </code></pre>
+      </div>
+      <div class="translation-english">
+        <span class="translation-label">PLAIN ENGLISH</span>
+        <div class="translation-lines">
+          <p class="tl">Define the services (programs) that make up the terminal...</p>
+          <p class="tl">PostgreSQL — the filing cabinet where call records are stored...</p>
+          <p class="tl">Use the Docker image called "luongld/postgres" version 14...</p>
+          <p class="tl">Name this container "postgres_140" so we can find it later...</p>
+          <p class="tl">FreeSWITCH + FusionPBX — the actual telephony engine...</p>
+          <p class="tl">Use the Docker image called "luongld/pbx" version 1.10.8...</p>
+          <p class="tl">Name this container "pbx_1108"</p>
+        </div>
+      </div>
+    </div>
+
+    <p style="max-width: 600px; margin-top: var(--space-8); margin-bottom: var(--space-2);">And here is how the browser softphone registers itself — the traveler picking up a boarding pass.</p>
+
+    <!-- Translation 2: sip.js-worker -->
+    <div class="translation-block animate-in">
+      <div class="translation-code">
+        <span class="translation-label">CODE</span>
+        <pre><code>
+<span class="code-line"><span class="code-property">sipClient</span>.<span class="code-function">register</span>({</span>
+<span class="code-line">  <span class="code-property">uri</span>: <span class="code-string">'sip:username@domain.com'</span>,</span>
+<span class="code-line">  <span class="code-property">username</span>: <span class="code-string">'username'</span>,</span>
+<span class="code-line">  <span class="code-property">password</span>: <span class="code-string">'password'</span>,</span>
+<span class="code-line">  <span class="code-property">displayName</span>: <span class="code-string">'Display Name'</span></span>
+<span class="code-line">}, {</span>
+<span class="code-line">  <span class="code-property">server</span>: <span class="code-string">'wss://domain.com:443'</span>,</span>
+<span class="code-line">  <span class="code-property">secure</span>: <span class="code-keyword">true</span></span>
+<span class="code-line">});</span>
+        </code></pre>
+      </div>
+      <div class="translation-english">
+        <span class="translation-label">PLAIN ENGLISH</span>
+        <div class="translation-lines">
+          <p class="tl">Tell the softphone to register (sign in) to the server...</p>
+          <p class="tl">The agent's SIP address — like an email address but for phone calls...</p>
+          <p class="tl">The agent's username for authentication...</p>
+          <p class="tl">The agent's password...</p>
+          <p class="tl">The name shown to the other end of the call...</p>
+          <p class="tl">Now the connection settings...</p>
+          <p class="tl">Connect over <span class="term" data-definition="WebSocket Secure — the browser speaks the phone protocol (SIP) over an encrypted WebSocket connection instead of a phone cable.">WSS</span> (secure WebSocket) on port 443...</p>
+          <p class="tl">Yes, use encryption (TLS) — never send calls in plain text</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- What is NOT in this repo -->
+    <div class="callout callout-info" style="margin-top: var(--space-8);">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-content">
+        <span class="callout-title">What is NOT in this repo</span>
+        <p><span class="term" data-definition="An open-source SIP router and load balancer — sits between the browser and FreeSWITCH, routing calls to the right server.">Kamailio</span> (the SIP router) and the <span class="term" data-definition="The connection to the public telephone network — like the airline partnerships that let your airport connect to flights worldwide.">carrier SIP trunk</span> exist in production but live outside this codebase. They are the roads that connect this airport to the rest of the world.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== SCREEN 5: QUIZ ==================== -->
+  <div class="module-content" style="margin-top: var(--space-12);">
+
+    <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-8);">Check Your Understanding</h3>
+
+    <div class="quiz-container" id="quiz-module1">
+
+      <!-- Q1: Scenario -->
+      <div class="quiz-question-block"
+           data-correct="option-b"
+           data-explanation-right="Exactly! fsagent is the turbulence sensor — it measures voice quality metrics like jitter, packet loss, and latency. When audio is choppy, fsagent has the data to tell you whether the problem is network congestion, a bad codec, or something else."
+           data-explanation-wrong="Not quite. shared.io handles cross-tab login sessions, not audio quality. The web frontend renders the UI but has no insight into voice streams. Fail2ban blocks brute-force attacks. Think about which component is specifically designed to monitor call quality."
+        >
+        <h3 class="quiz-question">Audio is choppy on calls. A teammate asks you to investigate. Which component most likely holds the clues?</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>shared.io — it manages the WebSocket connections</span>
+          </button>
+          <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>fsagent — it measures voice quality metrics</span>
+          </button>
+          <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>Fail2ban — it might be blocking packets</span>
+          </button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+      <!-- Q2: Architecture -->
+      <div class="quiz-question-block"
+           data-correct="option-c"
+           data-explanation-right="Correct! Kamailio is a critical part of the platform, but it lives outside this repo — it runs as its own service. This repo contains FreeSWITCH, the Java backend, the Go services, and the browser softphone. Knowing what is in versus out of the repo helps you know where to look when something breaks."
+           data-explanation-wrong="All three of those do live in this repo. FreeSWITCH is in the pbx directory (docker setup), fsextension is the Java backend, and fsevents is the Go event forwarder. Kamailio, however, is deployed separately — it is not part of this codebase."
+        >
+        <h3 class="quiz-question">Which of these does NOT live inside this repo?</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>The FreeSWITCH docker setup (pbx)</span>
+          </button>
+          <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>The Java backend (fsextension)</span>
+          </button>
+          <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>Kamailio (the SIP router)</span>
+          </button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+      <!-- Q3: Component ownership / architecture smell -->
+      <div class="quiz-question-block"
+           data-correct="option-b"
+           data-explanation-right="Exactly. fsextension serves the XML dialplan, and the Lua scripts in FreeSWITCH execute it. They form a clean pipeline: one defines the plan, the other runs it. If you duplicate the logic in both places, you create a maintenance nightmare — change a rule in one place and forget the other, and now you have two conflicting versions of the same behavior."
+           data-explanation-wrong="Think about responsibility. fsextension serves the XML dialplan to FreeSWITCH, and Lua scripts execute that plan. Putting the same logic in both places means you have to keep two copies in sync — when one changes, the other might not, creating silent bugs. That is the architecture smell."
+        >
+        <h3 class="quiz-question">A teammate proposes adding dialplan logic to both fsextension AND Lua scripts. Why is that an architecture smell?</h3>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>Lua is too slow for dialplan logic — it should only run in Java</span>
+          </button>
+          <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>Dialplan decisions should live in one place — duplicating logic creates maintenance bugs</span>
+          </button>
+          <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+            <div class="quiz-option-radio"></div>
+            <span>Lua scripts cannot access the dialplan XML</span>
+          </button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+      <button class="quiz-check-btn" onclick="checkQuiz('quiz-module1')">Check Answers</button>
+      <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module1')">Try Again</button>
+    </div>
+
+  </div>
+
+</section>
+<section class="module" id="module-2" style="background: var(--color-bg-warm);">
+
+  <!-- ==================== SCREEN 1: HOOK ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Module 2</p>
+      <h1 class="screen-title">The Telephony Engine</h1>
+      <p class="screen-subtitle">The train station behind every call</p>
+
+      <p class="text-block">Module 1 showed you the whole airport from above. Now let's walk into the terminal and meet the engine that actually makes calls happen — plus the admin panel, the custom scripts, and the security system that keep it running.</p>
+
+      <p class="text-block" style="margin-top: var(--space-6);"><strong>The <code>pbx/</code> directory isn't just FreeSWITCH — it's four things working together:</strong></p>
+
+      <div class="pattern-cards" style="margin-top: var(--space-4);">
+        <div class="pattern-card" style="border-top: 3px solid var(--color-actor-1);">
+          <div class="pattern-icon" style="background: var(--color-actor-1)">🚂</div>
+          <h4 class="pattern-title">FreeSWITCH</h4>
+          <p class="pattern-desc">The telephony engine — tracks, signals, and scheduling that make calls run.</p>
+        </div>
+        <div class="pattern-card" style="border-top: 3px solid var(--color-actor-2);">
+          <div class="pattern-icon" style="background: var(--color-actor-2)">🖥️</div>
+          <h4 class="pattern-title">FusionPBX</h4>
+          <p class="pattern-desc">The admin web UI — a dashboard for configuring routes and managing agents.</p>
+        </div>
+        <div class="pattern-card" style="border-top: 3px solid var(--color-actor-3);">
+          <div class="pattern-icon" style="background: var(--color-actor-3)">📜</div>
+          <h4 class="pattern-title">Lua Scripts</h4>
+          <p class="pattern-desc">Custom dispatchers — logic that decides which train goes where when the standard schedule doesn't cover it.</p>
+        </div>
+        <div class="pattern-card" style="border-top: 3px solid var(--color-actor-4);">
+          <div class="pattern-icon" style="background: var(--color-actor-4)">🛡️</div>
+          <h4 class="pattern-title">Fail2ban</h4>
+          <p class="pattern-desc">The security guard — watching for suspicious behavior and banning troublemakers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 2: ARCHITECTURE DIAGRAM ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Architecture</p>
+      <h2 class="screen-title">Four Layers, One System</h2>
+      <p class="text-block">Click each component to see what it does and why it exists.</p>
+
+      <div class="arch-diagram">
+        <div class="arch-zone arch-zone-browser">
+          <h4 class="arch-zone-label">Admin Layer</h4>
+          <div class="arch-component" data-desc="FusionPBX is a PHP web application that provides a browser-based admin panel. It has its own MVC architecture, PostgreSQL database, and nginx reverse proxy. You use it to configure dialplans, manage agents, and monitor calls.">
+            <div class="arch-icon">🖥️</div>
+            <span>FusionPBX (Web UI)</span>
+          </div>
+        </div>
+        <div class="arch-zone arch-zone-external">
+          <h4 class="arch-zone-label">Logic Layer</h4>
+          <div class="arch-component" data-desc="Lua scripts handle custom call routing logic that goes beyond the standard dialplan. bridge_to_agent.lua checks agent availability in the database before bridging. queue_cascade.lua tries multiple queues in sequence when agents are busy.">
+            <div class="arch-icon">📜</div>
+            <span>Lua Scripts (Plugins)</span>
+          </div>
+          <div class="arch-component" data-desc="Fail2ban monitors FreeSWITCH and FusionPBX log files for failed authentication attempts. When an IP exceeds the retry threshold, it adds an iptables firewall rule to block that IP entirely — stopping brute-force attacks on SIP accounts.">
+            <div class="arch-icon">🛡️</div>
+            <span>Fail2ban (Security)</span>
+          </div>
+        </div>
+        <div class="arch-zone arch-zone-core">
+          <h4 class="arch-zone-label">Engine Layer</h4>
+          <div class="arch-component" data-desc="FreeSWITCH is the core telephony engine that handles SIP signaling, audio routing, and call state. It runs custom modules like mod_callcenter (queue management) and mod_avmd (voicemail detection) inside Docker containers.">
+            <div class="arch-icon">🚂</div>
+            <span>FreeSWITCH Engine</span>
+          </div>
+        </div>
+        <div class="arch-zone arch-zone-data">
+          <h4 class="arch-zone-label">Infrastructure Layer</h4>
+          <div class="arch-component" data-desc="Docker orchestrates all containers — FreeSWITCH, FusionPBX, PostgreSQL, and Fail2ban each run in isolated containers. This keeps dependencies separate and makes the system reproducible across environments.">
+            <div class="arch-icon">📦</div>
+            <span>Docker Containers</span>
+          </div>
+          <div class="arch-component" data-desc="PostgreSQL is the shared database used by both FreeSWITCH (agent state, registrations) and FusionPBX (configuration, extensions, dialplans). If this container goes down, everything stops working.">
+            <div class="arch-icon">🗄️</div>
+            <span>PostgreSQL Database</span>
+          </div>
+        </div>
+        <div class="arch-description" id="arch-desc">Click any component to learn what it does</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 3: FREESWITCH + DOCKER ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Layer 1 — The Engine</p>
+      <h2 class="screen-title">FreeSWITCH + Docker</h2>
+
+      <p class="text-block">The entire telephony stack runs inside
+        <span class="term" data-definition="Docker is a platform that packages applications into isolated environments called containers. Each container has its own filesystem, network, and processes — like a lightweight virtual machine, but sharing the host OS kernel.">Docker</span>
+        containers. The docker-compose file defines two services: the database and FreeSWITCH itself.
+      </p>
+
+      <div class="code-block" style="margin-top: var(--space-4);">
+        <div class="code-header">
+          <span class="code-filename">pbx/docker-compose-host.yml</span>
+        </div>
+        <pre style="white-space: pre-wrap; word-break: break-word;"><code><span class="code-keyword">services</span>:
+  <span class="code-property">postgres</span>:
+    <span class="code-attr">image</span>: <span class="code-string">luongld/postgres:14</span>
+    <span class="code-attr">container_name</span>: <span class="code-string">postgres_140</span>
+  <span class="code-property">pbx</span>:
+    <span class="code-attr">image</span>: <span class="code-string">luongld/pbx:1.10.8</span>
+    <span class="code-attr">container_name</span>: <span class="code-string">pbx_1108</span></code></pre>
+      </div>
+
+      <div class="callout callout-info" style="margin-top: var(--space-4);">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">Two Containers, One System</strong>
+          <p>The <code>postgres</code> container holds the shared database. The <code>pbx</code> container runs FreeSWITCH with custom modules like <span class="term" data-definition="mod_callcenter is a FreeSWITCH module that provides ACD (Automatic Call Distribution) — it manages queues, routes calls to available agents, and tracks agent states like Available, On Call, and Wrap-Up.">mod_callcenter</span> for queue management. The <code>pbx</code> image is custom-built with patched modules for this platform.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 4: FUSIONPBX ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Layer 2 — The Admin Panel</p>
+      <h2 class="screen-title">FusionPBX</h2>
+
+      <p class="text-block">FusionPBX is a
+        <span class="term" data-definition="PHP is a server-side scripting language designed for web development. It runs on the server (not in the browser) and generates HTML pages dynamically. FusionPBX is written entirely in PHP.">PHP</span>
+        web application with its own
+        <span class="term" data-definition="MVC stands for Model-View-Controller — a design pattern that separates data (Model), presentation (View), and logic (Controller). FusionPBX uses this pattern: models handle database queries, views render HTML, and controllers route requests.">MVC</span>
+        architecture. Every page request starts at one entry point.
+      </p>
+
+      <div class="code-block" style="margin-top: var(--space-4);">
+        <div class="code-header">
+          <span class="code-filename">fusionpbx/index.php</span>
+        </div>
+        <pre style="white-space: pre-wrap; word-break: break-word;"><code><span class="code-comment">//includes files</span>
+<span class="code-keyword">require_once</span> <span class="code-string">__DIR__</span> . <span class="code-string">"/resources/require.php"</span>;
+
+<span class="code-comment">//if logged in, redirect to login destination</span></code></pre>
+      </div>
+
+      <p class="text-block" style="margin-top: var(--space-4);">This single line loads FusionPBX's entire framework — database connections, authentication checks, and routing rules. Think of it as the front door of the admin panel.</p>
+
+      <div class="callout callout-accent" style="margin-top: var(--space-4);">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">Why This Matters for Debugging</strong>
+          <p>When someone says "the admin panel is down," you need to know: is it the PHP application (FusionPBX), the database it connects to (PostgreSQL), or the web server (nginx) in front of it? Each has different symptoms and different fixes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 5: LUA SCRIPTS ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Layer 3 — The Dispatchers</p>
+      <h2 class="screen-title">Lua Scripts</h2>
+
+      <p class="text-block">
+        <span class="term" data-definition="Lua is a lightweight scripting language embedded in FreeSWITCH. Lua scripts run inside the telephony engine and can access the database, control call routing, and interact with the SIP stack via the FreeSWITCH Event Socket.">Lua</span>
+        scripts are the custom dispatchers — they decide which train goes where when the standard
+        <span class="term" data-definition="A dialplan is a set of rules that tells FreeSWITCH what to do with each incoming or outgoing call — route it to an agent, play a recording, send it to voicemail, or hang up. Think of it as the timetable for call routing.">dialplan</span>
+        doesn't cover it.
+      </p>
+
+      <div class="code-block" style="margin-top: var(--space-4);">
+        <div class="code-header">
+          <span class="code-filename">pbx/fs/resources/lua/bridge_to_agent.lua</span>
+        </div>
+        <pre style="white-space: pre-wrap; word-break: break-word;"><code><span class="code-keyword">local</span> agent_uuid = argv[<span class="code-number">1</span>] <span class="code-keyword">or</span> <span class="code-string">''</span>
+<span class="code-keyword">local</span> dialplan_id = argv[<span class="code-number">2</span>] <span class="code-keyword">or</span> <span class="code-string">''</span>
+
+<span class="code-keyword">if</span> <span class="code-keyword">not</span> session <span class="code-keyword">or</span> <span class="code-keyword">not</span> session:ready() <span class="code-keyword">or</span> agent_uuid == <span class="code-string">''</span> <span class="code-keyword">then</span>
+    <span class="code-keyword">return false</span>
+<span class="code-keyword">end</span>
+
+<span class="code-keyword">local</span> api = freeswitch.API()
+<span class="code-keyword">local</span> Database = <span class="code-function">require</span> <span class="code-string">"resources.functions.database"</span>
+<span class="code-keyword">local</span> switch = Database.<span class="code-function">new</span>(<span class="code-string">"switch"</span>)
+
+<span class="code-keyword">if not</span> switch:connected() <span class="code-keyword">then</span>
+    freeswitch.<span class="code-function">consoleLog</span>(<span class="code-string">'WARN'</span>, <span class="code-string">'[bridge_to_agent] Database not connected!\n'</span>)
+    <span class="code-keyword">return</span>
+<span class="code-keyword">end</span></code></pre>
+      </div>
+
+      <p class="text-block" style="margin-top: var(--space-4);">The script first checks: is the call still alive? Is there an agent ID? Then it opens a database connection. If the database is down, it logs a warning and bails — never try to bridge a call without knowing the agent's status.</p>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 6: LUA TRANSLATION (bridge_to_agent) ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Code Reading</p>
+      <h2 class="screen-title">Reading the Agent Query</h2>
+
+      <p class="text-block">This is the core logic of bridge_to_agent.lua — the database query that checks whether an agent is actually available before connecting a call.</p>
+
+      <div class="translation-block animate-in" style="margin-top: var(--space-6);">
+        <div class="translation-code">
+          <span class="translation-label">CODE</span>
+          <pre><code>
+<span class="code-line"><span class="code-keyword">switch</span>:<span class="code-function">query</span>(<span class="code-string">"select agt.name name, agt.contact contact,</span></span>
+<span class="code-line"><span class="code-string">    agt.status status, agt.state state \</span></span>
+<span class="code-line"><span class="code-string">    from agents agt \</span></span>
+<span class="code-line"><span class="code-string">    inner join sip_registrations sreg</span></span>
+<span class="code-line"><span class="code-string">    on split_part(agt.contact, 'user/', 2)</span></span>
+<span class="code-line"><span class="code-string">    = (sreg.sip_username || '@' ||</span></span>
+<span class="code-line"><span class="code-string">    sreg.sip_realm) \</span></span>
+<span class="code-line"><span class="code-string">    where agt.name = :agent_uuid"</span>, {</span>
+<span class="code-line">    <span class="code-property">agent_uuid</span> = agent_uuid</span>
+<span class="code-line">}, <span class="code-keyword">function</span>(row)</span>
+<span class="code-line">    <span class="code-keyword">local</span> agent_status = row.status <span class="code-keyword">or</span> <span class="code-string">''</span></span>
+<span class="code-line">    <span class="code-keyword">local</span> agent_state = row.state <span class="code-keyword">or</span> <span class="code-string">''</span></span>
+<span class="code-line">    ...</span>
+<span class="code-line">    <span class="code-comment">-- Check agent available trước khi dial</span></span>
+<span class="code-line">    <span class="code-keyword">if</span> agent_status ~= <span class="code-string">'Available'</span> <span class="code-keyword">or</span></span>
+<span class="code-line">       agent_state ~= <span class="code-string">'Waiting'</span> <span class="code-keyword">then</span></span>
+<span class="code-line">        freeswitch.<span class="code-function">consoleLog</span>(<span class="code-string">"DEBUG"</span>,</span>
+<span class="code-line">            <span class="code-string">"[bridge_to_agent] Agent "</span> ..</span>
+<span class="code-line">            agent_uuid .. <span class="code-string">" không sẵn sàng,</span></span>
+<span class="code-line"><span class="code-string">            status="</span> .. agent_status ..</span>
+<span class="code-line">            <span class="code-string">" state="</span> .. agent_state .. <span class="code-string">"\n"</span>)</span>
+<span class="code-line">        <span class="code-keyword">return</span></span>
+<span class="code-line">    <span class="code-keyword">end</span></span>
+          </code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><strong>Query the database</strong> for the agent's name, contact info, status, and state...</p>
+            <p class="tl"><strong>Join with SIP registrations</strong> to verify the agent's phone is actually connected to the server...</p>
+            <p class="tl"><strong>Match by agent UUID</strong> — the unique ID passed into this script by FreeSWITCH...</p>
+            <p class="tl"><strong>Get the status and state</strong> fields from the query result, defaulting to empty string if null...</p>
+            <p class="tl">The Vietnamese comment says "check agent available before dial" — this is the key gate...</p>
+            <p class="tl"><strong>If the agent is NOT in Available/Waiting state, stop.</strong> Don't waste a ring attempt on someone who is on another call or offline. Log why and return early.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 7: QUEUE CASCADE ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Layer 3 — Cascade Routing</p>
+      <h2 class="screen-title">Trying Multiple Queues</h2>
+
+      <p class="text-block">Cascade routing tries multiple queues in order. If queue #1 has no available agents, it falls through to queue #2, then #3, and so on.</p>
+
+      <div class="translation-block animate-in" style="margin-top: var(--space-6);">
+        <div class="translation-code">
+          <span class="translation-label">CODE</span>
+          <pre><code>
+<span class="code-line"><span class="code-keyword">local</span> args = argv[<span class="code-number">1</span>] <span class="code-keyword">or</span> <span class="code-string">""</span></span>
+<span class="code-line"><span class="code-keyword">local</span> dialplan_id = argv[<span class="code-number">2</span>] <span class="code-keyword">or</span> <span class="code-string">""</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">if</span> args == <span class="code-string">""</span> <span class="code-keyword">then</span></span>
+<span class="code-line">    freeswitch.<span class="code-function">consoleLog</span>(<span class="code-string">"ERR"</span>,</span>
+<span class="code-line">        <span class="code-string">"[queue_cascade] Không có queue_ids</span></span>
+<span class="code-line"><span class="code-string">        được truyền vào"</span>)</span>
+<span class="code-line">    <span class="code-keyword">return</span></span>
+<span class="code-line"><span class="code-keyword">end</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">local</span> queue_ids = {}</span>
+<span class="code-line"><span class="code-keyword">for</span> id <span class="code-keyword">in</span> <span class="code-function">string.gmatch</span>(args, <span class="code-string">"([^,]+)"</span>) <span class="code-keyword">do</span></span>
+<span class="code-line">    id = id:<span class="code-function">match</span>(<span class="code-string">"^%s*(.-)%s*$"</span>) <span class="code-comment">-- trim</span></span>
+<span class="code-line">    <span class="code-keyword">if</span> id ~= <span class="code-string">""</span> <span class="code-keyword">then</span></span>
+<span class="code-line">        <span class="code-function">table.insert</span>(queue_ids, id)</span>
+<span class="code-line">    <span class="code-keyword">end</span></span>
+<span class="code-line"><span class="code-keyword">end</span></span>
+          </code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><strong>Receive a comma-separated string</strong> of queue IDs as the first argument from FreeSWITCH...</p>
+            <p class="tl"><strong>If no queues were passed,</strong> log an error (Vietnamese: "no queue_ids were provided") and bail out...</p>
+            <p class="tl"><strong>Build an ordered list</strong> by splitting the string on commas...</p>
+            <p class="tl"><strong>Trim whitespace</strong> from each ID so "q1, q2" and "q1,q2" both work...</p>
+            <p class="tl"><strong>Add each valid ID</strong> to the queue_ids array. The order matters — cascade tries them left to right.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 8: FAIL2BAN ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Layer 4 — The Security Guard</p>
+      <h2 class="screen-title">Fail2ban</h2>
+
+      <p class="text-block">Fail2ban monitors log files for failed authentication attempts. When an IP crosses the threshold, it adds a firewall rule to block that IP entirely.</p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-4);">
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-filename">pbx/f2b/Dockerfile</span>
+          </div>
+          <pre style="white-space: pre-wrap; word-break: break-word;"><code><span class="code-keyword">ARG</span> FAIL2BAN_VERSION=<span class="code-string">"0.11.2"</span>
+
+<span class="code-keyword">FROM</span> <span class="code-string">alpine:3.15</span>
+
+<span class="code-keyword">ARG</span> FAIL2BAN_VERSION
+<span class="code-keyword">RUN</span> apk --update --no-cache add \
+    bash curl grep \
+    ipset <span class="code-function">iptables</span> \
+...
+<span class="code-keyword">ENTRYPOINT</span> [ <span class="code-string">"/entrypoint.sh"</span> ]
+<span class="code-keyword">CMD</span> [ <span class="code-string">"fail2ban-server"</span>, <span class="code-string">"-f"</span>,
+      <span class="code-string">"-x"</span>, <span class="code-string">"-v"</span>, <span class="code-string">"start"</span> ]</code></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-filename">pbx/f2b/resources/jail.local</span>
+          </div>
+          <pre style="white-space: pre-wrap; word-break: break-word;"><code><span class="code-keyword">[freeswitch]</span>
+<span class="code-property">enabled</span>  = <span class="code-string">true</span>
+<span class="code-property">port</span>     = <span class="code-string">5060:5091</span>
+<span class="code-property">protocol</span> = <span class="code-string">all</span>
+<span class="code-property">filter</span>   = <span class="code-string">freeswitch</span>
+<span class="code-property">logpath</span>  = <span class="code-string">/var/log/freeswitch/freeswitch.log</span>
+<span class="code-property">action</span>   = <span class="code-function">iptables-allports</span>[name=freeswitch,
+             protocol=all]
+<span class="code-property">maxretry</span> = <span class="code-number">10</span>
+<span class="code-property">findtime</span> = <span class="code-number">60</span>
+<span class="code-property">bantime</span>  = <span class="code-number">3600</span></code></pre>
+        </div>
+      </div>
+
+      <p class="text-block" style="margin-top: var(--space-4);">Fail2ban runs in its own Alpine Linux container with
+        <span class="term" data-definition="iptables is the Linux kernel's built-in firewall. It filters network traffic by rules — blocking IPs, redirecting ports, or allowing connections. Fail2ban dynamically adds iptables rules to block offending IPs.">iptables</span>
+        for IP blocking. The jail configuration tells it exactly what to watch and when to act.
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 9: FAIL2BAN TRANSLATION ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Code Reading</p>
+      <h2 class="screen-title">Reading the Jail Config</h2>
+
+      <p class="text-block">This is the Fail2ban
+        <span class="term" data-definition="In Fail2ban, a 'jail' is a configuration block that defines what to monitor, how to detect attacks, and how to punish offenders. Each jail targets a specific service (like FreeSWITCH SIP) with its own thresholds and ban rules.">jail</span>
+        for FreeSWITCH — every setting controls a different aspect of the ban behavior.
+      </p>
+
+      <div class="translation-block animate-in" style="margin-top: var(--space-6);">
+        <div class="translation-code">
+          <span class="translation-label">CODE</span>
+          <pre><code>
+<span class="code-line"><span class="code-keyword">[freeswitch]</span></span>
+<span class="code-line"><span class="code-property">enabled</span>  = <span class="code-string">true</span></span>
+<span class="code-line"><span class="code-property">port</span>     = <span class="code-string">5060:5091</span></span>
+<span class="code-line"><span class="code-property">protocol</span> = <span class="code-string">all</span></span>
+<span class="code-line"><span class="code-property">filter</span>   = <span class="code-string">freeswitch</span></span>
+<span class="code-line"><span class="code-property">logpath</span>  = <span class="code-string">/var/log/freeswitch/freeswitch.log</span></span>
+<span class="code-line"><span class="code-property">action</span>   = <span class="code-function">iptables-allports</span>[name=freeswitch,</span>
+<span class="code-line">             protocol=all]</span>
+<span class="code-line"><span class="code-property">maxretry</span> = <span class="code-number">10</span></span>
+<span class="code-line"><span class="code-property">findtime</span> = <span class="code-number">60</span></span>
+<span class="code-line"><span class="code-property">bantime</span>  = <span class="code-number">3600</span></span>
+          </code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><strong>Name this jail "freeswitch"</strong> — each service gets its own jail block...</p>
+            <p class="tl"><strong>This jail is active.</strong> Set to false to disable it without removing the config...</p>
+            <p class="tl"><strong>Watch SIP traffic</strong> on ports 5060 through 5091...</p>
+            <p class="tl"><strong>Monitor all protocols</strong> (TCP, UDP) — SIP can use either...</p>
+            <p class="tl"><strong>Use the freeswitch filter</strong> — a pattern file that defines what counts as a failed attempt...</p>
+            <p class="tl"><strong>Read the FreeSWITCH log file</strong> to find failed authentication entries...</p>
+            <p class="tl"><strong>When triggered, block the IP</strong> on ALL ports using iptables — not just SIP...</p>
+            <p class="tl"><strong>Allow 10 failures</strong> before banning — this is the threshold...</p>
+            <p class="tl"><strong>Count failures within 60 seconds</strong> — if 10 failures happen in a minute, trigger the ban...</p>
+            <p class="tl"><strong>Ban for 1 hour</strong> (3600 seconds) — then automatically unblock the IP.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 10: QUIZ ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Check Your Understanding</p>
+      <h2 class="screen-title">Quiz</h2>
+
+      <div class="quiz-container" id="quiz-module2">
+
+        <!-- Q1: Fail2ban -->
+        <div class="quiz-question-block"
+             data-correct="q2-opt-b"
+             data-explanation-right="The jail.local file controls the thresholds: maxretry (how many failures before banning), findtime (the time window to count failures), and bantime (how long the ban lasts). Check these values, then check whether the agent is actually typing the wrong password — maybe they need to update their credentials."
+             data-explanation-wrong="Fail2ban bans are controlled by the jail configuration. Think about where those threshold numbers live in the codebase...">
+          <h3 class="quiz-question">You notice Fail2ban has banned an IP address that belongs to a legitimate remote agent. What do you check?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="q2-opt-a" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>Restart the Fail2ban container to clear all bans immediately</span>
+            </button>
+            <button class="quiz-option" data-value="q2-opt-b" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>Check the jail.local maxretry/findtime settings and the agent&apos;s authentication failures</span>
+            </button>
+            <button class="quiz-option" data-value="q2-opt-c" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>Disable Fail2ban entirely — it causes more problems than it solves</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q2: FusionPBX -->
+        <div class="quiz-question-block"
+             data-correct="q2-opt-b"
+             data-explanation-right="FusionPBX connects to the PostgreSQL database to store all its configuration — extensions, dialplans, and settings. If the postgres container is down or unreachable, FusionPBX can't load anything. Check docker ps, then the postgres container logs."
+             data-explanation-wrong="FusionPBX needs a database to function. Think about where configuration data lives...">
+          <h3 class="quiz-question">FusionPBX shows &apos;Database Connection Failed&apos; in the web UI. Which container is the problem likely in?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="q2-opt-a" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>The pbx container — FreeSWITCH must be down too</span>
+            </button>
+            <button class="quiz-option" data-value="q2-opt-b" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>The postgres container — FusionPBX connects to it for all configuration data</span>
+            </button>
+            <button class="quiz-option" data-value="q2-opt-c" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>The fail2ban container — it might be blocking the database port</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q3: Lua Debugging -->
+        <div class="quiz-question-block"
+             data-correct="q2-opt-b"
+             data-explanation-right="The bridge_to_agent.lua script checks agent_status and agent_state before bridging. If the agent in queue #1 is not in Available/Waiting state, the script logs &apos;không sẵn sàng&apos; and returns without bridging — so the cascade never moves on to queue #2. Fix the agent status, or adjust the cascade logic."
+             data-explanation-wrong="Look at what the Lua script checks before it bridges a call. The debug log tells you exactly which condition failed...">
+          <h3 class="quiz-question">A call is supposed to cascade to queue #2 but doesn&apos;t. bridge_to_agent.lua logs &apos;Agent không sẵn sàng&apos;. What&apos;s wrong?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="q2-opt-a" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>The database is down, so the query returns nothing</span>
+            </button>
+            <button class="quiz-option" data-value="q2-opt-b" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>The agent in queue #1 is not in Available/Waiting state, so the cascade never proceeds to queue #2</span>
+            </button>
+            <button class="quiz-option" data-value="q2-opt-c" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>The Lua script has a syntax error in the string concatenation</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <button class="quiz-check-btn" onclick="checkQuiz('quiz-module2')">Check Answers</button>
+        <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module2')">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 11: BRIDGE ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">What's Next</p>
+      <h2 class="screen-title">The Control Tower</h2>
+
+      <p class="text-block">You've met the engine that makes calls happen. Now it's time to zoom into the Java backend that manages agents, queues, and serves dialplans to FreeSWITCH.</p>
+
+      <div class="callout callout-accent" style="margin-top: var(--space-4);">
+        <div class="callout-icon">🔍</div>
+        <div class="callout-content">
+          <strong class="callout-title">Key Insight</strong>
+          <p>When someone says "the PBX is down," you now know it could be the FreeSWITCH process, the FusionPBX web UI, a Lua script crashing, or Fail2ban blocking legitimate traffic. Each layer has different symptoms and different fixes.</p>
+        </div>
+      </div>
+
+      <p class="text-block" style="margin-top: var(--space-6);"><strong>Module 3: The Control Tower</strong> — fsextension, the Java backend that ties everything together.</p>
+    </div>
+  </div>
+
+</section>
+<section class="module" id="module-3">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">03</span>
+      <h1 class="module-title">The Control Tower</h1>
+      <p class="module-subtitle">The Java brain behind the telephony brawn.</p>
+    </header>
+
+    <div class="module-body">
+
+      <!-- SCREEN 1: Hook -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">The Java brain behind the telephony brawn</h2>
+        <p>Module 2 showed you the engine that makes calls happen. But who <em>decides</em> how calls are routed? Who keeps the list of agents, queues, and extensions? Who remembers every call after it ends?</p>
+        <p>That is <strong>fsextension</strong> &mdash; the management layer that sits between humans configuring the system and FreeSWITCH executing calls. Think of it as an <span class="term" data-definition="An air traffic control tower decides which planes land where, keeps the flight plan database, and pushes updated schedules to the runway. Without the tower, planes still fly &mdash; but nobody knows who landed, where, or when.">air traffic control tower</span>. FreeSWITCH is the runway where planes actually land, but fsextension is the tower &mdash; it decides which planes land where, keeps the flight plan database, pushes updated schedules to the runway, and records every landing in the logbook.</p>
+
+        <div class="callout callout-accent animate-in">
+          <div class="callout-icon">&#x1F4CB;</div>
+          <div class="callout-content">
+            <strong class="callout-title">Why should I care?</strong>
+            <p>When someone says &ldquo;I added a new queue but calls are not routing to it,&rdquo; the problem is almost certainly in fsextension. Understanding its architecture means you know exactly where to look.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: Spring Boot & FreeswitchController -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Spring Boot: the framework that builds the backend</h2>
+        <p>fsextension is built on <span class="term" data-definition="Spring Boot is a Java framework that makes it easy to build web servers and APIs. It handles the boring plumbing (starting the server, connecting to databases) so developers can focus on the actual logic.">Spring Boot</span> &mdash; a Java framework that handles the boring plumbing so developers can focus on business logic. Its entry point is a single annotated class, and its controllers receive <span class="term" data-definition="A REST API is a way for programs to talk to each other over HTTP &mdash; the same protocol web browsers use. You send a request to a URL and get data back. Think of it as a drive-through window for software.">REST API</span> requests and route them to the right handler.</p>
+        <p>Here is the controller that handles dialplan scripts. Notice how every request flows through the command bus:</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code><span class="code-line"><span class="code-attr">@PostMapping</span>(<span class="code-string">"/script"</span>)</span>
+<span class="code-line"><span class="code-keyword">public</span> Boolean <span class="code-function">createScript</span>(</span>
+<span class="code-line">        <span class="code-attr">@RequestBody</span> GenerateScriptCommand cmd,</span>
+<span class="code-line">        <span class="code-attr">@RequestHeader</span>(<span class="code-string">"Domain-Name"</span>) String domainName) <span class="code-keyword">throws</span> JsonProcessingException {</span>
+<span class="code-line"></span>
+<span class="code-line">    cmd = cmd.<span class="code-function">domainName</span>(domainName);</span>
+<span class="code-line">    log.<span class="code-function">debug</span>(<span class="code-string">"createScript > Script with id: {} data: {}"</span>, cmd.<span class="code-function">getUniqueId</span>(), objectMapper.<span class="code-function">writeValueAsString</span>(cmd));</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">return</span> bus.<span class="code-function">execute</span>(cmd);</span>
+<span class="code-line">}</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">When someone POSTs a new dialplan script&hellip;</p>
+              <p class="tl">&hellip;this method receives the HTTP request and its JSON body.</p>
+              <p class="tl">The <code>Domain-Name</code> header tells us which tenant (client) this is for &mdash; this is a <span class="term" data-definition="Multi-tenant means one shared system serves many different customers (tenants). Each tenant sees only their own data, like apartments in the same building &mdash; same structure, separate locks.">multi-tenant</span> system.</p>
+              <p class="tl">Stamp the command with the tenant&rsquo;s domain name&hellip;</p>
+              <p class="tl">&hellip;log the details for debugging&hellip;</p>
+              <p class="tl">&hellip;and hand it to the command bus. The <code>bus.execute(command)</code> is <span class="term" data-definition="CQRS (Command Query Responsibility Segregation) separates operations that change state (commands) from operations that read state (queries). Like a restaurant with separate doors for the kitchen (orders in) and the dining room (food out) &mdash; never mix the two.">CQRS</span> &mdash; commands go IN through this door, queries come OUT through another. Never mixed.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: CQRS Pattern -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">CQRS: commands go IN, queries come OUT</h2>
+        <p><span class="term" data-definition="CQRS (Command Query Responsibility Segregation) separates operations that change state (commands) from operations that read state (queries). It is like having a separate door for incoming mail and outgoing mail &mdash; each flows in one direction, never both.">CQRS</span> is an architectural pattern that separates two fundamentally different operations: <strong>changing data</strong> (commands) and <strong>reading data</strong> (queries). In fsextension, every HTTP endpoint that creates or updates something goes through <code>bus.execute(command)</code>.</p>
+        <p>Here is another example &mdash; registering a new phone number follows the exact same pattern:</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code><span class="code-line"><span class="code-attr">@PostMapping</span>(<span class="code-string">"/dialed-number"</span>)</span>
+<span class="code-line"><span class="code-keyword">public</span> UUID <span class="code-function">createDialedNumber</span>(</span>
+<span class="code-line">        <span class="code-attr">@RequestHeader</span>(<span class="code-string">"Domain-Name"</span>) String domainName,</span>
+<span class="code-line">        <span class="code-attr">@RequestAttribute</span>(<span class="code-string">"Domain-Id"</span>) String domainId,</span>
+<span class="code-line">        <span class="code-attr">@RequestBody</span> CreateDialedNumberCommand command) {</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">if</span> (command.<span class="code-function">getDomainId</span>() == <span class="code-keyword">null</span>) {</span>
+<span class="code-line">        command = command.<span class="code-function">domainId</span>(domainId);</span>
+<span class="code-line">    }</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">return</span> bus.<span class="code-function">execute</span>(command).<span class="code-function">getId</span>();</span>
+<span class="code-line">}</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">Registering a new phone number (dialed number) follows the same pattern.</p>
+              <p class="tl">The domain is extracted from HTTP headers &mdash; this is how the system knows which tenant owns the number.</p>
+              <p class="tl">If the command did not already carry a domain ID, stamp it with the one from the request.</p>
+              <p class="tl">Hand the command to the bus. Same door, same pattern, every time.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-info animate-in">
+          <div class="callout-icon">&#x1F3AF;</div>
+          <div class="callout-content">
+            <strong class="callout-title">Why separate commands from queries?</strong>
+            <p>Commands change state and need validation, logging, and authorization. Queries are read-only and can be cached or optimized independently. Mixing them makes it hard to scale reads vs. writes &mdash; and that is exactly what CQRS solves.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: Kafka Integration -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Kafka: the event streaming backbone</h2>
+        <p><span class="term" data-definition="Apache Kafka is a distributed event streaming platform &mdash; think of it as a post office that delivers messages between software components. Each message goes into a named channel (topic) and any number of workers can read from it.">Kafka</span> is the system that carries event messages between components. fsextension uses it to stream call detail records and recording events across the platform. Here is the configuration class:</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code><span class="code-line"><span class="code-attr">@Configuration</span></span>
+<span class="code-line"><span class="code-attr">@Conditional</span>(kafkaCondition.<span class="code-keyword">class</span>)</span>
+<span class="code-line"><span class="code-keyword">public class</span> <span class="code-function">KafkaConfiguration</span> {</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">private final</span> List&lt;NewTopic&gt; queueTopics;</span>
+<span class="code-line">    <span class="code-keyword">private final</span> KafkaProperties kafkaProperties;</span>
+<span class="code-line">    <span class="code-keyword">private final</span> Map&lt;String, Object&gt; producerProperties;</span>
+<span class="code-line">    <span class="code-keyword">private final</span> Map&lt;String, Object&gt; consumerProperties;</span>
+<span class="code-line">    <span class="code-keyword">private final</span> String schemaRegistryUrl;</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">private final</span> Logger log = LoggerFactory.<span class="code-function">getLogger</span>(<span class="code-keyword">this</span>.getClass());</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">public</span> <span class="code-function">KafkaConfiguration</span>(</span>
+<span class="code-line">            KafkaProperties kafkaProperties,</span>
+<span class="code-line">            <span class="code-attr">@Value</span>(<span class="code-string">"${app.call_recording_topic:call_recording}"</span>) String callRecordingTopic,</span>
+<span class="code-line">            <span class="code-attr">@Value</span>(<span class="code-string">"${app.call_aggregated_topic:call_aggregated}"</span>) String callAggregatedTopic,</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">This class configures Kafka &mdash; the message delivery system between components.</p>
+              <p class="tl"><code>@Conditional</code> means Kafka is <span class="term" data-definition="A conditional component is one that only activates when a specific condition is met &mdash; like a light switch that only works when the breaker is on. If the condition fails, the component simply does not exist at runtime.">optional</span>. If Kafka is not running, fsextension still works &mdash; just without event streaming.</p>
+              <p class="tl">These fields hold the Kafka topics (named channels) and connection settings.</p>
+              <p class="tl">The topics &mdash; <code>call_recording</code> and <code>call_aggregated</code> &mdash; are named channels where specific types of <span class="term" data-definition="A CDR (Call Detail Record) is the receipt for a phone call &mdash; who called whom, when, how long, and what happened. Every phone system generates one after every call.">CDR</span> events flow.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 5: JsonCdrConsumer -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Listening for call records</h2>
+        <p>The <code>JsonCdrConsumer</code> listens on the <code>json_cdr</code> Kafka <span class="term" data-definition="A topic is a named channel in Kafka where messages of a specific type are published &mdash; like a labeled mailbox. Producers put mail in; consumers pull mail out.">topic</span> for call detail records. Notice the double gating &mdash; it only activates when both conditions are met:</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code><span class="code-line"><span class="code-attr">@Component</span></span>
+<span class="code-line"><span class="code-attr">@Conditional</span>(kafkaCondition.<span class="code-keyword">class</span>)</span>
+<span class="code-line"><span class="code-attr">@ConditionalOnProperty</span>(value = <span class="code-string">"app.json_cdr_queued"</span>, havingValue = <span class="code-string">"true"</span>)</span>
+<span class="code-line"><span class="code-keyword">public class</span> <span class="code-function">JsonCdrConsumer</span> {</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">private final</span> Bus bus;</span>
+<span class="code-line">    <span class="code-keyword">private final</span> KafkaTemplate&lt;Object, Object&gt; kafkaTemplate;</span></code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">This consumer listens on the <code>json_cdr</code> Kafka topic for call detail records.</p>
+              <p class="tl">First gate: Kafka must be available (the <code>@Conditional</code> annotation).</p>
+              <p class="tl">Second gate: the config flag <code>app.json_cdr_queued</code> must be set to <code>true</code>.</p>
+              <p class="tl">Double-gating means the system <strong>degrades gracefully</strong> &mdash; if Kafka is down, CDRs still get processed another way (direct file import). Nothing breaks.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-accent animate-in">
+          <div class="callout-icon">&#x1F4A1;</div>
+          <div class="callout-content">
+            <strong class="callout-title">Graceful degradation</strong>
+            <p>Two independent conditions must be true for this consumer to activate. If either fails, the system falls back to a simpler path instead of crashing. This is a common pattern in production systems &mdash; always have a Plan B.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 6: Data Flow Animation -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">How a configuration change reaches FreeSWITCH</h2>
+        <p>When an admin creates a new queue, here is the full journey &mdash; from the web UI all the way to FreeSWITCH loading the updated dialplan:</p>
+
+        <div class="flow-animation" data-steps='[
+          {"highlight":"flow-m3-actor-1","label":"Admin creates a new queue via the REST API"},
+          {"highlight":"flow-m3-actor-2","label":"fsextension stores the queue in PostgreSQL","packet":true,"from":"m3-actor-1","to":"m3-actor-2"},
+          {"highlight":"flow-m3-actor-2","label":"fsextension generates dialplan XML","packet":true,"from":"m3-actor-2","to":"m3-actor-3"},
+          {"highlight":"flow-m3-actor-2","label":"fsextension pushes XML to FreeSWITCH via SFTP","packet":true,"from":"m3-actor-2","to":"m3-actor-5"},
+          {"highlight":"flow-m3-actor-5","label":"FreeSWITCH loads the new dialplan","packet":true,"from":"m3-actor-5","to":"m3-actor-5"},
+          {"highlight":"flow-m3-actor-4","label":"Call events flow back through Kafka to PostgreSQL","packet":true,"from":"m3-actor-4","to":"m3-actor-3"}
+        ]'>
+          <div class="flow-actors">
+            <div class="flow-actor" id="flow-m3-actor-1">
+              <div class="flow-actor-icon">&#x1F464;</div>
+              <span>Admin</span>
+            </div>
+            <div class="flow-actor" id="flow-m3-actor-2">
+              <div class="flow-actor-icon">&#x2615;</div>
+              <span>fsextension</span>
+            </div>
+            <div class="flow-actor" id="flow-m3-actor-3">
+              <div class="flow-actor-icon">&#x1F4BE;</div>
+              <span>PostgreSQL</span>
+            </div>
+            <div class="flow-actor" id="flow-m3-actor-4">
+              <div class="flow-actor-icon">&#x1F4E8;</div>
+              <span>Kafka</span>
+            </div>
+            <div class="flow-actor" id="flow-m3-actor-5">
+              <div class="flow-actor-icon">&#x1F4DE;</div>
+              <span>FreeSWITCH</span>
+            </div>
+          </div>
+
+          <div class="flow-packet" id="flow-m3-packet"></div>
+          <div class="flow-step-label" id="flow-m3-label">Click &ldquo;Next Step&rdquo; to trace the journey</div>
+
+          <div class="flow-controls">
+            <button class="btn flow-next-btn">Next Step</button>
+            <button class="btn flow-reset-btn">Restart</button>
+            <span class="flow-progress"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 7: SFTP & Flyway -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">SFTP and Flyway: the plumbing behind the scenes</h2>
+        <p>Two more pieces of the puzzle that keep fsextension running smoothly:</p>
+
+        <div class="pattern-cards stagger-children">
+          <div class="pattern-card animate-in">
+            <div class="pattern-icon">&#x1F4E5;</div>
+            <h3 class="pattern-title"><span class="term" data-definition="SFTP (SSH File Transfer Protocol) is a secure way to copy files between computers over a network &mdash; like a locked courier delivering documents between offices. fsextension uses it to push dialplan XML and recordings to FreeSWITCH.">SFTP</span> Provisioning</h3>
+            <p class="pattern-desc">fsextension pushes dialplan XML and recordings to FreeSWITCH via <span class="term" data-definition="mod_xml_curl is a FreeSWITCH module that fetches its dialplan (call routing rules) from an external server via HTTP &mdash; instead of reading a static file on disk. fsextension generates the XML, and FreeSWITCH pulls it when needed.">mod_xml_curl</span>. When FreeSWITCH needs to know how to route a call, it fetches the dialplan from fsextension over <span class="term" data-definition="HTTP is the protocol web browsers use to request web pages. When software talks to a REST API, it is using HTTP &mdash; the same technology that loads every website you visit.">HTTP</span>, or fsextension pushes it proactively via SFTP. Either way, the dialplan stays in sync.</p>
+          </div>
+          <div class="pattern-card animate-in">
+            <div class="pattern-icon">&#x1F5C3;</div>
+            <h3 class="pattern-title"><span class="term" data-definition="Flyway is a database migration tool. Each migration is a numbered SQL file that changes the database schema (add a table, rename a column). Flyway tracks which migrations have run and applies new ones in order &mdash; like a changelog that writes itself.">Flyway</span> Migrations</h3>
+            <p class="pattern-desc">When fsextension needs a new database table or column, the change is defined as a <span class="term" data-definition="A migration is a versioned script that changes the database schema &mdash; adding tables, renaming columns, or altering data. Each migration is numbered so they run in order, and Flyway remembers which ones have already been applied.">migration</span> &mdash; a numbered SQL file. Flyway applies them in order, tracks which ones have run, and never re-runs an old one. This means the database schema evolves safely across deployments without anyone losing data.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 8: Quiz -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Test your understanding</h2>
+
+        <div class="quiz-container" id="quiz-module3">
+
+          <!-- Q1: CQRS architecture -->
+          <div class="quiz-question-block"
+               data-correct="option-b"
+               data-explanation-right="Exactly! Commands change state and need validation, logging, and authorization. Queries are read-only and can be cached or scaled independently. Mixing them makes it hard to optimize reads vs. writes &mdash; CQRS solves that by giving each its own bus."
+               data-explanation-wrong="Think about the difference between changing data and reading data. Commands (create, update, delete) need validation and logging; queries (list, get, search) are read-only and can be optimized differently. Why would you want separate lanes for these two very different operations?"
+          >
+            <h3 class="quiz-question">Why does fsextension use CQRS (separate command and query buses) instead of regular method calls?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>It is a Spring Boot requirement &mdash; all controllers must use a bus</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Commands change state and need validation/logging; queries are read-only and can be cached or scaled independently</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>It makes the code run faster by parallelizing all operations</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <!-- Q2: SFTP / dialplan debugging -->
+          <div class="quiz-question-block"
+               data-correct="option-a"
+               data-explanation-right="Exactly! fsextension generates the dialplan XML, but FreeSWITCH needs to actually receive and load it. The SFTP push (or mod_xml_curl fetch) is the delivery mechanism. If fsextension saved the queue but the XML never reached FreeSWITCH, the new dialplan will not take effect. Check the SFTP logs and FreeSWITCH xml_curl response."
+               data-explanation-wrong="The queue was saved in fsextension, so the database is fine. The problem is getting the updated dialplan TO FreeSWITCH. How does fsextension deliver the XML to FreeSWITCH? Think about the delivery mechanism between those two components."
+          >
+            <h3 class="quiz-question">A new dialplan was saved in fsextension but FreeSWITCH does not use it. What do you check?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The SFTP connection &mdash; did fsextension successfully push the XML to FreeSWITCH?</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The PostgreSQL database &mdash; maybe the save failed silently</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The Kafka topic &mdash; maybe the event was not published</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <!-- Q3: Kafka conditional -->
+          <div class="quiz-question-block"
+               data-correct="option-c"
+               data-explanation-right="Exactly! The double-gating (@Conditional on Kafka availability AND @ConditionalOnProperty on app.json_cdr_queued) is designed for graceful degradation. When you set the flag to false, the Kafka consumer simply does not activate &mdash; but CDRs still get processed through the direct JSON CDR file import path. Nothing breaks."
+               data-explanation-wrong="Think about what @ConditionalOnProperty means. It is a safety switch &mdash; when you flip it off, the component does not activate, but the system continues to work through an alternative path. What is the alternative way CDRs get processed when Kafka is not involved?"
+          >
+            <h3 class="quiz-question">The JsonCdrConsumer has @ConditionalOnProperty. What happens if you set app.json_cdr_queued=false?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>fsextension crashes on startup because the consumer bean cannot be created</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>All CDR processing stops entirely &mdash; no call records are saved</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>CDRs stop flowing through Kafka but still get processed by the direct JSON CDR file import path</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <button class="quiz-check-btn" onclick="checkQuiz('quiz-module3')">Check Answers</button>
+          <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module3')">Try Again</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</section>
+<section class="module" id="module-4">
+
+  <!-- ===== SCREEN 1: HOOK ===== -->
+  <div class="screen" style="background: var(--color-bg-warm);">
+    <div class="container narrow">
+      <h2 class="screen-title animate-in">The Event Wire</h2>
+      <p class="screen-subtitle animate-in">Everything That Happens, Gets Reported</p>
+
+      <div class="callout callout-info animate-in" style="margin-top: var(--space-8);">
+        <p>The call you followed in Module 3 didn't just happen &mdash; it was <strong>ANNOUNCED</strong>, dozens of times: channel created, agent answered, bridged, held, hung up. Every announcement travels a wire.</p>
+        <p style="margin-top: var(--space-3);">This module is about that wire.</p>
+      </div>
+
+      <div class="feature-cards animate-in" style="margin-top: var(--space-8);">
+        <div class="feature-card" style="border-left-color: var(--color-actor-1);">
+          <div class="feature-card-icon" style="background: var(--color-actor-1);">FS</div>
+          <div>
+            <strong>FreeSWITCH</strong>
+            <p>The newsroom &mdash; where calls actually happen and events are born.</p>
+          </div>
+        </div>
+        <div class="feature-card" style="border-left-color: var(--color-actor-2);">
+          <div class="feature-card-icon" style="background: var(--color-actor-2);">WS</div>
+          <div>
+            <strong>fsevents</strong>
+            <p>The wire service &mdash; stamps and re-broadcasts every bulletin.</p>
+          </div>
+        </div>
+        <div class="feature-card" style="border-left-color: var(--color-actor-3);">
+          <div class="feature-card-icon" style="background: var(--color-actor-3);">AR</div>
+          <div>
+            <strong>fsextension</strong>
+            <p>The archive &mdash; writes history into the database.</p>
+          </div>
+        </div>
+        <div class="feature-card" style="border-left-color: var(--color-actor-4);">
+          <div class="feature-card-icon" style="background: var(--color-actor-4);">SD</div>
+          <div>
+            <strong>fsagent</strong>
+            <p>The sports desk &mdash; only cares about performance stats.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-warning animate-in" style="margin-top: var(--space-8);">
+        <strong>Why should I care?</strong> "Calls work but CDRs and reports are missing" is one of the most common production mysteries. After this module you will know exactly which hop lost the message.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 2: WHAT ESL IS ===== -->
+  <div class="screen" style="background: var(--color-bg);">
+    <div class="container narrow">
+      <h2 class="screen-title animate-in">FreeSWITCH Opens a Door</h2>
+      <p class="screen-subtitle animate-in">
+        The
+        <span class="term" data-definition="Event Socket Library &mdash; a network protocol that lets external programs connect to FreeSWITCH and receive structured event notifications in real time, like subscribing to a live news feed.">ESL</span>
+        (Event Socket Library) is how FreeSWITCH shouts structured
+        <span class="term" data-definition="A discrete, timestamped notification that something happened in the system &mdash; like a phone ringing, someone picking up, or a call ending. Events are the raw material of all call reporting.">events</span>
+        over a socket to anyone listening.
+      </p>
+
+      <div class="animate-in" style="margin-top: var(--space-6); text-align: center;">
+        <div style="display: inline-flex; align-items: center; gap: var(--space-4); background: var(--color-surface); padding: var(--space-5) var(--space-6); border-radius: var(--radius-md); box-shadow: var(--shadow-md);">
+          <div style="text-align: center;">
+            <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--color-actor-1);">FS</div>
+            <div style="font-size: var(--text-xs); color: var(--color-text-muted);">FreeSWITCH</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: var(--space-2);">
+            <div style="width: 60px; height: 2px; background: var(--color-accent);"></div>
+            <span class="term" data-definition="A two-way communication endpoint &mdash; like a door that events walk through from FreeSWITCH to the waiting consumers on the other side." style="font-size: var(--text-sm); font-weight: 600; color: var(--color-accent);">ESL Socket</span>
+            <div style="width: 60px; height: 2px; background: var(--color-accent);"></div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--color-actor-2);">WS</div>
+            <div style="font-size: var(--text-xs); color: var(--color-text-muted);">fsevents</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="animate-in" style="margin-top: var(--space-6); text-align: center; color: var(--color-text-secondary);">
+        fsevents connects via a
+        <span class="term" data-definition="In Go, a channel is a typed conduit that lets one part of a program send data to another &mdash; like a conveyor belt between workers. A goroutine is a lightweight thread that can read from or write to these channels.">goroutine</span>
+        and listens for a firehose of
+        <span class="term" data-definition="Channel Create, Channel Answer, Channel Hangup, etc. &mdash; FreeSWITCH emits a lifecycle event for every stage of a call. Think of them as progress reports for a phone call.">channel</span>
+        events. It then forwards them downstream to HTTP endpoints, <span class="term" data-definition="An open-source distributed event streaming platform &mdash; think of it as a postal system that guarantees every message eventually reaches its recipient, even if they are temporarily offline." style="color: var(--color-accent); font-weight: 600;">Kafka</span>, and other consumers.
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 3: CODE TRANSLATION 1 & 2 — NewClientWithBuffer + ConnectionStats ===== -->
+  <div class="screen" style="background: var(--color-bg-warm);">
+    <div class="container narrow">
+      <h2 class="screen-title animate-in">The Client That Listens</h2>
+      <p class="screen-subtitle animate-in">How fsevents connects to FreeSWITCH and keeps track of its own health</p>
+
+      <!-- Translation 1: NewClientWithBuffer -->
+      <div class="translation-block animate-in" style="margin-top: var(--space-6);">
+        <div class="translation-code">
+          <span class="translation-label">CODE</span>
+          <pre><code><span class="code-line"><span class="code-keyword">func</span> <span class="code-function">NewClientWithBuffer</span>(config *config.ESLConfig, bufferSize <span class="code-keyword">int</span>, logger *zap.Logger) *Client {</span>
+<span class="code-line">    ctx, cancel := context.<span class="code-function">WithCancel</span>(context.<span class="code-function">Background</span>())</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">return</span> &Client{</span>
+<span class="code-line">        config: config,</span>
+<span class="code-line">        logger: logger.<span class="code-function">Named</span>(<span class="code-string">"esl"</span>),</span>
+<span class="code-line">        events: <span class="code-function">make</span>(<span class="code-keyword">chan</span> *types.Event, bufferSize), <span class="code-comment">// Configurable buffer for events</span></span>
+<span class="code-line">        stats: &ConnectionStats{</span>
+<span class="code-line">            ConnectedAt: time.<span class="code-function">Now</span>(),</span>
+<span class="code-line">        },</span>
+<span class="code-line">        ctx:    ctx,</span>
+<span class="code-line">        cancel: cancel,</span>
+<span class="code-line">    }</span>
+<span class="code-line">}</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">Create a new ESL client that connects to FreeSWITCH.</p>
+            <p class="tl">Set up a cancel-able context &mdash; a way to shut the whole thing down cleanly later.</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">Start building the client object with all its pieces.</p>
+            <p class="tl">Save the connection config (host, port, etc.).</p>
+            <p class="tl">Give the logger a label so its messages say "esl" at the start.</p>
+            <p class="tl"><strong>This is the key line:</strong> <code>events</code> is a buffered channel &mdash; a waiting room with <code>bufferSize</code> chairs. If FreeSWITCH shouts faster than we can write, extra bulletins queue up here instead of being lost &mdash; until the chairs run out.</p>
+            <p class="tl">Set up the health tracker, noting when we first connected.</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">Hand back the ready-to-use client.</p>
+            <p class="tl">&nbsp;</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Translation 2: ConnectionStats -->
+      <div class="translation-block animate-in" style="margin-top: var(--space-6);">
+        <div class="translation-code">
+          <span class="translation-label">CODE</span>
+          <pre><code><span class="code-line"><span class="code-keyword">type</span> ConnectionStats <span class="code-keyword">struct</span> {</span>
+<span class="code-line">    ConnectedAt       time.Time</span>
+<span class="code-line">    EventsReceived    <span class="code-keyword">uint64</span></span>
+<span class="code-line">    EventsProcessed   <span class="code-keyword">uint64</span></span>
+<span class="code-line">    ReconnectAttempts <span class="code-keyword">uint64</span></span>
+<span class="code-line">    LastError         <span class="code-keyword">error</span></span>
+<span class="code-line">    mu                sync.RWMutex</span>
+<span class="code-line">}</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">The health report card of the whole wire.</p>
+            <p class="tl">When did we first connect?</p>
+            <p class="tl">How many events came in from FreeSWITCH?</p>
+            <p class="tl">How many did we actually process and forward?</p>
+            <p class="tl">How many times did the connection drop and we had to reconnect?</p>
+            <p class="tl">What was the last error message?</p>
+            <p class="tl">A lock so multiple goroutines can safely read/write these stats at the same time.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in" style="margin-top: var(--space-6);">
+        <strong>Key insight:</strong> If <code>EventsReceived</code> is way ahead of <code>EventsProcessed</code>, your backlog is growing. If <code>ReconnectAttempts &gt; 0</code> recently, FreeSWITCH restarted or the network blipped &mdash; expect an event gap in your data.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 4: GROUP CHAT ANIMATION ===== -->
+  <div class="screen" style="background: var(--color-bg);">
+    <div class="container narrow">
+      <h2 class="screen-title animate-in">The Wire in Action</h2>
+      <p class="screen-subtitle animate-in">Watch four components talk to each other during a single call lifecycle</p>
+
+      <div class="chat-window animate-in" id="chat-module4" style="margin-top: var(--space-6);">
+        <div class="chat-messages">
+
+          <!-- Message 0: FS Newsroom creates channel -->
+          <div class="chat-message" data-msg="0" data-sender="actor-1" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">FS</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">FS Newsroom</span>
+              <p><strong>CHANNEL_CREATE</strong> &mdash; new call from extension 1001</p>
+            </div>
+          </div>
+
+          <!-- Message 1: WireService forwards -->
+          <div class="chat-message" data-msg="1" data-sender="actor-2" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">WS</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">WireService</span>
+              <p>Forwarded to Kafka &check;</p>
+            </div>
+          </div>
+
+          <!-- Message 2: Archive writes CDR -->
+          <div class="chat-message" data-msg="2" data-sender="actor-3" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">AR</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">Archive</span>
+              <p>CDR row created in <span class="term" data-definition="An open-source relational database &mdash; think of it as a highly organized filing cabinet where every row is a written record. fsextension stores all call history here.">PostgreSQL</span>. Call started.</p>
+            </div>
+          </div>
+
+          <!-- Message 3: FS Newsroom answers -->
+          <div class="chat-message" data-msg="3" data-sender="actor-1" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">FS</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">FS Newsroom</span>
+              <p><strong>CHANNEL_ANSWER</strong> &mdash; agent on desk 201 picked up</p>
+            </div>
+          </div>
+
+          <!-- Message 4: SportsDesk subscribes to RTCP -->
+          <div class="chat-message" data-msg="4" data-sender="actor-4" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-4)">SD</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-4)">SportsDesk</span>
+              <p>Subscribed to RTCP for this leg&hellip; tracking jitter, packet loss, MOS score.</p>
+            </div>
+          </div>
+
+          <!-- Message 5: FS Newsroom hold -->
+          <div class="chat-message" data-msg="5" data-sender="actor-1" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">FS</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">FS Newsroom</span>
+              <p><strong>CALL_UPDATE</strong> &mdash; caller placed on hold</p>
+            </div>
+          </div>
+
+          <!-- Message 6: WireService re-forward -->
+          <div class="chat-message" data-msg="6" data-sender="actor-2" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">WS</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">WireService</span>
+              <p>Hold event forwarded &check; &mdash; Archive is updating the CDR.</p>
+            </div>
+          </div>
+
+          <!-- Message 7: FS Newsroom hangup -->
+          <div class="chat-message" data-msg="7" data-sender="actor-1" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">FS</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">FS Newsroom</span>
+              <p><strong>CHANNEL_HANGUP_COMPLETE</strong> &mdash; cause: <span class="term" data-definition="The reason a call ended. NORMAL_CLEARING means both parties hung up cleanly &mdash; no error, no timeout, just a finished conversation.">NORMAL_CLEARING</span></p>
+            </div>
+          </div>
+
+          <!-- Message 8: Archive saves duration -->
+          <div class="chat-message" data-msg="8" data-sender="actor-3" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">AR</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">Archive</span>
+              <p>Call duration saved: 4m 32s. CDR complete. Total cost: $0.12.</p>
+            </div>
+          </div>
+
+          <!-- Message 9: SportsDesk final stats -->
+          <div class="chat-message" data-msg="9" data-sender="actor-4" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-4)">SD</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-4)">SportsDesk</span>
+              <p>Final stats recorded. MOS: 4.2, avg jitter: 12ms, packet loss: 0.1%.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="chat-typing" id="chat-typing" style="display:none">
+          <div class="chat-avatar" id="chat-module4-typing-avatar">FS</div>
+          <div class="chat-typing-dots">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+          </div>
+        </div>
+
+        <div class="chat-controls">
+          <button class="btn chat-next-btn">Next Message</button>
+          <button class="btn chat-all-btn">Play All</button>
+          <button class="btn chat-reset-btn">Replay</button>
+          <span class="chat-progress"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 5: DOWNSTREAM PATHS ===== -->
+  <div class="screen" style="background: var(--color-bg-warm);">
+    <div class="container narrow">
+      <h2 class="screen-title animate-in">Where Events Go From Here</h2>
+      <p class="screen-subtitle animate-in">Three downstream consumers, each with a different job</p>
+
+      <div class="feature-cards animate-in" style="margin-top: var(--space-6);">
+        <div class="feature-card" style="border-left-color: var(--color-actor-2);">
+          <div class="feature-card-icon" style="background: var(--color-actor-2);">WS</div>
+          <div>
+            <strong>fsevents &rarr; HTTP Endpoints</strong>
+            <p>Forwards events to downstream services via HTTP with automatic retries. If an endpoint is down, the event gets queued and retried &mdash; it does not drop.</p>
+          </div>
+        </div>
+        <div class="feature-card" style="border-left-color: var(--color-actor-3);">
+          <div class="feature-card-icon" style="background: var(--color-actor-3);">AR</div>
+          <div>
+            <strong>fsextension consumes Kafka</strong>
+            <p>Reads <span class="term" data-definition="Apache Avro &mdash; a data serialization format that uses a schema to describe exactly what fields a message contains and what type each one is. Like a blueprint for data, ensuring everyone agrees on the shape.">Avro</span>-encoded events from <span class="term" data-definition="An open-source distributed event streaming platform &mdash; think of it as a postal system that guarantees every message eventually reaches its recipient, even if they are temporarily offline.">Kafka</span> topics and writes them into <span class="term" data-definition="An open-source relational database &mdash; think of it as a highly organized filing cabinet where every row is a written record. fsextension stores all call history here.">PostgreSQL</span> tables: <span class="term" data-definition="Call Detail Records &mdash; the official ledger of every call: who called whom, when, how long, and what it cost. Every telecom business runs on these.">CDRs</span>, active calls, agent history.</p>
+          </div>
+        </div>
+        <div class="feature-card" style="border-left-color: var(--color-actor-4);">
+          <div class="feature-card-icon" style="background: var(--color-actor-4);">SD</div>
+          <div>
+            <strong>fsagent subscribes for RTCP</strong>
+            <p>Ignores most call events and instead subscribes specifically to real-time performance metrics (jitter, packet loss, MOS scores) for live quality dashboards.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reverse direction: commands INTO FreeSWITCH -->
+      <div class="translation-block animate-in" style="margin-top: var(--space-8);">
+        <div class="translation-code">
+          <span class="translation-label">CODE</span>
+          <pre><code><span class="code-line"><span class="code-tag">@PostMapping</span>(<span class="code-string">"/dialed-number"</span>)</span>
+<span class="code-line"><span class="code-keyword">public</span> UUID <span class="code-function">createDialedNumber</span>(</span>
+<span class="code-line">        <span class="code-tag">@RequestHeader</span>(<span class="code-string">"Domain-Name"</span>) String domainName,</span>
+<span class="code-line">        <span class="code-tag">@RequestAttribute</span>(<span class="code-string">"Domain-Id"</span>) String domainId,</span>
+<span class="code-line">        <span class="code-tag">@RequestBody</span> CreateDialedNumberCommand command) {</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">if</span> (command.<span class="code-function">getDomainId</span>() == <span class="code-keyword">null</span>) {</span>
+<span class="code-line">        command = command.<span class="code-function">domainId</span>(domainId);</span>
+<span class="code-line">    }</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">return</span> bus.<span class="code-function">execute</span>(command).<span class="code-function">getId</span>();</span>
+<span class="code-line">}</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">This is a Spring Boot <span class="term" data-definition="An API endpoint that receives data to create something new &mdash; like submitting a form. POST stands for 'send data to the server,' as opposed to just asking the server for data (GET).">POST endpoint</span> at the path "/dialed-number".</p>
+            <p class="tl">Create a new dialed number and return its unique ID.</p>
+            <p class="tl">Read the domain name from the request header.</p>
+            <p class="tl">Read the domain ID that was attached to this request by middleware.</p>
+            <p class="tl">Read the full command object from the request body.</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">If the command did not include a domain ID, fill it in from the request.</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">Execute the command via the event bus and return the new number's ID.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in" style="margin-top: var(--space-6);">
+        <strong>Two directions, two doors:</strong> Events flow OUT of FreeSWITCH on the ESL wire. But management actions &mdash; like registering a new dialed number &mdash; flow IN through REST APIs. fsextension handles both.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 6: QUIZ ===== -->
+  <div class="screen" style="background: var(--color-bg);">
+    <div class="container narrow">
+      <h2 class="screen-title animate-in">Check Your Understanding</h2>
+      <p class="screen-subtitle animate-in">Apply what you learned about the event wire</p>
+
+      <div class="quiz-container animate-in" id="quiz-module4" style="margin-top: var(--space-6);">
+
+        <!-- Q1: Debugging scenario -->
+        <div class="quiz-question-block"
+             data-correct="option-a"
+             data-explanation-right="Exactly! The first place to look is fsevents ConnectionStats around 14:00. A spike in ReconnectAttempts or a growing gap between EventsReceived and EventsProcessed means the wire went silent during that window. Calls still connected fine (FreeSWITCH was up), but the forwarding layer lost its grip &mdash; so no CDRs or reports were written for that period."
+             data-explanation-wrong="Not quite. Think about what sits between FreeSWITCH producing events and the database recording them. The calls connected fine, so FreeSWITCH was working &mdash; the problem is that nobody was listening or forwarding during that window.">
+          <h3 class="quiz-question">Q1. Calls between 14:00 and 14:20 connected perfectly &mdash; agents picked up, conversations happened, hangsups were clean. But when you pull the CDR report, that entire 20-minute window is blank. No records anywhere. What is the first thing to check?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>fsevents ConnectionStats around 14:00 &mdash; look for reconnect attempts or a growing gap between EventsReceived and EventsProcessed</span>
+            </button>
+            <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>Restart FreeSWITCH to clear the ESL socket buffer and force fresh events</span>
+            </button>
+            <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>Check if the PostgreSQL disk was full &mdash; CDRs are always the first thing to stop writing when storage runs out</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q2: Concept question -->
+        <div class="quiz-question-block"
+             data-correct="option-b"
+             data-explanation-right="Correct! The buffered channel acts like a shock absorber between the event producer and the consumer. When FreeSWITCH produces events faster than fsevents can process them (say, during a burst of incoming calls), the extra events queue up in the buffer instead of being dropped. It buys processing time so you don't lose events during temporary slowdowns."
+             data-explanation-wrong="Not quite. Think about what happens when two things operate at different speeds. FreeSWITCH emits events at whatever pace calls come in, but processing and forwarding each event takes a small amount of time. The buffered channel bridges that speed gap.">
+          <h3 class="quiz-question">Q2. What is the purpose of the buffered channel (<code>make(chan *types.Event, bufferSize)</code>) in the ESL client?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>It encrypts events before they are sent to Kafka so the data is secure in transit</span>
+            </button>
+            <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>It absorbs bursts so events are not instantly dropped when processing momentarily lags behind production</span>
+            </button>
+            <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>It limits the total number of events FreeSWITCH can send per second to prevent network congestion</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <button class="quiz-check-btn" onclick="checkQuiz('quiz-module4')">Check Answers</button>
+        <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module4')">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+</section>
+<section class="module" id="module-5">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">05</span>
+      <h1 class="module-title">Browser Integration</h1>
+      <p class="module-subtitle">sip.js-worker + shared.io — the softphone and data layer that survive tab switches.</p>
+    </header>
+
+    <div class="module-body">
+
+      <!-- SCREEN 1: Hook — closing a tab shouldn't kill a call -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Closing a tab shouldn't kill a call</h2>
+        <p>You know that feeling when you accidentally close a browser tab during a call and the call drops? This system fixes that.</p>
+        <p>The softphone runs in a <span class="term" data-definition="A SharedWorker is a background script shared by ALL tabs of the same site — one worker that every tab talks to, instead of each tab running its own copy.">SharedWorker</span> — a background thread that survives tab reloads. And there is a second SharedWorker that keeps your <span class="term" data-definition="WebSocket is a protocol that lets a browser maintain a single, long-lived connection to a server — so the server can push data to the browser at any moment, instead of the browser constantly asking.">WebSocket</span> connection alive across all tabs.</p>
+        <p>Let's see how both work.</p>
+
+        <div class="pattern-cards animate-in">
+          <div class="pattern-card">
+            <div class="pattern-icon">📡</div>
+            <h3>sip.js-worker</h3>
+            <p>Runs the <span class="term" data-definition="SIP (Session Initiation Protocol) is the standard language phones use to set up, manage, and end calls. It carries 'who calls whom' messages, but never the voice itself.">SIP</span> phone engine in a background thread. One <span class="term" data-definition="WebSocket is a protocol that lets a browser maintain a single, long-lived connection to a server — so the server can push data to the browser at any moment, instead of the browser constantly asking.">WebSocket</span> registration shared by every tab.</p>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-icon">🔌</div>
+            <h3>shared.io</h3>
+            <p>Runs <span class="term" data-definition="Socket.IO is a library that wraps WebSocket with automatic reconnection, room-based broadcasting, and a request/response acknowledgement pattern — making real-time messaging more reliable.">Socket.IO</span> in a background thread. One data connection shared by every tab for status updates, notifications, and call state.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: The SharedWorker pattern -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">The SharedWorker pattern</h2>
+        <p>A <span class="term" data-definition="A WebWorker is a script that runs in a background thread, separate from the main page — it can do heavy computation without freezing the UI.">WebWorker</span> is a script that runs in a background thread, separate from the main page. A SharedWorker goes further: it is one worker instance shared by every tab of the same site.</p>
+        <p>Each tab connects to the worker through a <span class="term" data-definition="PostMessage is the mechanism that lets a browser tab and a WebWorker (or SharedWorker) send messages back and forth — a private, two-way channel between the page and the background thread.">PostMessage</span> channel — a form of <span class="term" data-definition="IPC (Inter-Process Communication) is how separate programs or threads exchange data. In the browser, tabs and workers use PostMessage as their IPC mechanism.">IPC</span> (Inter-Process Communication). The worker holds the single <span class="term" data-definition="SIP (Session Initiation Protocol) is the standard language phones use to set up, manage, and end calls. It carries 'who calls whom' messages, but never the voice itself.">SIP</span> registration and the single Socket connection, and routes messages to whichever tab needs them.</p>
+
+        <div class="arch-diagram animate-in">
+          <div class="arch-zone arch-zone-browser">
+            <h4 class="arch-zone-label">Browser Tabs</h4>
+            <div class="arch-component" data-desc="Each tab connects to the SharedWorker via a private MessagePort channel. Tabs never talk to each other directly — the worker routes everything."
+                >
+              <div class="arch-icon">📄</div>
+              <span>Tab 1</span>
+            </div>
+            <div class="arch-component" data-desc="Tab 2 has its own MessagePort to the same worker. It can initiate or receive calls, but the SIP registration is still the same one."
+                >
+              <div class="arch-icon">📄</div>
+              <span>Tab 2</span>
+            </div>
+            <div class="arch-component" data-desc="Tab 3 also shares the same worker. If Tab 1 closes mid-call, the worker auto-hangs-up — no orphaned SIP sessions."
+                >
+              <div class="arch-icon">📄</div>
+              <span>Tab 3</span>
+            </div>
+          </div>
+
+          <div class="arch-zone arch-zone-middleware">
+            <h4 class="arch-zone-label">SharedWorkers (background threads)</h4>
+            <div class="arch-component" data-desc="sip.js-worker: runs the SIP phone engine. Manages UserAgent, Registerer, and call sessions. One SIP registration for all tabs. AudioContext state is tracked centrally so audio does not break on tab switches."
+                >
+              <div class="arch-icon">📡</div>
+              <span>sip.js-worker</span>
+            </div>
+            <div class="arch-component" data-desc="shared.io: runs Socket.IO in a background thread. Manages the WebSocket to the backend, request/response ACKs, notification fan-out to all tabs, and long-polling fallback."
+                >
+              <div class="arch-icon">🔌</div>
+              <span>shared.io</span>
+            </div>
+          </div>
+
+          <div class="arch-zone arch-zone-external">
+            <h4 class="arch-zone-label">Servers</h4>
+            <div class="arch-component" data-desc="FreeSWITCH via WSS (secure WebSocket). Handles SIP signaling — call setup, routing, and teardown. The sip.js-worker maintains a persistent WebSocket connection here."
+                >
+              <div class="arch-icon">🏢</div>
+              <span>FreeSWITCH<br>(WSS)</span>
+            </div>
+            <div class="arch-component" data-desc="Socket.IO backend server. Handles agent status updates, queue notifications, CDR display, and all real-time data. The shared.io worker maintains one persistent connection here."
+                >
+              <div class="arch-icon">⚙️</div>
+              <span>Socket.IO<br>Backend</span>
+            </div>
+          </div>
+
+          <div class="arch-description" id="arch-desc">Click any component to learn what it does</div>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: sip.js-worker deep dive -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">sip.js-worker deep dive</h2>
+        <p>The worker starts by creating three managers: <strong>WorkerState</strong> tracks what is happening, <strong>MessageBroker</strong> routes messages between tabs, and <strong>SipCore</strong> is the actual SIP phone engine. Notice SipCore starts as <code>null</code> — it is created when the first tab sends a "register" message.</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">sip.js-worker/src/worker/index.ts</span>
+            <pre><code><span class="code-comment">/**
+ * Worker entry point
+ */</span>
+
+<span class="code-keyword">import</span> { <span class="code-property">MessageBroker</span> } <span class="code-keyword">from</span> <span class="code-string">'./message-broker'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">TabManager</span> } <span class="code-keyword">from</span> <span class="code-string">'./tab-manager'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">SipCore</span>, <span class="code-property">SipCoreOptions</span> } <span class="code-keyword">from</span> <span class="code-string">'./sip-core'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">WorkerState</span> } <span class="code-keyword">from</span> <span class="code-string">'./worker-state'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">SipWorker</span>, <span class="code-property">VERSION</span> } <span class="code-keyword">from</span> <span class="code-string">'../common/types'</span>;
+
+<span class="code-comment">// Khởi tạo WorkerState</span>
+<span class="code-keyword">const</span> workerState = <span class="code-keyword">new</span> <span class="code-function">WorkerState</span>();
+
+<span class="code-comment">// Khởi tạo MessageBroker</span>
+<span class="code-keyword">const</span> messageBroker = <span class="code-keyword">new</span> <span class="code-function">MessageBroker</span>();
+
+<span class="code-comment">// Set WorkerState reference cho MessageBroker</span>
+messageBroker.<span class="code-function">setWorkerState</span>(workerState);
+
+<span class="code-comment">// Biến lưu trữ SipCore</span>
+<span class="code-keyword">let</span> sipCore: <span class="code-property">SipCore</span> | <span class="code-keyword">null</span> = <span class="code-keyword">null</span>;</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">The SharedWorker starts by creating three managers: WorkerState (tracks what is happening), MessageBroker (routes messages between tabs), and SipCore (the SIP phone engine).</p>
+              <p class="tl">The Vietnamese comments say "Initialize WorkerState", "Initialize MessageBroker", "Set WorkerState reference for MessageBroker", and "Variable to store SipCore".</p>
+              <p class="tl">Notice SipCore starts as <code>null</code> — it is not created until the first tab sends a "register" message. This means the SIP connection is lazy: no resources are used until an agent actually needs the phone.</p>
+            </div>
+          </div>
+        </div>
+
+        <p>The <strong>TabManager</strong> watches for tabs closing. If a tab closes while on a call, it auto-hangs-up — nobody is listening anymore. It also tracks the <span class="term" data-definition="AudioContext is the browser API that handles audio playback. Browsers suspend it when no user interaction happens, so the worker needs to track state changes to resume audio when needed.">AudioContext</span> — browsers suspend audio when no user interaction happens, so the worker needs to know when audio state changes.</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">sip.js-worker/src/worker/index.ts</span>
+            <pre><code><span class="code-keyword">const</span> tabManager = <span class="code-keyword">new</span> <span class="code-function">TabManager</span>(messageBroker, workerState, {
+  <span class="code-function">onTabClosedWithCall</span>: <span class="code-keyword">async</span> (callId: <span class="code-property">string</span>, reason: <span class="code-property">string</span>) <span class="code-operator">=></span> {
+    <span class="code-keyword">if</span> (sipCore) {
+      console.<span class="code-function">log</span>(<span class="code-string">`Auto-hanging up call ${callId} due to: ${reason}`</span>);
+      <span class="code-keyword">await</span> sipCore.<span class="code-function">hangupCall</span>(callId);
+    } <span class="code-keyword">else</span> {
+      console.<span class="code-function">error</span>(<span class="code-string">`Cannot hangup call ${callId}: SipCore not initialized`</span>);
+    }
+  },
+  <span class="code-function">onAudioContextStateChanged</span>: (hasRunningAudioContext: <span class="code-property">boolean</span>, previousState: <span class="code-property">boolean</span>) <span class="code-operator">=></span> {
+    <span class="code-keyword">if</span> (sipCore) {
+      console.<span class="code-function">log</span>(<span class="code-string">`AudioContext state changed: ${previousState} → ${hasRunningAudioContext}`</span>);
+      sipCore.<span class="code-function">handleAudioContextStateChange</span>(hasRunningAudioContext, previousState);
+    }
+  }
+});</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">The TabManager receives two callbacks: one for when a tab closes during a call (auto-hang-up), and one for when audio state changes (resume or suspend).</p>
+              <p class="tl"><code>onTabClosedWithCall</code>: if a tab closes while on a call, the worker automatically hangs up — no orphaned SIP session left behind.</p>
+              <p class="tl"><code>onAudioContextStateChanged</code>: the browser may suspend audio after idle. When audio resumes, the worker notifies SipCore so it can re-establish the audio path.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: sip-core imports -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">SipCore: the SIP phone engine</h2>
+        <p>SipCore imports from <code>sip.js</code> — the SIP library that provides all the building blocks for making and receiving calls over <span class="term" data-definition="WebSocket is a protocol that lets a browser maintain a single, long-lived connection to a server — so the server can push data to the browser at any moment, instead of the browser constantly asking.">WebSocket</span>.</p>
+        <p>The <code>LenientTransport</code> is a custom patch that fixes real-world WebSocket quirks that the standard library does not handle.</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">sip.js-worker/src/worker/sip-core.ts</span>
+            <pre><code><span class="code-comment">/**
+ * SipCore - Lớp xử lý SIP signaling
+ */</span>
+
+<span class="code-keyword">import</span> { <span class="code-property">SipWorker</span> } <span class="code-keyword">from</span> <span class="code-string">'../common/types'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">MessageBroker</span> } <span class="code-keyword">from</span> <span class="code-string">'./message-broker'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">TabManager</span> } <span class="code-keyword">from</span> <span class="code-string">'./tab-manager'</span>;
+<span class="code-keyword">import</span> {
+  <span class="code-property">createWorkerSessionDescriptionHandlerFactory</span>,
+  <span class="code-property">WorkerSessionDescriptionHandlerOptions</span>,
+} <span class="code-keyword">from</span> <span class="code-string">'./worker-session-description-handler'</span>;
+<span class="code-keyword">import</span> {
+  <span class="code-property">UserAgent</span>,
+  <span class="code-property">UserAgentOptions</span>,
+  <span class="code-property">Registerer</span>,
+  <span class="code-property">RegistererState</span>,
+  <span class="code-property">Inviter</span>,
+  <span class="code-property">Invitation</span>,
+  <span class="code-property">Session</span>,
+  <span class="code-property">SessionState</span>,
+  <span class="code-property">Web</span>,
+  <span class="code-property">InviterOptions</span>
+} <span class="code-keyword">from</span> <span class="code-string">'sip.js'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">v7</span> <span class="code-keyword">as</span> <span class="code-property">uuidv7</span> } <span class="code-keyword">from</span> <span class="code-string">'uuid'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">WorkerState</span> } <span class="code-keyword">from</span> <span class="code-string">'./worker-state'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">LenientTransport</span> } <span class="code-keyword">from</span> <span class="code-string">'./lenient-transport'</span>;</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">The Vietnamese comment at the top says "SipCore — SIP signaling handler class".</p>
+              <p class="tl"><code>UserAgent</code> is the phone identity — it tells the server who is registering. <code>Registerer</code> sends the "I am online" message to FreeSWITCH.</p>
+              <p class="tl"><code>Inviter</code> starts an outbound call. <code>Invitation</code> handles an inbound call. <code>Session</code> and <code>SessionState</code> track the call lifecycle (ringing, answered, terminated).</p>
+              <p class="tl"><code>LenientTransport</code> is a custom WebSocket transport that patches real-world quirks — some proxies strip headers or send malformed frames that the standard library rejects.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 5: shared.io deep dive -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">shared.io: Socket.IO over SharedWorker</h2>
+        <p>shared.io creates four managers: <strong>MessageRouter</strong> directs messages, <strong>AckManager</strong> tracks request/response pairs, <strong>NotificationManager</strong> broadcasts events to all tabs, and <strong>LongPollingManager</strong> provides a <span class="term" data-definition="Long-polling is a fallback technique where the browser sends a request to the server and holds the connection open until the server has data to send — like staying on the phone line instead of hanging up and calling back. Less efficient than WebSocket, but works everywhere.">long-polling</span> fallback for browsers without SharedWorker support.</p>
+        <p>When a tab connects, it sends a <span class="term" data-definition="PostMessage is the mechanism that lets a browser tab and a WebWorker (or SharedWorker) send messages back and forth — a private, two-way channel between the page and the background thread.">PostMessage</span> port — the worker uses this private channel to talk to that specific tab.</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">shared.io/src/worker/index.ts</span>
+            <pre><code><span class="code-comment">/**
+ * Shared Worker Entry Point
+ *
+ * This module is the entry point for the Shared Worker,
+ * handling connections from clients and coordinating messages.
+ */</span>
+
+<span class="code-keyword">import</span> { <span class="code-property">MessageType</span>, <span class="code-property">WorkerMessage</span> } <span class="code-keyword">from</span> <span class="code-string">'../common/types'</span>;
+<span class="code-keyword">import</span> { <span class="code-function">createMessageRouter</span>, <span class="code-property">IMessageRouter</span> } <span class="code-keyword">from</span> <span class="code-string">'./message-router'</span>;
+<span class="code-keyword">import</span> { <span class="code-function">createSocketManager</span>, <span class="code-property">ISocketManager</span> } <span class="code-keyword">from</span> <span class="code-string">'./socket-manager'</span>;
+<span class="code-keyword">import</span> { <span class="code-function">createAckManager</span>, <span class="code-property">IAckManager</span> } <span class="code-keyword">from</span> <span class="code-string">'./ack-manager'</span>;
+<span class="code-keyword">import</span> { <span class="code-function">createNotificationManager</span>, <span class="code-property">INotificationManager</span> } <span class="code-keyword">from</span> <span class="code-string">'./notification'</span>;
+<span class="code-keyword">import</span> { <span class="code-function">createLongPollingManager</span>, <span class="code-property">ILongPollingManager</span> } <span class="code-keyword">from</span> <span class="code-string">'./long-polling'</span>;
+
+<span class="code-comment">// Initialize managers</span>
+<span class="code-keyword">const</span> messageRouter: <span class="code-property">IMessageRouter</span> = <span class="code-function">createMessageRouter</span>();
+<span class="code-keyword">const</span> ackManager: <span class="code-property">IAckManager</span> = <span class="code-function">createAckManager</span>();
+<span class="code-keyword">const</span> notificationManager: <span class="code-property">INotificationManager</span> = <span class="code-function">createNotificationManager</span>(messageRouter);
+<span class="code-keyword">const</span> longPollingManager: <span class="code-property">ILongPollingManager</span> = <span class="code-function">createLongPollingManager</span>(messageRouter);
+<span class="code-keyword">const</span> socketManager: <span class="code-property">ISocketManager</span> = <span class="code-function">createSocketManager</span>(
+  messageRouter,
+  ackManager,
+  notificationManager,
+  longPollingManager
+);
+
+<span class="code-comment">/**
+ * Initialize the Shared Worker
+ */</span>
+<span class="code-keyword">export function</span> <span class="code-function">initializeWorker</span>(): <span class="code-keyword">void</span> {
+  <span class="code-keyword">try</span> {
+    <span class="code-comment">// Listen for connection events from clients</span>
+    self.<span class="code-function">addEventListener</span>(<span class="code-string">'connect'</span>, (event: <span class="code-property">MessageEvent</span>) <span class="code-operator">=></span> {
+      <span class="code-function">handleConnect</span>(event.ports[<span class="code-number">0</span>]);
+    });
+
+    console.<span class="code-function">log</span>(<span class="code-string">'Socket.IO Shared Worker initialized'</span>);
+  } <span class="code-keyword">catch</span> (error) {
+    console.<span class="code-function">error</span>(<span class="code-string">'Could not initialize Shared Worker:'</span>, error);
+  }
+}</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">Four managers are created at startup: MessageRouter (directs messages), AckManager (tracks request/response pairs via <span class="term" data-definition="ACK (acknowledgement) is a pattern where the sender waits for the server to confirm it received a message — like sending a letter with return receipt. In Socket.IO, emitWithAck sends a message and waits for the server to acknowledge it.">ACK</span>), NotificationManager (broadcasts to all tabs), and LongPollingManager (fallback).</p>
+              <p class="tl"><code>self.addEventListener('connect', ...)</code> is how a SharedWorker receives new tab connections. Each tab sends a MessagePort — a private, two-way channel between that tab and the worker.</p>
+              <p class="tl">The Vietnamese comment says "Listen for connection events from clients" and "Initialize the Shared Worker".</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 6: socket-manager interface -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">SocketManager: the gateway</h2>
+        <p>The SocketManager interface is the gateway between the SharedWorker and the Socket.IO server. Every tab calls <code>connect</code>, <code>emit</code>, <code>on</code> through this single manager.</p>
+        <p>The key method is <code>emitWithAck</code> — the <span class="term" data-definition="ACK (acknowledgement) is a pattern where the sender waits for the server to confirm it received a message — like sending a letter with return receipt. In Socket.IO, emitWithAck sends a message and waits for the server to acknowledge it.">ACK</span>-based request/response pattern: send a message and wait for the server to acknowledge it.</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">shared.io/src/worker/socket-manager.ts</span>
+            <pre><code><span class="code-keyword">export interface</span> <span class="code-property">ISocketManager</span> {
+  <span class="code-function">connect</span>(url: <span class="code-property">string</span>, options: <span class="code-property">SharedSocketIOOptions</span>, message: <span class="code-property">WorkerMessage</span>): <span class="code-keyword">void</span>;
+  <span class="code-function">disconnect</span>(message: <span class="code-property">WorkerMessage</span>): <span class="code-keyword">void</span>;
+  <span class="code-function">emit</span>(eventName: <span class="code-property">string</span>, args: <span class="code-property">any</span>[], message: <span class="code-property">WorkerMessage</span>): <span class="code-keyword">void</span>;
+  <span class="code-function">emitWithAck</span>(eventName: <span class="code-property">string</span>, args: <span class="code-property">any</span>[], message: <span class="code-property">WorkerMessage</span>): <span class="code-property">Promise</span>&lt;<span class="code-property">any</span>&gt;;
+  <span class="code-function">on</span>(eventName: <span class="code-property">string</span>, message: <span class="code-property">WorkerMessage</span>): <span class="code-keyword">void</span>;
+  <span class="code-function">off</span>(eventName: <span class="code-property">string</span>, message: <span class="code-property">WorkerMessage</span>): <span class="code-keyword">void</span>;
+  <span class="code-function">once</span>(eventName: <span class="code-property">string</span>, message: <span class="code-property">WorkerMessage</span>): <span class="code-keyword">void</span>;
+  <span class="code-function">getConnectionStatus</span>(): <span class="code-property">ConnectionStatus</span>;
+}</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl"><code>connect</code> / <code>disconnect</code>: open or close the Socket.IO connection to the backend server.</p>
+              <p class="tl"><code>emit</code>: fire-and-forget — send a message to the server without waiting for a response.</p>
+              <p class="tl"><code>emitWithAck</code>: request/response — send a message and get a Promise that resolves when the server acknowledges it. This is how reliable data flows work.</p>
+              <p class="tl"><code>on</code> / <code>off</code> / <code>once</code>: subscribe, unsubscribe, or listen once to server events — the same pattern as a DOM event listener.</p>
+              <p class="tl"><code>getConnectionStatus</code>: check whether the socket is currently connected, reconnecting, or disconnected.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 7: How they work together -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">How they work together</h2>
+        <p>sip.js-worker handles the call lifecycle: ringing, answering, talking, hanging up. shared.io handles everything else: agent status updates, queue notifications, CDR display.</p>
+        <p>They are independent — either can work without the other — but together they give the browser agent a complete real-time experience that survives tab switches.</p>
+
+        <div class="pattern-cards animate-in">
+          <div class="pattern-card">
+            <div class="pattern-icon">📡</div>
+            <h3>sip.js-worker owns</h3>
+            <p>SIP registration with FreeSWITCH. Call setup (INVITE). Call teardown (BYE). <span class="term" data-definition="WebRTC (Web Real-Time Communication) is the browser API that handles real-time audio and video — it manages the actual voice stream between the caller and callee, running alongside SIP signaling.">WebRTC</span> media negotiation. AudioContext state management.</p>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-icon">🔌</div>
+            <h3>shared.io owns</h3>
+            <p>Agent status (available, on-call, break). Queue notifications (new call waiting). CDR display (call records). Any real-time data the UI needs to stay in sync with the backend.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 8: Quiz -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Check your understanding</h2>
+
+        <div class="quiz-container" id="quiz-module5">
+
+          <!-- Q1: SIP registrations -->
+          <div class="quiz-question-block"
+               data-correct="option-b"
+               data-explanation-right="Exactly. The SharedWorker registers once with FreeSWITCH, and all three tabs share that single registration. This is the whole point — one SIP line, not three."
+               data-explanation-wrong="Not quite. The SharedWorker holds ONE SIP registration that all tabs share. Each tab does not register separately — that would be wasteful and cause conflicts.">
+            <h3 class="quiz-question">An agent has 3 browser tabs open. How many SIP registrations does the system see?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Three — one per tab, each tab is independent</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>One — the SharedWorker registers once, all tabs share it</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Zero — SIP registrations only happen on the server side</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <!-- Q2: Long-polling fallback -->
+          <div class="quiz-question-block"
+               data-correct="option-c"
+               data-explanation-right="Correct. shared.io detects that SharedWorker is unavailable and falls back to long-polling so it still works — just less efficiently."
+               data-explanation-wrong="Not quite. Long-polling is a deliberate fallback, not an error. It kicks in when SharedWorker support is missing from the browser.">
+            <h3 class="quiz-question">shared.io shows "long-polling mode" instead of WebSocket. Why?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The WebSocket server is down</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The agent's internet connection is slow</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The browser does not support SharedWorker, so shared.io falls back</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <!-- Q3: Why SharedWorker for SIP? -->
+          <div class="quiz-question-block"
+               data-correct="option-d"
+               data-explanation-right="All four are correct. A SharedWorker gives you all of these benefits — that is exactly why sip.js-worker exists."
+               data-explanation-wrong="Partially right, but incomplete. The SharedWorker gives you ALL of these benefits: surviving tab reloads, one registration, centralized audio, and crash isolation.">
+            <h3 class="quiz-question">Why put SIP signaling in a SharedWorker instead of directly in the page?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Calls survive tab reloads</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>One SIP registration for all tabs</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>AudioContext is managed centrally</span>
+              </button>
+              <button class="quiz-option" data-value="option-d" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>All of the above</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <button class="quiz-check-btn" onclick="checkQuiz('quiz-module5')">Check Answers</button>
+          <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module5')">Try Again</button>
+        </div>
+      </section>
+
+    </div><!-- /.module-body -->
+  </div><!-- /.module-content -->
+</section>
+<section class="module" id="module-6" style="background: var(--color-bg-warm)">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">06</span>
+      <h1 class="module-title">The Quality Scoreboard</h1>
+      <p class="module-subtitle">fsagent, RTCP &amp; MOS — how &ldquo;it sounds bad&rdquo; becomes a number</p>
+    </header>
+
+    <div class="module-body">
+
+      <!-- Screen 1: Hook -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Turning complaints into numbers</h2>
+        <p><em>&ldquo;The call quality was bad.&rdquo;</em> — every support ticket ever written. That&rsquo;s not a bug report; it&rsquo;s a feeling.</p>
+        <p>This module is how the system turns that feeling into measurements:
+          <strong>jitter 14ms, loss 0.8%, MOS 3.6</strong>. Meet the figure-skating judge with instruments.</p>
+        <p>While the skater (the call) performs, sensors measure every wobble. The receiver of every voice stream is already sending scorecards back, automatically. Our job is just to read them.</p>
+        <div class="callout callout-accent animate-in">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <strong class="callout-title">Key Insight</strong>
+            <p>Voice quality isn&rsquo;t magic — it&rsquo;s measured continuously. Every
+              <span class="term" data-definition="RTP (Real-time Transport Protocol) is the protocol that actually carries the audio of a call — the voice packets themselves, as opposed to SIP which just sets the call up."><strong>RTP</strong></span>
+              media stream carries
+              <span class="term" data-definition="RTCP (RTP Control Protocol) reports travel alongside the audio and describe how the delivery went: how uneven arrival was, how many packets were lost. Like a return-receipt with quality notes."><strong>RTCP</strong></span>
+              reports back from the receiver; fsagent reads them via FreeSWITCH events, aggregates per
+              <span class="term" data-definition="A call leg is one side of a conversation. A call between agent and customer has two legs: agent-to-system and system-to-customer. Each leg can have totally different quality."><strong>call leg</strong></span>,
+              and exports a verdict.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 2: The three stats -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">The judge&rsquo;s three instruments</h2>
+        <p>Every wobble on the ice gets measured. Click each card to learn more:</p>
+        <div class="pattern-cards stagger-children">
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-1)">
+            <div class="pattern-icon" style="background: var(--color-actor-1)">🥁</div>
+            <h4 class="pattern-title">
+              <span class="term" data-definition="Jitter measures how unevenly voice packets arrive — some fast, some slow. Under 30ms you never notice; higher starts sounding choppy.">Jitter</span>
+            </h4>
+            <p class="pattern-desc">Packets arriving unevenly — a drummer who speeds up and slows down.
+              Measured in milliseconds. Under 30ms? The audience can&rsquo;t tell.</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-2)">
+            <div class="pattern-icon" style="background: var(--color-actor-2)">🕳️</div>
+            <h4 class="pattern-title">
+              <span class="term" data-definition="Packet loss is the percentage of voice packets that never arrive at the other end — each lost packet is a tiny missing slice of sound.">Packet loss</span>
+            </h4>
+            <p class="pattern-desc">Words that never arrive — jumps skipped entirely. Even 1–2% is audible
+              as gaps or that robotic underwater voice.</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-4)">
+            <div class="pattern-icon" style="background: var(--color-actor-4)">🏅</div>
+            <h4 class="pattern-title">
+              <span class="term" data-definition="MOS (Mean Opinion Score) rates call quality from 1 to 5, originally by having humans listen and score. Today algorithms estimate it from jitter and loss. Above 4 sounds good; below 3 people complain.">MOS</span>
+            </h4>
+            <p class="pattern-desc">The final scorecard — one number saying &ldquo;how did it feel to watch?&rdquo;
+              Originally humans scored 1–5; now algorithms estimate it from the other two stats.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 3: The scorecard struct -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">One leg, one scorecard</h2>
+        <p>This is fsagent&rsquo;s actual scorecard structure from
+          <code>fsagent/pkg/calculator/rtcp.go</code>:</p>
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE — fsagent/pkg/calculator/rtcp.go</span>
+            <pre><code><span class="code-keyword">type</span> RTCPMetrics <span class="code-keyword">struct</span> {
+	Timestamp     time.Time
+	InstanceName  <span class="code-keyword">string</span>
+	ChannelID     <span class="code-keyword">string</span> <span class="code-comment">// Unique-ID for per-leg monitoring</span>
+	CorrelationID <span class="code-keyword">string</span> <span class="code-comment">// SIP Call-ID for per-call aggregation</span>
+	DomainName    <span class="code-keyword">string</span> <span class="code-comment">// SIP domain for filtering by tenant/domain</span>
+	Direction     <span class="code-keyword">string</span>
+
+	Jitter      <span class="code-keyword">float64</span> <span class="code-comment">// Average jitter in milliseconds</span>
+	PacketsLost <span class="code-keyword">int32</span>   <span class="code-comment">// Total packets lost</span>
+
+	PacketsSent <span class="code-keyword">int64</span> <span class="code-comment">// Total packets sent</span>
+	OctetsSent  <span class="code-keyword">int64</span> <span class="code-comment">// Total octets sent</span>
+}</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">When this reading was taken, and which FreeSWITCH server took it.</p>
+              <p class="tl"><code>ChannelID</code> identifies ONE side of the call — a single
+                <span class="term" data-definition="A call leg is one side of a conversation. A call between agent and customer has two legs: agent-to-system and system-to-customer. Each leg can have totally different quality."><strong>call leg</strong></span>.</p>
+              <p class="tl"><code>CorrelationID</code> ties both legs together into one conversation — the pair-of-skaters ID.</p>
+              <p class="tl"><code>DomainName</code>: multiple tenant companies share this platform, and their metrics stay separable.</p>
+              <p class="tl">The actual measurements: unevenness in ms, and packets that vanished.</p>
+              <p class="tl">How much was shipped, so loss can be computed as a percentage.</p>
+            </div>
+          </div>
+        </div>
+        <p class="animate-in">Those two IDs matter more than they look. One phone call always has
+          <strong>two</strong> legs, and each gets its own scorecard.</p>
+      </section>
+
+      <!-- Screen 4: Aggregation + where scores go -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Folding readings into a running average</h2>
+        <p>Reports trickle in throughout the call. fsagent keeps running state per channel and folds
+          each new reading in:</p>
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE — fsagent/pkg/calculator/rtcp.go</span>
+            <pre><code><span class="code-keyword">func</span> (rc *rtcpCalculator) <span class="code-function">AggregateMetrics</span>(ctx context.Context, event *connection.FSEvent, direction <span class="code-keyword">string</span>, instanceName <span class="code-keyword">string</span>) (<span class="code-keyword">bool</span>, *RTCPMetrics, error) {
+	channelID := event.<span class="code-function">GetHeader</span>(<span class="code-string">"Unique-ID"</span>)
+	<span class="code-keyword">if</span> channelID == <span class="code-string">""</span> {
+		<span class="code-keyword">return</span> <span class="code-keyword">false</span>, <span class="code-keyword">nil</span>, fmt.<span class="code-function">Errorf</span>(<span class="code-string">"RTCP event missing Unique-ID"</span>)
+	}
+
+	state, err := rc.store.<span class="code-function">Get</span>(ctx, channelID)
+	<span class="code-keyword">if</span> err != <span class="code-keyword">nil</span> {
+		logger.<span class="code-function">WarnWithFields</span>(<span class="code-keyword">map</span>[<span class="code-keyword">string</span>]<span class="code-keyword">interface</span>{}{
+			<span class="code-string">"channel_id"</span>:  channelID,
+			<span class="code-string">"fs_instance"</span>: instanceName,
+			<span class="code-string">"direction"</span>:   direction,
+			<span class="code-string">"error"</span>:       err.Error(),
+		}, <span class="code-string">"Channel state not found for RTCP aggregation"</span>)
+		<span class="code-keyword">return</span> <span class="code-keyword">false</span>, <span class="code-keyword">nil</span>, fmt.<span class="code-function">Errorf</span>(<span class="code-string">"failed to get channel state: %w"</span>, err)
+	}</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">Every incoming report names its channel. No name? Refuse to process it.</p>
+              <p class="tl">Look up the running state for that leg — kept in memory or Redis.</p>
+              <p class="tl">Not found? Log loudly with full context: which channel, which server, which direction.</p>
+              <p class="tl">And refuse to guess — silent wrong data is worse than no data.</p>
+              <p class="tl">Found? Fold the new numbers into the running average and continue.</p>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="screen-heading">Where the verdict travels</h2>
+        <p>Scores leave the sports desk via <span class="term" data-definition="OTLP (OpenTelemetry Protocol) over gRPC is a standard way for services to ship metrics, traces, and logs to a central collector — like a standardized scoreboard submission form.">OTLP/gRPC</span>, land in an
+          <span class="term" data-definition="OpenTelemetry is an industry-standard framework for collecting software health metrics. The Collector receives telemetry from services and routes it to storage backends.">OpenTelemetry</span>
+          Collector, and end up on dashboards:</p>
+        <div class="flow-steps animate-in">
+          <div class="flow-step">
+            <div class="flow-step-num">1</div>
+            <p>fsagent exports metrics via OTLP/gRPC</p>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-step-num">2</div>
+            <p>OpenTelemetry Collector receives and routes them</p>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-step-num">3</div>
+            <p><span class="term" data-definition="Prometheus is an open-source time-series database built for monitoring — it stores metrics as timestamped data points so you can graph trends over hours, days, or weeks.">Prometheus</span> stores the time series</p>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-step-num">4</div>
+            <p>Grafana dashboards draw the scoreboard</p>
+          </div>
+        </div>
+        <div class="callout callout-info animate-in">
+          <div class="callout-icon">🦵</div>
+          <div class="callout-content">
+            <strong class="callout-title">Two legs, two stories</strong>
+            <p>The agent-side leg and the customer-side leg of the same call each get their own scorecard.
+              They share a <span class="term" data-definition="CorrelationID (SIP Call-ID) ties both legs of a call together into one conversation, so you can aggregate quality metrics across both sides.">CorrelationID</span> but nothing else — one side can be crystal clear while the other
+              sounds like a robot underwater. Per-leg (Unique-ID) tells you <em>where</em>; per-call
+              (SIP Call-ID) tells you <em>which conversation</em>.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 5: Quiz -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Judge your understanding</h2>
+        <div class="quiz-container" id="quiz-module6">
+          <div class="quiz-question-block"
+               data-correct="option-a"
+               data-explanation-right="Exactly! MOS estimates what humans would say: above 4 sounds good, below 3 means users are already complaining. 4.2 is a call you would not notice at all."
+               data-explanation-wrong="Think back to the human scale: MOS was born from people rating calls 1 to 5. So what does a 4.2 mean about how the call felt?">
+            <h3 class="quiz-question">A Grafana panel shows MOS 4.2 for a customer&rsquo;s call. What does that actually mean?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Estimated quality on the 1–5 human scale — above 4 is good; most listeners wouldn&rsquo;t notice anything</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>42% of packets were delivered successfully — the call is barely usable</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The jitter is 4.2ms — extremely low and perfectly fine</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block"
+               data-correct="option-b"
+               data-explanation-right="Exactly! Each leg is measured independently. The customer&rsquo;s packets arrive fine, but the agent&rsquo;s side is dropping 9% — that&rsquo;s almost certainly the agent&rsquo;s network (Wi-Fi, cable, router)."
+               data-explanation-wrong="Remember: each leg has its own RTCPMetrics. The loss percentage tells you which side is dropping packets, not which side complained.">
+            <h3 class="quiz-question">Customer-side leg shows 0% loss but agent-side leg shows 9% loss. Whose Wi-Fi do you investigate?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The customer&rsquo;s — they reported the complaint, so their network must be guilty</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The agent&rsquo;s side — their leg is the one dropping 9% of packets</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Neither — replace the FreeSWITCH server immediately</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block"
+               data-correct="option-a"
+               data-explanation-right="Exactly! Fabricating metrics from missing state would export garbage averages that look real on dashboards. Failing loudly means the gap is visible instead of silently wrong."
+               data-explanation-wrong="Consider the alternative: if fsagent guessed anyway, dashboards would show plausible-looking numbers built from incomplete data. Why is silent wrongness worse than a loud error?">
+            <h3 class="quiz-question">In AggregateMetrics, why return an error when the channel state can&rsquo;t be found — instead of just starting fresh averages?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Never fabricate metrics — failing loudly beats exporting garbage averages that look real</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Go panics if you use a nil value, so returning early prevents a crash</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Go requires every function to return an error value, even when nothing is wrong</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <button class="quiz-check-btn" onclick="checkQuiz('quiz-module6')">Check Answers</button>
+          <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module6')">Try Again</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</section>
+<section class="module" id="module-7">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">07</span>
+      <h1 class="module-title">When Things Break</h1>
+      <p class="module-subtitle">Your detective toolkit &mdash; evidence, rooms, and a decision tree for every incident</p>
+    </header>
+
+    <div class="module-body">
+
+      <!-- Screen 1: Hook -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">9:05 AM. Slack lights up.</h2>
+        <div class="callout callout-warning animate-in">
+          <div class="callout-icon">🚨</div>
+          <div class="callout-content">
+            <strong class="callout-title">#support</strong>
+            <p>&ldquo;phones are down??&rdquo;</p>
+          </div>
+        </div>
+        <p>Take a breath. Every incident is a crime scene, and every component you met this course leaves
+          fingerprints in a different room: SIP envelopes in packet captures, the PBX&rsquo;s own diary,
+          bulletins on the wire, scorecards on the dashboard, the written record in PostgreSQL.</p>
+        <p>The detective&rsquo;s skill is not knowing everything &mdash; it is knowing
+          <strong>which room to enter first</strong> based on the symptom. This module is the decision tree
+          for that exact moment.</p>
+      </section>
+
+      <!-- Screen 2: The toolkit -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">The detective&rsquo;s kit</h2>
+        <p>Six tools, six rooms of evidence. Each one answers a different question:</p>
+        <div class="pattern-cards stagger-children">
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-1)">
+            <div class="pattern-icon" style="background: var(--color-actor-1)">📓</div>
+            <h4 class="pattern-title"><code>fs_cli</code></h4>
+            <p class="pattern-desc">FreeSWITCH&rsquo;s interactive console. Run <code>show channels</code>,
+              watch live events, ask the PBX what it is doing <em>right now</em>.</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-2)">
+            <div class="pattern-icon" style="background: var(--color-actor-2)">✉️</div>
+            <h4 class="pattern-title"><code>sngrep</code></h4>
+            <p class="pattern-desc">A live
+              <span class="term" data-definition="A packet capture is a recording of raw network traffic flying between hosts &mdash; like reading other people&rsquo;s postcards as they pass through the sorting office."><strong>packet capture</strong></span>
+              viewer for SIP envelopes. Answers: &ldquo;did the INVITE even arrive?&rdquo;</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-4)">
+            <div class="pattern-icon" style="background: var(--color-actor-4)">📰</div>
+            <h4 class="pattern-title">fsevents <code>:9090</code></h4>
+            <p class="pattern-desc">The health endpoint and <code>/metrics</code>. Is the event wire even
+              connected? Are
+              <span class="term" data-definition="Consumer lag is how far behind a Kafka consumer is &mdash; messages sitting on the belt waiting to be processed. Growing lag means falling behind."><strong>reconnect attempts</strong></span>
+              climbing?</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-3)">
+            <div class="pattern-icon" style="background: var(--color-actor-3)">🗄️</div>
+            <h4 class="pattern-title">Kafka lag &amp; fsextension logs</h4>
+            <p class="pattern-desc">Is the archive keeping up? <strong>Consumer lag</strong> growing means
+              CDRs will be late or missing. fsextension logs tell you why.</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-5)">
+            <div class="pattern-icon" style="background: var(--color-actor-5)">📈</div>
+            <h4 class="pattern-title">Grafana / Prometheus</h4>
+            <p class="pattern-desc">fsagent&rsquo;s scoreboard. Was quality already degrading BEFORE the
+              outage &mdash; jitter creeping up all morning?</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-accent-muted)">
+            <div class="pattern-icon" style="background: var(--color-accent-muted)">🚪</div>
+            <h4 class="pattern-title">Kamailio logs</h4>
+            <p class="pattern-desc">The front door. Did calls even get routed to FreeSWITCH, or did they
+              die at the proxy before anyone noticed?</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 3: Decision tree (interactive accordion) -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Symptom &rarr; first room to search</h2>
+        <p>Seven classic symptoms. Click to reveal the room you enter <em>first</em> and why:</p>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">📞</span>
+            <span class="decision-tree-label">Can&rsquo;t register / phone shows offline</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> <span class="term" data-definition="Kamailio is the front-door proxy &mdash; it receives every SIP message first and routes calls to the right FreeSWITCH node. If the proxy logs show nothing, the phone never got past the front gate.">Kamailio</span> logs, then <code>sngrep</code> for REGISTER.</p>
+            <p>The common factor across every &ldquo;offline&rdquo; agent is <span class="term" data-definition="Registration is a phone announcing &lsquo;I am here, send my calls to this address&rsquo; by sending periodic REGISTER messages to the system. No registration = no inbound calls.">registration</span>. Something upstream &mdash; network, Kamailio, auth &mdash; is rejecting the phones before FreeSWITCH ever sees them.</p>
+          </div>
+        </details>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">🔔</span>
+            <span class="decision-tree-label">Rings but never answers</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> <code>fs_cli</code>, dialplan, xml_curl response from fsextension.</p>
+            <p>The call got in. The signal reached FreeSWITCH. The problem is the routing rulebook &mdash;
+              did the <span class="term" data-definition="The dialplan is FreeSWITCH&rsquo;s rulebook: &lsquo;when a call for extension X arrives, do Y&rsquo; &mdash; who to ring, where to bridge, when to give up.">dialplan</span> get served?
+              Did fsextension&rsquo;s xml_curl return the right rules?</p>
+          </div>
+        </details>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">🤫</span>
+            <span class="decision-tree-label">Connected but no audio / one-way audio</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> <code>sngrep</code> for RTP endpoints, SDP/NAT addresses.</p>
+            <p>Signaling worked perfectly. The media path did not. Classic SDP/NAT territory &mdash; the negotiated media addresses in the SIP invite do not match where RTP packets actually travel.</p>
+          </div>
+        </details>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">🕳️</span>
+            <span class="decision-tree-label">Calls fine but CDRs / records missing</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> fsevents <code>/metrics</code> &rarr; Kafka consumer lag &rarr; database.</p>
+            <p>The calls were fine. The narration dropped. You know this from Module 4 &mdash; follow the wire backwards from the database to the source event, and you will find the gap.</p>
+          </div>
+        </details>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">🤖</span>
+            <span class="decision-tree-label">Sounds terrible (robotic, choppy)</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> Grafana / Prometheus via fsagent dashboards, per-leg comparison.</p>
+            <p>Open fsagent&rsquo;s scorecards and compare legs side by side. Jitter and packet-loss graphs tell you which side of the conversation is suffering, and exactly how badly.</p>
+          </div>
+        </details>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">⚙️</span>
+            <span class="decision-tree-label">Cannot add agent to queue</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> FusionPBX web UI or fsextension management domain.</p>
+            <p>Nothing about active calls is broken &mdash; a management action is being rejected or lost. Queue membership flows IN through fsextension&rsquo;s APIs, not through the telephony path.</p>
+          </div>
+        </details>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">🌊</span>
+            <span class="decision-tree-label">Intermittent drops after network change</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> Grafana dashboards for jitter/loss timeline, then <code>sngrep</code> for media renegotiations.</p>
+            <p>A network change mid-shift is a slow-burn clue. Grafana shows exactly when quality started slipping; <code>sngrep</code> shows whether calls are being re-INVITEd or silently failing.</p>
+          </div>
+        </details>
+      </section>
+
+      <!-- Screen 4: Code &harr; English translations -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Reading the fingerprints</h2>
+        <p>Two pieces of evidence you will touch on nearly every incident. First, the wire&rsquo;s
+          health fingerprint &mdash; you met it in Module 4, now read it like a detective:</p>
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE &mdash; fsevents/internal/esl/client.go</span>
+            <pre><code><span class="code-keyword">type</span> ConnectionStats <span class="code-keyword">struct</span> {
+	ConnectedAt       time.Time
+	EventsReceived    <span class="code-keyword">uint64</span>
+	EventsProcessed   <span class="code-keyword">uint64</span>
+	ReconnectAttempts <span class="code-keyword">uint64</span>
+	LastError         error
+	mu                sync.RWMutex
+}</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">If Received &gg; Processed, backlog is growing &mdash; consumers too slow, records arriving late.</p>
+              <p class="tl">If ReconnectAttempts climbs, the wire keeps dropping &mdash; expect data gaps in every downstream system.</p>
+              <p class="tl">ConnectedAt tells you if the process restarted recently without anyone planning it.</p>
+              <p class="tl">LastError names the culprit: refused connection, timeout, auth failure&hellip;</p>
+            </div>
+          </div>
+        </div>
+        <p>Second, the PBX&rsquo;s own diary. A real
+          <span class="term" data-definition="fs_cli is FreeSWITCH&rsquo;s command-line console &mdash; an interactive session where you can ask the PBX questions (&lsquo;show channels&rsquo;) and watch events as they happen live."><code>fs_cli</code></span>
+          session:</p>
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">TERMINAL &mdash; fs_cli</span>
+            <pre><code>freeswitch@pbx&gt; show channels count
+0 total, 0 active
+
+freeswitch@pbx&gt; version
+FreeSWITCH Version 1.10.8 (git abc123)</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">Ask: how many calls exist right now? Answer: zero total, zero active.</p>
+              <p class="tl">If Slack says &ldquo;phones are down&rdquo; but agents say calls connect &mdash; reconcile those two stories here, live.</p>
+              <p class="tl">Ask: which build am I running? Useful after deploys &mdash; &ldquo;did we just change anything?&rdquo; starts here.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 5: Final quiz -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">The final case file</h2>
+        <p>Four incidents. You have the whole map now &mdash; pick the first room for each.</p>
+        <div class="quiz-container" id="quiz-module7">
+          <div class="quiz-question-block"
+               data-correct="option-a"
+               data-explanation-right="Exactly! If every phone shows offline, the common factor is registration. Check whether REGISTER messages are reaching the system: Kamailio logs first, then sngrep."
+               data-explanation-wrong="Not quite &mdash; ALL agents failing at once points at something shared upstream of individual phones. What is the very first thing a phone must do each morning before it can receive any call?">
+            <h3 class="quiz-question">All agents show offline simultaneously. Where do you look first?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The registration path &mdash; Kamailio logs, then sngrep for REGISTER messages</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>fsextension&rsquo;s database &mdash; rebuild the agent tables</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Grafana MOS dashboards &mdash; check recent voice quality</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block"
+               data-correct="option-b"
+               data-explanation-right="Exactly &mdash; &lsquo;robotic since the network change&rsquo; is a media-quality story. fsagent&rsquo;s jitter/loss graphs will show exactly when it degraded and on which legs."
+               data-explanation-wrong="Think about the symptom itself: robotic audio is a media-quality complaint, not a missing-records or registration problem. Which tool exists precisely to score voice quality over time?">
+            <h3 class="quiz-question">Since this morning&rsquo;s network change, callers describe audio as robotic. Best first move?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Kamailio logs &mdash; verify calls are being routed</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>fsagent&rsquo;s jitter/loss graphs &mdash; see when quality dropped and on which legs</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Kafka consumer lag &mdash; the archive must be behind</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block"
+               data-correct="option-a"
+               data-explanation-right="Exactly! CDRs stop during a deploy &rarr; suspect the event wire restarted and never recovered, or consumers died mid-deploy. fsevents ConnectionStats around 03:00 is your first exhibit."
+               data-explanation-wrong="Remember Module 4: calls working but records missing means the narration broke, not the calls. What does a deploy do to long-lived connections like the ESL wire &mdash; and where is that recorded?">
+            <h3 class="quiz-question">CDRs stopped at exactly 03:00 &mdash; the same minute last night&rsquo;s deploy finished. Calls work fine today. Investigate what first?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>fsevents reconnect stats and Kafka consumers after the deploy &mdash; did the event wire come back?</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>sngrep &mdash; capture SIP traffic to see why calls fail</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Agent headsets &mdash; audio quality may be confusing the recordings</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block"
+               data-correct="option-c"
+               data-explanation-right="Exactly! Adding agents to queues is a management action &mdash; that flows INTO telephony via fsextension&rsquo;s APIs and its bus. This is the reverse direction from the event wire."
+               data-explanation-wrong="Careful &mdash; nothing is broken about existing calls here; a configuration change is being rejected or lost. Which component owns management actions like &lsquo;add this agent to that queue&rsquo;?">
+            <h3 class="quiz-question">An admin says a new agent cannot be added to a queue. Nothing about active calls is wrong. Which domain owns this problem?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Media path &mdash; check RTP flows in sngrep</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Event wire &mdash; check fsevents ConnectionStats</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>fsextension &mdash; queue membership is a management action flowing in through its APIs</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <button class="quiz-check-btn" onclick="checkQuiz('quiz-module7')">Check Answers</button>
+          <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module7')">Try Again</button>
+        </div>
+      </section>
+
+      <!-- Screen 6: Wrap-up -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">You made it. Here&rsquo;s your badge. 🎓</h2>
+        <p>Seven modules ago, a call was just&hellip; a call. Now you can trace a phone call end-to-end:
+          the signaling handshake, the media stream, the event wire narrating it all, the quality
+          scoreboard grading it, and the detective kit for when any piece breaks.</p>
+        <p>That is not trivia &mdash; that is the mental model senior engineers use on their worst
+          days. Every incident you will ever handle in this system walks one of the seven paths on
+          that decision tree.</p>
+        <div class="callout callout-accent animate-in">
+          <div class="callout-icon">🚀</div>
+          <div class="callout-content">
+            <strong class="callout-title">Your next steps</strong>
+            <p>Knowledge becomes skill by touching real components. Do these four things this week:</p>
+          </div>
+        </div>
+        <div class="step-cards stagger-children">
+          <div class="step-card animate-in">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong>Spin up the sandbox</strong>
+              <p>Run the local environment via <code>pbx/docker-compose.yml</code>. Breaking things on
+                your laptop teaches more than reading ever will.</p>
+            </div>
+          </div>
+          <div class="step-card animate-in">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <strong>Learn two tools deeply</strong>
+              <p><code>fs_cli</code> and <code>sngrep</code>. Make a test call while watching both &mdash;
+                watch your own call happen in the diary and in the envelopes.</p>
+            </div>
+          </div>
+          <div class="step-card animate-in">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <strong>Read the archive&rsquo;s topics</strong>
+              <p>Browse fsextension&rsquo;s Kafka topics and the tables they feed. Connect the group chat
+                from Module 4 to real rows in PostgreSQL.</p>
+            </div>
+          </div>
+          <div class="step-card animate-in">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <strong>Bookmark the dashboards</strong>
+              <p>Save the Grafana boards. On your first incident, you want them one click away &mdash; not
+                somewhere you will discover under pressure.</p>
+            </div>
+          </div>
+        </div>
+        <p style="text-align: center; margin-top: var(--space-10)"><strong>Now go answer that 9:05 AM page.
+          You are ready.</strong></p>
+      </section>
+
+    </div>
+  </div>
+</section>
+  </main>
+
+</body>
+</html>

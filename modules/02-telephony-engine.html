@@ -1,0 +1,493 @@
+<section class="module" id="module-2" style="background: var(--color-bg-warm);">
+
+  <!-- ==================== SCREEN 1: HOOK ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Module 2</p>
+      <h1 class="screen-title">The Telephony Engine</h1>
+      <p class="screen-subtitle">The train station behind every call</p>
+
+      <p class="text-block">Module 1 showed you the whole airport from above. Now let's walk into the terminal and meet the engine that actually makes calls happen — plus the admin panel, the custom scripts, and the security system that keep it running.</p>
+
+      <p class="text-block" style="margin-top: var(--space-6);"><strong>The <code>pbx/</code> directory isn't just FreeSWITCH — it's four things working together:</strong></p>
+
+      <div class="pattern-cards" style="margin-top: var(--space-4);">
+        <div class="pattern-card" style="border-top: 3px solid var(--color-actor-1);">
+          <div class="pattern-icon" style="background: var(--color-actor-1)">🚂</div>
+          <h4 class="pattern-title">FreeSWITCH</h4>
+          <p class="pattern-desc">The telephony engine — tracks, signals, and scheduling that make calls run.</p>
+        </div>
+        <div class="pattern-card" style="border-top: 3px solid var(--color-actor-2);">
+          <div class="pattern-icon" style="background: var(--color-actor-2)">🖥️</div>
+          <h4 class="pattern-title">FusionPBX</h4>
+          <p class="pattern-desc">The admin web UI — a dashboard for configuring routes and managing agents.</p>
+        </div>
+        <div class="pattern-card" style="border-top: 3px solid var(--color-actor-3);">
+          <div class="pattern-icon" style="background: var(--color-actor-3)">📜</div>
+          <h4 class="pattern-title">Lua Scripts</h4>
+          <p class="pattern-desc">Custom dispatchers — logic that decides which train goes where when the standard schedule doesn't cover it.</p>
+        </div>
+        <div class="pattern-card" style="border-top: 3px solid var(--color-actor-4);">
+          <div class="pattern-icon" style="background: var(--color-actor-4)">🛡️</div>
+          <h4 class="pattern-title">Fail2ban</h4>
+          <p class="pattern-desc">The security guard — watching for suspicious behavior and banning troublemakers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 2: ARCHITECTURE DIAGRAM ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Architecture</p>
+      <h2 class="screen-title">Four Layers, One System</h2>
+      <p class="text-block">Click each component to see what it does and why it exists.</p>
+
+      <div class="arch-diagram">
+        <div class="arch-zone arch-zone-browser">
+          <h4 class="arch-zone-label">Admin Layer</h4>
+          <div class="arch-component" data-desc="FusionPBX is a PHP web application that provides a browser-based admin panel. It has its own MVC architecture, PostgreSQL database, and nginx reverse proxy. You use it to configure dialplans, manage agents, and monitor calls.">
+            <div class="arch-icon">🖥️</div>
+            <span>FusionPBX (Web UI)</span>
+          </div>
+        </div>
+        <div class="arch-zone arch-zone-external">
+          <h4 class="arch-zone-label">Logic Layer</h4>
+          <div class="arch-component" data-desc="Lua scripts handle custom call routing logic that goes beyond the standard dialplan. bridge_to_agent.lua checks agent availability in the database before bridging. queue_cascade.lua tries multiple queues in sequence when agents are busy.">
+            <div class="arch-icon">📜</div>
+            <span>Lua Scripts (Plugins)</span>
+          </div>
+          <div class="arch-component" data-desc="Fail2ban monitors FreeSWITCH and FusionPBX log files for failed authentication attempts. When an IP exceeds the retry threshold, it adds an iptables firewall rule to block that IP entirely — stopping brute-force attacks on SIP accounts.">
+            <div class="arch-icon">🛡️</div>
+            <span>Fail2ban (Security)</span>
+          </div>
+        </div>
+        <div class="arch-zone arch-zone-core">
+          <h4 class="arch-zone-label">Engine Layer</h4>
+          <div class="arch-component" data-desc="FreeSWITCH is the core telephony engine that handles SIP signaling, audio routing, and call state. It runs custom modules like mod_callcenter (queue management) and mod_avmd (voicemail detection) inside Docker containers.">
+            <div class="arch-icon">🚂</div>
+            <span>FreeSWITCH Engine</span>
+          </div>
+        </div>
+        <div class="arch-zone arch-zone-data">
+          <h4 class="arch-zone-label">Infrastructure Layer</h4>
+          <div class="arch-component" data-desc="Docker orchestrates all containers — FreeSWITCH, FusionPBX, PostgreSQL, and Fail2ban each run in isolated containers. This keeps dependencies separate and makes the system reproducible across environments.">
+            <div class="arch-icon">📦</div>
+            <span>Docker Containers</span>
+          </div>
+          <div class="arch-component" data-desc="PostgreSQL is the shared database used by both FreeSWITCH (agent state, registrations) and FusionPBX (configuration, extensions, dialplans). If this container goes down, everything stops working.">
+            <div class="arch-icon">🗄️</div>
+            <span>PostgreSQL Database</span>
+          </div>
+        </div>
+        <div class="arch-description" id="arch-desc">Click any component to learn what it does</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 3: FREESWITCH + DOCKER ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Layer 1 — The Engine</p>
+      <h2 class="screen-title">FreeSWITCH + Docker</h2>
+
+      <p class="text-block">The entire telephony stack runs inside
+        <span class="term" data-definition="Docker is a platform that packages applications into isolated environments called containers. Each container has its own filesystem, network, and processes — like a lightweight virtual machine, but sharing the host OS kernel.">Docker</span>
+        containers. The docker-compose file defines two services: the database and FreeSWITCH itself.
+      </p>
+
+      <div class="code-block" style="margin-top: var(--space-4);">
+        <div class="code-header">
+          <span class="code-filename">pbx/docker-compose-host.yml</span>
+        </div>
+        <pre style="white-space: pre-wrap; word-break: break-word;"><code><span class="code-keyword">services</span>:
+  <span class="code-property">postgres</span>:
+    <span class="code-attr">image</span>: <span class="code-string">luongld/postgres:14</span>
+    <span class="code-attr">container_name</span>: <span class="code-string">postgres_140</span>
+  <span class="code-property">pbx</span>:
+    <span class="code-attr">image</span>: <span class="code-string">luongld/pbx:1.10.8</span>
+    <span class="code-attr">container_name</span>: <span class="code-string">pbx_1108</span></code></pre>
+      </div>
+
+      <div class="callout callout-info" style="margin-top: var(--space-4);">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">Two Containers, One System</strong>
+          <p>The <code>postgres</code> container holds the shared database. The <code>pbx</code> container runs FreeSWITCH with custom modules like <span class="term" data-definition="mod_callcenter is a FreeSWITCH module that provides ACD (Automatic Call Distribution) — it manages queues, routes calls to available agents, and tracks agent states like Available, On Call, and Wrap-Up.">mod_callcenter</span> for queue management. The <code>pbx</code> image is custom-built with patched modules for this platform.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 4: FUSIONPBX ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Layer 2 — The Admin Panel</p>
+      <h2 class="screen-title">FusionPBX</h2>
+
+      <p class="text-block">FusionPBX is a
+        <span class="term" data-definition="PHP is a server-side scripting language designed for web development. It runs on the server (not in the browser) and generates HTML pages dynamically. FusionPBX is written entirely in PHP.">PHP</span>
+        web application with its own
+        <span class="term" data-definition="MVC stands for Model-View-Controller — a design pattern that separates data (Model), presentation (View), and logic (Controller). FusionPBX uses this pattern: models handle database queries, views render HTML, and controllers route requests.">MVC</span>
+        architecture. Every page request starts at one entry point.
+      </p>
+
+      <div class="code-block" style="margin-top: var(--space-4);">
+        <div class="code-header">
+          <span class="code-filename">fusionpbx/index.php</span>
+        </div>
+        <pre style="white-space: pre-wrap; word-break: break-word;"><code><span class="code-comment">//includes files</span>
+<span class="code-keyword">require_once</span> <span class="code-string">__DIR__</span> . <span class="code-string">"/resources/require.php"</span>;
+
+<span class="code-comment">//if logged in, redirect to login destination</span></code></pre>
+      </div>
+
+      <p class="text-block" style="margin-top: var(--space-4);">This single line loads FusionPBX's entire framework — database connections, authentication checks, and routing rules. Think of it as the front door of the admin panel.</p>
+
+      <div class="callout callout-accent" style="margin-top: var(--space-4);">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">Why This Matters for Debugging</strong>
+          <p>When someone says "the admin panel is down," you need to know: is it the PHP application (FusionPBX), the database it connects to (PostgreSQL), or the web server (nginx) in front of it? Each has different symptoms and different fixes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 5: LUA SCRIPTS ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Layer 3 — The Dispatchers</p>
+      <h2 class="screen-title">Lua Scripts</h2>
+
+      <p class="text-block">
+        <span class="term" data-definition="Lua is a lightweight scripting language embedded in FreeSWITCH. Lua scripts run inside the telephony engine and can access the database, control call routing, and interact with the SIP stack via the FreeSWITCH Event Socket.">Lua</span>
+        scripts are the custom dispatchers — they decide which train goes where when the standard
+        <span class="term" data-definition="A dialplan is a set of rules that tells FreeSWITCH what to do with each incoming or outgoing call — route it to an agent, play a recording, send it to voicemail, or hang up. Think of it as the timetable for call routing.">dialplan</span>
+        doesn't cover it.
+      </p>
+
+      <div class="code-block" style="margin-top: var(--space-4);">
+        <div class="code-header">
+          <span class="code-filename">pbx/fs/resources/lua/bridge_to_agent.lua</span>
+        </div>
+        <pre style="white-space: pre-wrap; word-break: break-word;"><code><span class="code-keyword">local</span> agent_uuid = argv[<span class="code-number">1</span>] <span class="code-keyword">or</span> <span class="code-string">''</span>
+<span class="code-keyword">local</span> dialplan_id = argv[<span class="code-number">2</span>] <span class="code-keyword">or</span> <span class="code-string">''</span>
+
+<span class="code-keyword">if</span> <span class="code-keyword">not</span> session <span class="code-keyword">or</span> <span class="code-keyword">not</span> session:ready() <span class="code-keyword">or</span> agent_uuid == <span class="code-string">''</span> <span class="code-keyword">then</span>
+    <span class="code-keyword">return false</span>
+<span class="code-keyword">end</span>
+
+<span class="code-keyword">local</span> api = freeswitch.API()
+<span class="code-keyword">local</span> Database = <span class="code-function">require</span> <span class="code-string">"resources.functions.database"</span>
+<span class="code-keyword">local</span> switch = Database.<span class="code-function">new</span>(<span class="code-string">"switch"</span>)
+
+<span class="code-keyword">if not</span> switch:connected() <span class="code-keyword">then</span>
+    freeswitch.<span class="code-function">consoleLog</span>(<span class="code-string">'WARN'</span>, <span class="code-string">'[bridge_to_agent] Database not connected!\n'</span>)
+    <span class="code-keyword">return</span>
+<span class="code-keyword">end</span></code></pre>
+      </div>
+
+      <p class="text-block" style="margin-top: var(--space-4);">The script first checks: is the call still alive? Is there an agent ID? Then it opens a database connection. If the database is down, it logs a warning and bails — never try to bridge a call without knowing the agent's status.</p>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 6: LUA TRANSLATION (bridge_to_agent) ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Code Reading</p>
+      <h2 class="screen-title">Reading the Agent Query</h2>
+
+      <p class="text-block">This is the core logic of bridge_to_agent.lua — the database query that checks whether an agent is actually available before connecting a call.</p>
+
+      <div class="translation-block animate-in" style="margin-top: var(--space-6);">
+        <div class="translation-code">
+          <span class="translation-label">CODE</span>
+          <pre><code>
+<span class="code-line"><span class="code-keyword">switch</span>:<span class="code-function">query</span>(<span class="code-string">"select agt.name name, agt.contact contact,</span></span>
+<span class="code-line"><span class="code-string">    agt.status status, agt.state state \</span></span>
+<span class="code-line"><span class="code-string">    from agents agt \</span></span>
+<span class="code-line"><span class="code-string">    inner join sip_registrations sreg</span></span>
+<span class="code-line"><span class="code-string">    on split_part(agt.contact, 'user/', 2)</span></span>
+<span class="code-line"><span class="code-string">    = (sreg.sip_username || '@' ||</span></span>
+<span class="code-line"><span class="code-string">    sreg.sip_realm) \</span></span>
+<span class="code-line"><span class="code-string">    where agt.name = :agent_uuid"</span>, {</span>
+<span class="code-line">    <span class="code-property">agent_uuid</span> = agent_uuid</span>
+<span class="code-line">}, <span class="code-keyword">function</span>(row)</span>
+<span class="code-line">    <span class="code-keyword">local</span> agent_status = row.status <span class="code-keyword">or</span> <span class="code-string">''</span></span>
+<span class="code-line">    <span class="code-keyword">local</span> agent_state = row.state <span class="code-keyword">or</span> <span class="code-string">''</span></span>
+<span class="code-line">    ...</span>
+<span class="code-line">    <span class="code-comment">-- Check agent available trước khi dial</span></span>
+<span class="code-line">    <span class="code-keyword">if</span> agent_status ~= <span class="code-string">'Available'</span> <span class="code-keyword">or</span></span>
+<span class="code-line">       agent_state ~= <span class="code-string">'Waiting'</span> <span class="code-keyword">then</span></span>
+<span class="code-line">        freeswitch.<span class="code-function">consoleLog</span>(<span class="code-string">"DEBUG"</span>,</span>
+<span class="code-line">            <span class="code-string">"[bridge_to_agent] Agent "</span> ..</span>
+<span class="code-line">            agent_uuid .. <span class="code-string">" không sẵn sàng,</span></span>
+<span class="code-line"><span class="code-string">            status="</span> .. agent_status ..</span>
+<span class="code-line">            <span class="code-string">" state="</span> .. agent_state .. <span class="code-string">"\n"</span>)</span>
+<span class="code-line">        <span class="code-keyword">return</span></span>
+<span class="code-line">    <span class="code-keyword">end</span></span>
+          </code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><strong>Query the database</strong> for the agent's name, contact info, status, and state...</p>
+            <p class="tl"><strong>Join with SIP registrations</strong> to verify the agent's phone is actually connected to the server...</p>
+            <p class="tl"><strong>Match by agent UUID</strong> — the unique ID passed into this script by FreeSWITCH...</p>
+            <p class="tl"><strong>Get the status and state</strong> fields from the query result, defaulting to empty string if null...</p>
+            <p class="tl">The Vietnamese comment says "check agent available before dial" — this is the key gate...</p>
+            <p class="tl"><strong>If the agent is NOT in Available/Waiting state, stop.</strong> Don't waste a ring attempt on someone who is on another call or offline. Log why and return early.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 7: QUEUE CASCADE ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Layer 3 — Cascade Routing</p>
+      <h2 class="screen-title">Trying Multiple Queues</h2>
+
+      <p class="text-block">Cascade routing tries multiple queues in order. If queue #1 has no available agents, it falls through to queue #2, then #3, and so on.</p>
+
+      <div class="translation-block animate-in" style="margin-top: var(--space-6);">
+        <div class="translation-code">
+          <span class="translation-label">CODE</span>
+          <pre><code>
+<span class="code-line"><span class="code-keyword">local</span> args = argv[<span class="code-number">1</span>] <span class="code-keyword">or</span> <span class="code-string">""</span></span>
+<span class="code-line"><span class="code-keyword">local</span> dialplan_id = argv[<span class="code-number">2</span>] <span class="code-keyword">or</span> <span class="code-string">""</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">if</span> args == <span class="code-string">""</span> <span class="code-keyword">then</span></span>
+<span class="code-line">    freeswitch.<span class="code-function">consoleLog</span>(<span class="code-string">"ERR"</span>,</span>
+<span class="code-line">        <span class="code-string">"[queue_cascade] Không có queue_ids</span></span>
+<span class="code-line"><span class="code-string">        được truyền vào"</span>)</span>
+<span class="code-line">    <span class="code-keyword">return</span></span>
+<span class="code-line"><span class="code-keyword">end</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">local</span> queue_ids = {}</span>
+<span class="code-line"><span class="code-keyword">for</span> id <span class="code-keyword">in</span> <span class="code-function">string.gmatch</span>(args, <span class="code-string">"([^,]+)"</span>) <span class="code-keyword">do</span></span>
+<span class="code-line">    id = id:<span class="code-function">match</span>(<span class="code-string">"^%s*(.-)%s*$"</span>) <span class="code-comment">-- trim</span></span>
+<span class="code-line">    <span class="code-keyword">if</span> id ~= <span class="code-string">""</span> <span class="code-keyword">then</span></span>
+<span class="code-line">        <span class="code-function">table.insert</span>(queue_ids, id)</span>
+<span class="code-line">    <span class="code-keyword">end</span></span>
+<span class="code-line"><span class="code-keyword">end</span></span>
+          </code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><strong>Receive a comma-separated string</strong> of queue IDs as the first argument from FreeSWITCH...</p>
+            <p class="tl"><strong>If no queues were passed,</strong> log an error (Vietnamese: "no queue_ids were provided") and bail out...</p>
+            <p class="tl"><strong>Build an ordered list</strong> by splitting the string on commas...</p>
+            <p class="tl"><strong>Trim whitespace</strong> from each ID so "q1, q2" and "q1,q2" both work...</p>
+            <p class="tl"><strong>Add each valid ID</strong> to the queue_ids array. The order matters — cascade tries them left to right.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 8: FAIL2BAN ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Layer 4 — The Security Guard</p>
+      <h2 class="screen-title">Fail2ban</h2>
+
+      <p class="text-block">Fail2ban monitors log files for failed authentication attempts. When an IP crosses the threshold, it adds a firewall rule to block that IP entirely.</p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-4);">
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-filename">pbx/f2b/Dockerfile</span>
+          </div>
+          <pre style="white-space: pre-wrap; word-break: break-word;"><code><span class="code-keyword">ARG</span> FAIL2BAN_VERSION=<span class="code-string">"0.11.2"</span>
+
+<span class="code-keyword">FROM</span> <span class="code-string">alpine:3.15</span>
+
+<span class="code-keyword">ARG</span> FAIL2BAN_VERSION
+<span class="code-keyword">RUN</span> apk --update --no-cache add \
+    bash curl grep \
+    ipset <span class="code-function">iptables</span> \
+...
+<span class="code-keyword">ENTRYPOINT</span> [ <span class="code-string">"/entrypoint.sh"</span> ]
+<span class="code-keyword">CMD</span> [ <span class="code-string">"fail2ban-server"</span>, <span class="code-string">"-f"</span>,
+      <span class="code-string">"-x"</span>, <span class="code-string">"-v"</span>, <span class="code-string">"start"</span> ]</code></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-filename">pbx/f2b/resources/jail.local</span>
+          </div>
+          <pre style="white-space: pre-wrap; word-break: break-word;"><code><span class="code-keyword">[freeswitch]</span>
+<span class="code-property">enabled</span>  = <span class="code-string">true</span>
+<span class="code-property">port</span>     = <span class="code-string">5060:5091</span>
+<span class="code-property">protocol</span> = <span class="code-string">all</span>
+<span class="code-property">filter</span>   = <span class="code-string">freeswitch</span>
+<span class="code-property">logpath</span>  = <span class="code-string">/var/log/freeswitch/freeswitch.log</span>
+<span class="code-property">action</span>   = <span class="code-function">iptables-allports</span>[name=freeswitch,
+             protocol=all]
+<span class="code-property">maxretry</span> = <span class="code-number">10</span>
+<span class="code-property">findtime</span> = <span class="code-number">60</span>
+<span class="code-property">bantime</span>  = <span class="code-number">3600</span></code></pre>
+        </div>
+      </div>
+
+      <p class="text-block" style="margin-top: var(--space-4);">Fail2ban runs in its own Alpine Linux container with
+        <span class="term" data-definition="iptables is the Linux kernel's built-in firewall. It filters network traffic by rules — blocking IPs, redirecting ports, or allowing connections. Fail2ban dynamically adds iptables rules to block offending IPs.">iptables</span>
+        for IP blocking. The jail configuration tells it exactly what to watch and when to act.
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 9: FAIL2BAN TRANSLATION ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Code Reading</p>
+      <h2 class="screen-title">Reading the Jail Config</h2>
+
+      <p class="text-block">This is the Fail2ban
+        <span class="term" data-definition="In Fail2ban, a 'jail' is a configuration block that defines what to monitor, how to detect attacks, and how to punish offenders. Each jail targets a specific service (like FreeSWITCH SIP) with its own thresholds and ban rules.">jail</span>
+        for FreeSWITCH — every setting controls a different aspect of the ban behavior.
+      </p>
+
+      <div class="translation-block animate-in" style="margin-top: var(--space-6);">
+        <div class="translation-code">
+          <span class="translation-label">CODE</span>
+          <pre><code>
+<span class="code-line"><span class="code-keyword">[freeswitch]</span></span>
+<span class="code-line"><span class="code-property">enabled</span>  = <span class="code-string">true</span></span>
+<span class="code-line"><span class="code-property">port</span>     = <span class="code-string">5060:5091</span></span>
+<span class="code-line"><span class="code-property">protocol</span> = <span class="code-string">all</span></span>
+<span class="code-line"><span class="code-property">filter</span>   = <span class="code-string">freeswitch</span></span>
+<span class="code-line"><span class="code-property">logpath</span>  = <span class="code-string">/var/log/freeswitch/freeswitch.log</span></span>
+<span class="code-line"><span class="code-property">action</span>   = <span class="code-function">iptables-allports</span>[name=freeswitch,</span>
+<span class="code-line">             protocol=all]</span>
+<span class="code-line"><span class="code-property">maxretry</span> = <span class="code-number">10</span></span>
+<span class="code-line"><span class="code-property">findtime</span> = <span class="code-number">60</span></span>
+<span class="code-line"><span class="code-property">bantime</span>  = <span class="code-number">3600</span></span>
+          </code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><strong>Name this jail "freeswitch"</strong> — each service gets its own jail block...</p>
+            <p class="tl"><strong>This jail is active.</strong> Set to false to disable it without removing the config...</p>
+            <p class="tl"><strong>Watch SIP traffic</strong> on ports 5060 through 5091...</p>
+            <p class="tl"><strong>Monitor all protocols</strong> (TCP, UDP) — SIP can use either...</p>
+            <p class="tl"><strong>Use the freeswitch filter</strong> — a pattern file that defines what counts as a failed attempt...</p>
+            <p class="tl"><strong>Read the FreeSWITCH log file</strong> to find failed authentication entries...</p>
+            <p class="tl"><strong>When triggered, block the IP</strong> on ALL ports using iptables — not just SIP...</p>
+            <p class="tl"><strong>Allow 10 failures</strong> before banning — this is the threshold...</p>
+            <p class="tl"><strong>Count failures within 60 seconds</strong> — if 10 failures happen in a minute, trigger the ban...</p>
+            <p class="tl"><strong>Ban for 1 hour</strong> (3600 seconds) — then automatically unblock the IP.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 10: QUIZ ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">Check Your Understanding</p>
+      <h2 class="screen-title">Quiz</h2>
+
+      <div class="quiz-container" id="quiz-module2">
+
+        <!-- Q1: Fail2ban -->
+        <div class="quiz-question-block"
+             data-correct="q2-opt-b"
+             data-explanation-right="The jail.local file controls the thresholds: maxretry (how many failures before banning), findtime (the time window to count failures), and bantime (how long the ban lasts). Check these values, then check whether the agent is actually typing the wrong password — maybe they need to update their credentials."
+             data-explanation-wrong="Fail2ban bans are controlled by the jail configuration. Think about where those threshold numbers live in the codebase...">
+          <h3 class="quiz-question">You notice Fail2ban has banned an IP address that belongs to a legitimate remote agent. What do you check?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="q2-opt-a" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>Restart the Fail2ban container to clear all bans immediately</span>
+            </button>
+            <button class="quiz-option" data-value="q2-opt-b" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>Check the jail.local maxretry/findtime settings and the agent&apos;s authentication failures</span>
+            </button>
+            <button class="quiz-option" data-value="q2-opt-c" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>Disable Fail2ban entirely — it causes more problems than it solves</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q2: FusionPBX -->
+        <div class="quiz-question-block"
+             data-correct="q2-opt-b"
+             data-explanation-right="FusionPBX connects to the PostgreSQL database to store all its configuration — extensions, dialplans, and settings. If the postgres container is down or unreachable, FusionPBX can't load anything. Check docker ps, then the postgres container logs."
+             data-explanation-wrong="FusionPBX needs a database to function. Think about where configuration data lives...">
+          <h3 class="quiz-question">FusionPBX shows &apos;Database Connection Failed&apos; in the web UI. Which container is the problem likely in?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="q2-opt-a" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>The pbx container — FreeSWITCH must be down too</span>
+            </button>
+            <button class="quiz-option" data-value="q2-opt-b" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>The postgres container — FusionPBX connects to it for all configuration data</span>
+            </button>
+            <button class="quiz-option" data-value="q2-opt-c" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>The fail2ban container — it might be blocking the database port</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q3: Lua Debugging -->
+        <div class="quiz-question-block"
+             data-correct="q2-opt-b"
+             data-explanation-right="The bridge_to_agent.lua script checks agent_status and agent_state before bridging. If the agent in queue #1 is not in Available/Waiting state, the script logs &apos;không sẵn sàng&apos; and returns without bridging — so the cascade never moves on to queue #2. Fix the agent status, or adjust the cascade logic."
+             data-explanation-wrong="Look at what the Lua script checks before it bridges a call. The debug log tells you exactly which condition failed...">
+          <h3 class="quiz-question">A call is supposed to cascade to queue #2 but doesn&apos;t. bridge_to_agent.lua logs &apos;Agent không sẵn sàng&apos;. What&apos;s wrong?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="q2-opt-a" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>The database is down, so the query returns nothing</span>
+            </button>
+            <button class="quiz-option" data-value="q2-opt-b" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>The agent in queue #1 is not in Available/Waiting state, so the cascade never proceeds to queue #2</span>
+            </button>
+            <button class="quiz-option" data-value="q2-opt-c" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>The Lua script has a syntax error in the string concatenation</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <button class="quiz-check-btn" onclick="checkQuiz('quiz-module2')">Check Answers</button>
+        <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module2')">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 11: BRIDGE ==================== -->
+  <div class="screen">
+    <div class="container animate-in">
+      <p class="eyebrow">What's Next</p>
+      <h2 class="screen-title">The Control Tower</h2>
+
+      <p class="text-block">You've met the engine that makes calls happen. Now it's time to zoom into the Java backend that manages agents, queues, and serves dialplans to FreeSWITCH.</p>
+
+      <div class="callout callout-accent" style="margin-top: var(--space-4);">
+        <div class="callout-icon">🔍</div>
+        <div class="callout-content">
+          <strong class="callout-title">Key Insight</strong>
+          <p>When someone says "the PBX is down," you now know it could be the FreeSWITCH process, the FusionPBX web UI, a Lua script crashing, or Fail2ban blocking legitimate traffic. Each layer has different symptoms and different fixes.</p>
+        </div>
+      </div>
+
+      <p class="text-block" style="margin-top: var(--space-6);"><strong>Module 3: The Control Tower</strong> — fsextension, the Java backend that ties everything together.</p>
+    </div>
+  </div>
+
+</section>

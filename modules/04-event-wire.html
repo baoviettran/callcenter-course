@@ -1,0 +1,416 @@
+<section class="module" id="module-4">
+
+  <!-- ===== SCREEN 1: HOOK ===== -->
+  <div class="screen" style="background: var(--color-bg-warm);">
+    <div class="container narrow">
+      <h2 class="screen-title animate-in">The Event Wire</h2>
+      <p class="screen-subtitle animate-in">Everything That Happens, Gets Reported</p>
+
+      <div class="callout callout-info animate-in" style="margin-top: var(--space-8);">
+        <p>The call you followed in Module 3 didn't just happen &mdash; it was <strong>ANNOUNCED</strong>, dozens of times: channel created, agent answered, bridged, held, hung up. Every announcement travels a wire.</p>
+        <p style="margin-top: var(--space-3);">This module is about that wire.</p>
+      </div>
+
+      <div class="feature-cards animate-in" style="margin-top: var(--space-8);">
+        <div class="feature-card" style="border-left-color: var(--color-actor-1);">
+          <div class="feature-card-icon" style="background: var(--color-actor-1);">FS</div>
+          <div>
+            <strong>FreeSWITCH</strong>
+            <p>The newsroom &mdash; where calls actually happen and events are born.</p>
+          </div>
+        </div>
+        <div class="feature-card" style="border-left-color: var(--color-actor-2);">
+          <div class="feature-card-icon" style="background: var(--color-actor-2);">WS</div>
+          <div>
+            <strong>fsevents</strong>
+            <p>The wire service &mdash; stamps and re-broadcasts every bulletin.</p>
+          </div>
+        </div>
+        <div class="feature-card" style="border-left-color: var(--color-actor-3);">
+          <div class="feature-card-icon" style="background: var(--color-actor-3);">AR</div>
+          <div>
+            <strong>fsextension</strong>
+            <p>The archive &mdash; writes history into the database.</p>
+          </div>
+        </div>
+        <div class="feature-card" style="border-left-color: var(--color-actor-4);">
+          <div class="feature-card-icon" style="background: var(--color-actor-4);">SD</div>
+          <div>
+            <strong>fsagent</strong>
+            <p>The sports desk &mdash; only cares about performance stats.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-warning animate-in" style="margin-top: var(--space-8);">
+        <strong>Why should I care?</strong> "Calls work but CDRs and reports are missing" is one of the most common production mysteries. After this module you will know exactly which hop lost the message.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 2: WHAT ESL IS ===== -->
+  <div class="screen" style="background: var(--color-bg);">
+    <div class="container narrow">
+      <h2 class="screen-title animate-in">FreeSWITCH Opens a Door</h2>
+      <p class="screen-subtitle animate-in">
+        The
+        <span class="term" data-definition="Event Socket Library &mdash; a network protocol that lets external programs connect to FreeSWITCH and receive structured event notifications in real time, like subscribing to a live news feed.">ESL</span>
+        (Event Socket Library) is how FreeSWITCH shouts structured
+        <span class="term" data-definition="A discrete, timestamped notification that something happened in the system &mdash; like a phone ringing, someone picking up, or a call ending. Events are the raw material of all call reporting.">events</span>
+        over a socket to anyone listening.
+      </p>
+
+      <div class="animate-in" style="margin-top: var(--space-6); text-align: center;">
+        <div style="display: inline-flex; align-items: center; gap: var(--space-4); background: var(--color-surface); padding: var(--space-5) var(--space-6); border-radius: var(--radius-md); box-shadow: var(--shadow-md);">
+          <div style="text-align: center;">
+            <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--color-actor-1);">FS</div>
+            <div style="font-size: var(--text-xs); color: var(--color-text-muted);">FreeSWITCH</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: var(--space-2);">
+            <div style="width: 60px; height: 2px; background: var(--color-accent);"></div>
+            <span class="term" data-definition="A two-way communication endpoint &mdash; like a door that events walk through from FreeSWITCH to the waiting consumers on the other side." style="font-size: var(--text-sm); font-weight: 600; color: var(--color-accent);">ESL Socket</span>
+            <div style="width: 60px; height: 2px; background: var(--color-accent);"></div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--color-actor-2);">WS</div>
+            <div style="font-size: var(--text-xs); color: var(--color-text-muted);">fsevents</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="animate-in" style="margin-top: var(--space-6); text-align: center; color: var(--color-text-secondary);">
+        fsevents connects via a
+        <span class="term" data-definition="In Go, a channel is a typed conduit that lets one part of a program send data to another &mdash; like a conveyor belt between workers. A goroutine is a lightweight thread that can read from or write to these channels.">goroutine</span>
+        and listens for a firehose of
+        <span class="term" data-definition="Channel Create, Channel Answer, Channel Hangup, etc. &mdash; FreeSWITCH emits a lifecycle event for every stage of a call. Think of them as progress reports for a phone call.">channel</span>
+        events. It then forwards them downstream to HTTP endpoints, <span class="term" data-definition="An open-source distributed event streaming platform &mdash; think of it as a postal system that guarantees every message eventually reaches its recipient, even if they are temporarily offline." style="color: var(--color-accent); font-weight: 600;">Kafka</span>, and other consumers.
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 3: CODE TRANSLATION 1 & 2 — NewClientWithBuffer + ConnectionStats ===== -->
+  <div class="screen" style="background: var(--color-bg-warm);">
+    <div class="container narrow">
+      <h2 class="screen-title animate-in">The Client That Listens</h2>
+      <p class="screen-subtitle animate-in">How fsevents connects to FreeSWITCH and keeps track of its own health</p>
+
+      <!-- Translation 1: NewClientWithBuffer -->
+      <div class="translation-block animate-in" style="margin-top: var(--space-6);">
+        <div class="translation-code">
+          <span class="translation-label">CODE</span>
+          <pre><code><span class="code-line"><span class="code-keyword">func</span> <span class="code-function">NewClientWithBuffer</span>(config *config.ESLConfig, bufferSize <span class="code-keyword">int</span>, logger *zap.Logger) *Client {</span>
+<span class="code-line">    ctx, cancel := context.<span class="code-function">WithCancel</span>(context.<span class="code-function">Background</span>())</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">return</span> &Client{</span>
+<span class="code-line">        config: config,</span>
+<span class="code-line">        logger: logger.<span class="code-function">Named</span>(<span class="code-string">"esl"</span>),</span>
+<span class="code-line">        events: <span class="code-function">make</span>(<span class="code-keyword">chan</span> *types.Event, bufferSize), <span class="code-comment">// Configurable buffer for events</span></span>
+<span class="code-line">        stats: &ConnectionStats{</span>
+<span class="code-line">            ConnectedAt: time.<span class="code-function">Now</span>(),</span>
+<span class="code-line">        },</span>
+<span class="code-line">        ctx:    ctx,</span>
+<span class="code-line">        cancel: cancel,</span>
+<span class="code-line">    }</span>
+<span class="code-line">}</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">Create a new ESL client that connects to FreeSWITCH.</p>
+            <p class="tl">Set up a cancel-able context &mdash; a way to shut the whole thing down cleanly later.</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">Start building the client object with all its pieces.</p>
+            <p class="tl">Save the connection config (host, port, etc.).</p>
+            <p class="tl">Give the logger a label so its messages say "esl" at the start.</p>
+            <p class="tl"><strong>This is the key line:</strong> <code>events</code> is a buffered channel &mdash; a waiting room with <code>bufferSize</code> chairs. If FreeSWITCH shouts faster than we can write, extra bulletins queue up here instead of being lost &mdash; until the chairs run out.</p>
+            <p class="tl">Set up the health tracker, noting when we first connected.</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">Hand back the ready-to-use client.</p>
+            <p class="tl">&nbsp;</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Translation 2: ConnectionStats -->
+      <div class="translation-block animate-in" style="margin-top: var(--space-6);">
+        <div class="translation-code">
+          <span class="translation-label">CODE</span>
+          <pre><code><span class="code-line"><span class="code-keyword">type</span> ConnectionStats <span class="code-keyword">struct</span> {</span>
+<span class="code-line">    ConnectedAt       time.Time</span>
+<span class="code-line">    EventsReceived    <span class="code-keyword">uint64</span></span>
+<span class="code-line">    EventsProcessed   <span class="code-keyword">uint64</span></span>
+<span class="code-line">    ReconnectAttempts <span class="code-keyword">uint64</span></span>
+<span class="code-line">    LastError         <span class="code-keyword">error</span></span>
+<span class="code-line">    mu                sync.RWMutex</span>
+<span class="code-line">}</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">The health report card of the whole wire.</p>
+            <p class="tl">When did we first connect?</p>
+            <p class="tl">How many events came in from FreeSWITCH?</p>
+            <p class="tl">How many did we actually process and forward?</p>
+            <p class="tl">How many times did the connection drop and we had to reconnect?</p>
+            <p class="tl">What was the last error message?</p>
+            <p class="tl">A lock so multiple goroutines can safely read/write these stats at the same time.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in" style="margin-top: var(--space-6);">
+        <strong>Key insight:</strong> If <code>EventsReceived</code> is way ahead of <code>EventsProcessed</code>, your backlog is growing. If <code>ReconnectAttempts &gt; 0</code> recently, FreeSWITCH restarted or the network blipped &mdash; expect an event gap in your data.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 4: GROUP CHAT ANIMATION ===== -->
+  <div class="screen" style="background: var(--color-bg);">
+    <div class="container narrow">
+      <h2 class="screen-title animate-in">The Wire in Action</h2>
+      <p class="screen-subtitle animate-in">Watch four components talk to each other during a single call lifecycle</p>
+
+      <div class="chat-window animate-in" id="chat-module4" style="margin-top: var(--space-6);">
+        <div class="chat-messages">
+
+          <!-- Message 0: FS Newsroom creates channel -->
+          <div class="chat-message" data-msg="0" data-sender="actor-1" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">FS</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">FS Newsroom</span>
+              <p><strong>CHANNEL_CREATE</strong> &mdash; new call from extension 1001</p>
+            </div>
+          </div>
+
+          <!-- Message 1: WireService forwards -->
+          <div class="chat-message" data-msg="1" data-sender="actor-2" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">WS</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">WireService</span>
+              <p>Forwarded to Kafka &check;</p>
+            </div>
+          </div>
+
+          <!-- Message 2: Archive writes CDR -->
+          <div class="chat-message" data-msg="2" data-sender="actor-3" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">AR</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">Archive</span>
+              <p>CDR row created in <span class="term" data-definition="An open-source relational database &mdash; think of it as a highly organized filing cabinet where every row is a written record. fsextension stores all call history here.">PostgreSQL</span>. Call started.</p>
+            </div>
+          </div>
+
+          <!-- Message 3: FS Newsroom answers -->
+          <div class="chat-message" data-msg="3" data-sender="actor-1" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">FS</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">FS Newsroom</span>
+              <p><strong>CHANNEL_ANSWER</strong> &mdash; agent on desk 201 picked up</p>
+            </div>
+          </div>
+
+          <!-- Message 4: SportsDesk subscribes to RTCP -->
+          <div class="chat-message" data-msg="4" data-sender="actor-4" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-4)">SD</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-4)">SportsDesk</span>
+              <p>Subscribed to RTCP for this leg&hellip; tracking jitter, packet loss, MOS score.</p>
+            </div>
+          </div>
+
+          <!-- Message 5: FS Newsroom hold -->
+          <div class="chat-message" data-msg="5" data-sender="actor-1" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">FS</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">FS Newsroom</span>
+              <p><strong>CALL_UPDATE</strong> &mdash; caller placed on hold</p>
+            </div>
+          </div>
+
+          <!-- Message 6: WireService re-forward -->
+          <div class="chat-message" data-msg="6" data-sender="actor-2" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">WS</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">WireService</span>
+              <p>Hold event forwarded &check; &mdash; Archive is updating the CDR.</p>
+            </div>
+          </div>
+
+          <!-- Message 7: FS Newsroom hangup -->
+          <div class="chat-message" data-msg="7" data-sender="actor-1" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">FS</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">FS Newsroom</span>
+              <p><strong>CHANNEL_HANGUP_COMPLETE</strong> &mdash; cause: <span class="term" data-definition="The reason a call ended. NORMAL_CLEARING means both parties hung up cleanly &mdash; no error, no timeout, just a finished conversation.">NORMAL_CLEARING</span></p>
+            </div>
+          </div>
+
+          <!-- Message 8: Archive saves duration -->
+          <div class="chat-message" data-msg="8" data-sender="actor-3" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">AR</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">Archive</span>
+              <p>Call duration saved: 4m 32s. CDR complete. Total cost: $0.12.</p>
+            </div>
+          </div>
+
+          <!-- Message 9: SportsDesk final stats -->
+          <div class="chat-message" data-msg="9" data-sender="actor-4" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-4)">SD</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-4)">SportsDesk</span>
+              <p>Final stats recorded. MOS: 4.2, avg jitter: 12ms, packet loss: 0.1%.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="chat-typing" id="chat-typing" style="display:none">
+          <div class="chat-avatar" id="chat-module4-typing-avatar">FS</div>
+          <div class="chat-typing-dots">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+          </div>
+        </div>
+
+        <div class="chat-controls">
+          <button class="btn chat-next-btn">Next Message</button>
+          <button class="btn chat-all-btn">Play All</button>
+          <button class="btn chat-reset-btn">Replay</button>
+          <span class="chat-progress"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 5: DOWNSTREAM PATHS ===== -->
+  <div class="screen" style="background: var(--color-bg-warm);">
+    <div class="container narrow">
+      <h2 class="screen-title animate-in">Where Events Go From Here</h2>
+      <p class="screen-subtitle animate-in">Three downstream consumers, each with a different job</p>
+
+      <div class="feature-cards animate-in" style="margin-top: var(--space-6);">
+        <div class="feature-card" style="border-left-color: var(--color-actor-2);">
+          <div class="feature-card-icon" style="background: var(--color-actor-2);">WS</div>
+          <div>
+            <strong>fsevents &rarr; HTTP Endpoints</strong>
+            <p>Forwards events to downstream services via HTTP with automatic retries. If an endpoint is down, the event gets queued and retried &mdash; it does not drop.</p>
+          </div>
+        </div>
+        <div class="feature-card" style="border-left-color: var(--color-actor-3);">
+          <div class="feature-card-icon" style="background: var(--color-actor-3);">AR</div>
+          <div>
+            <strong>fsextension consumes Kafka</strong>
+            <p>Reads <span class="term" data-definition="Apache Avro &mdash; a data serialization format that uses a schema to describe exactly what fields a message contains and what type each one is. Like a blueprint for data, ensuring everyone agrees on the shape.">Avro</span>-encoded events from <span class="term" data-definition="An open-source distributed event streaming platform &mdash; think of it as a postal system that guarantees every message eventually reaches its recipient, even if they are temporarily offline.">Kafka</span> topics and writes them into <span class="term" data-definition="An open-source relational database &mdash; think of it as a highly organized filing cabinet where every row is a written record. fsextension stores all call history here.">PostgreSQL</span> tables: <span class="term" data-definition="Call Detail Records &mdash; the official ledger of every call: who called whom, when, how long, and what it cost. Every telecom business runs on these.">CDRs</span>, active calls, agent history.</p>
+          </div>
+        </div>
+        <div class="feature-card" style="border-left-color: var(--color-actor-4);">
+          <div class="feature-card-icon" style="background: var(--color-actor-4);">SD</div>
+          <div>
+            <strong>fsagent subscribes for RTCP</strong>
+            <p>Ignores most call events and instead subscribes specifically to real-time performance metrics (jitter, packet loss, MOS scores) for live quality dashboards.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reverse direction: commands INTO FreeSWITCH -->
+      <div class="translation-block animate-in" style="margin-top: var(--space-8);">
+        <div class="translation-code">
+          <span class="translation-label">CODE</span>
+          <pre><code><span class="code-line"><span class="code-tag">@PostMapping</span>(<span class="code-string">"/dialed-number"</span>)</span>
+<span class="code-line"><span class="code-keyword">public</span> UUID <span class="code-function">createDialedNumber</span>(</span>
+<span class="code-line">        <span class="code-tag">@RequestHeader</span>(<span class="code-string">"Domain-Name"</span>) String domainName,</span>
+<span class="code-line">        <span class="code-tag">@RequestAttribute</span>(<span class="code-string">"Domain-Id"</span>) String domainId,</span>
+<span class="code-line">        <span class="code-tag">@RequestBody</span> CreateDialedNumberCommand command) {</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">if</span> (command.<span class="code-function">getDomainId</span>() == <span class="code-keyword">null</span>) {</span>
+<span class="code-line">        command = command.<span class="code-function">domainId</span>(domainId);</span>
+<span class="code-line">    }</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">return</span> bus.<span class="code-function">execute</span>(command).<span class="code-function">getId</span>();</span>
+<span class="code-line">}</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">This is a Spring Boot <span class="term" data-definition="An API endpoint that receives data to create something new &mdash; like submitting a form. POST stands for 'send data to the server,' as opposed to just asking the server for data (GET).">POST endpoint</span> at the path "/dialed-number".</p>
+            <p class="tl">Create a new dialed number and return its unique ID.</p>
+            <p class="tl">Read the domain name from the request header.</p>
+            <p class="tl">Read the domain ID that was attached to this request by middleware.</p>
+            <p class="tl">Read the full command object from the request body.</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">If the command did not include a domain ID, fill it in from the request.</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">Execute the command via the event bus and return the new number's ID.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in" style="margin-top: var(--space-6);">
+        <strong>Two directions, two doors:</strong> Events flow OUT of FreeSWITCH on the ESL wire. But management actions &mdash; like registering a new dialed number &mdash; flow IN through REST APIs. fsextension handles both.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 6: QUIZ ===== -->
+  <div class="screen" style="background: var(--color-bg);">
+    <div class="container narrow">
+      <h2 class="screen-title animate-in">Check Your Understanding</h2>
+      <p class="screen-subtitle animate-in">Apply what you learned about the event wire</p>
+
+      <div class="quiz-container animate-in" id="quiz-module4" style="margin-top: var(--space-6);">
+
+        <!-- Q1: Debugging scenario -->
+        <div class="quiz-question-block"
+             data-correct="option-a"
+             data-explanation-right="Exactly! The first place to look is fsevents ConnectionStats around 14:00. A spike in ReconnectAttempts or a growing gap between EventsReceived and EventsProcessed means the wire went silent during that window. Calls still connected fine (FreeSWITCH was up), but the forwarding layer lost its grip &mdash; so no CDRs or reports were written for that period."
+             data-explanation-wrong="Not quite. Think about what sits between FreeSWITCH producing events and the database recording them. The calls connected fine, so FreeSWITCH was working &mdash; the problem is that nobody was listening or forwarding during that window.">
+          <h3 class="quiz-question">Q1. Calls between 14:00 and 14:20 connected perfectly &mdash; agents picked up, conversations happened, hangsups were clean. But when you pull the CDR report, that entire 20-minute window is blank. No records anywhere. What is the first thing to check?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>fsevents ConnectionStats around 14:00 &mdash; look for reconnect attempts or a growing gap between EventsReceived and EventsProcessed</span>
+            </button>
+            <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>Restart FreeSWITCH to clear the ESL socket buffer and force fresh events</span>
+            </button>
+            <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>Check if the PostgreSQL disk was full &mdash; CDRs are always the first thing to stop writing when storage runs out</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q2: Concept question -->
+        <div class="quiz-question-block"
+             data-correct="option-b"
+             data-explanation-right="Correct! The buffered channel acts like a shock absorber between the event producer and the consumer. When FreeSWITCH produces events faster than fsevents can process them (say, during a burst of incoming calls), the extra events queue up in the buffer instead of being dropped. It buys processing time so you don't lose events during temporary slowdowns."
+             data-explanation-wrong="Not quite. Think about what happens when two things operate at different speeds. FreeSWITCH emits events at whatever pace calls come in, but processing and forwarding each event takes a small amount of time. The buffered channel bridges that speed gap.">
+          <h3 class="quiz-question">Q2. What is the purpose of the buffered channel (<code>make(chan *types.Event, bufferSize)</code>) in the ESL client?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>It encrypts events before they are sent to Kafka so the data is secure in transit</span>
+            </button>
+            <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>It absorbs bursts so events are not instantly dropped when processing momentarily lags behind production</span>
+            </button>
+            <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+              <div class="quiz-option-radio"></div>
+              <span>It limits the total number of events FreeSWITCH can send per second to prevent network congestion</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <button class="quiz-check-btn" onclick="checkQuiz('quiz-module4')">Check Answers</button>
+        <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module4')">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+</section>

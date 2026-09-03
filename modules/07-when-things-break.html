@@ -1,0 +1,365 @@
+<section class="module" id="module-7">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">07</span>
+      <h1 class="module-title">When Things Break</h1>
+      <p class="module-subtitle">Your detective toolkit &mdash; evidence, rooms, and a decision tree for every incident</p>
+    </header>
+
+    <div class="module-body">
+
+      <!-- Screen 1: Hook -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">9:05 AM. Slack lights up.</h2>
+        <div class="callout callout-warning animate-in">
+          <div class="callout-icon">🚨</div>
+          <div class="callout-content">
+            <strong class="callout-title">#support</strong>
+            <p>&ldquo;phones are down??&rdquo;</p>
+          </div>
+        </div>
+        <p>Take a breath. Every incident is a crime scene, and every component you met this course leaves
+          fingerprints in a different room: SIP envelopes in packet captures, the PBX&rsquo;s own diary,
+          bulletins on the wire, scorecards on the dashboard, the written record in PostgreSQL.</p>
+        <p>The detective&rsquo;s skill is not knowing everything &mdash; it is knowing
+          <strong>which room to enter first</strong> based on the symptom. This module is the decision tree
+          for that exact moment.</p>
+      </section>
+
+      <!-- Screen 2: The toolkit -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">The detective&rsquo;s kit</h2>
+        <p>Six tools, six rooms of evidence. Each one answers a different question:</p>
+        <div class="pattern-cards stagger-children">
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-1)">
+            <div class="pattern-icon" style="background: var(--color-actor-1)">📓</div>
+            <h4 class="pattern-title"><code>fs_cli</code></h4>
+            <p class="pattern-desc">FreeSWITCH&rsquo;s interactive console. Run <code>show channels</code>,
+              watch live events, ask the PBX what it is doing <em>right now</em>.</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-2)">
+            <div class="pattern-icon" style="background: var(--color-actor-2)">✉️</div>
+            <h4 class="pattern-title"><code>sngrep</code></h4>
+            <p class="pattern-desc">A live
+              <span class="term" data-definition="A packet capture is a recording of raw network traffic flying between hosts &mdash; like reading other people&rsquo;s postcards as they pass through the sorting office."><strong>packet capture</strong></span>
+              viewer for SIP envelopes. Answers: &ldquo;did the INVITE even arrive?&rdquo;</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-4)">
+            <div class="pattern-icon" style="background: var(--color-actor-4)">📰</div>
+            <h4 class="pattern-title">fsevents <code>:9090</code></h4>
+            <p class="pattern-desc">The health endpoint and <code>/metrics</code>. Is the event wire even
+              connected? Are
+              <span class="term" data-definition="Consumer lag is how far behind a Kafka consumer is &mdash; messages sitting on the belt waiting to be processed. Growing lag means falling behind."><strong>reconnect attempts</strong></span>
+              climbing?</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-3)">
+            <div class="pattern-icon" style="background: var(--color-actor-3)">🗄️</div>
+            <h4 class="pattern-title">Kafka lag &amp; fsextension logs</h4>
+            <p class="pattern-desc">Is the archive keeping up? <strong>Consumer lag</strong> growing means
+              CDRs will be late or missing. fsextension logs tell you why.</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-actor-5)">
+            <div class="pattern-icon" style="background: var(--color-actor-5)">📈</div>
+            <h4 class="pattern-title">Grafana / Prometheus</h4>
+            <p class="pattern-desc">fsagent&rsquo;s scoreboard. Was quality already degrading BEFORE the
+              outage &mdash; jitter creeping up all morning?</p>
+          </div>
+          <div class="pattern-card animate-in" style="border-top: 3px solid var(--color-accent-muted)">
+            <div class="pattern-icon" style="background: var(--color-accent-muted)">🚪</div>
+            <h4 class="pattern-title">Kamailio logs</h4>
+            <p class="pattern-desc">The front door. Did calls even get routed to FreeSWITCH, or did they
+              die at the proxy before anyone noticed?</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 3: Decision tree (interactive accordion) -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Symptom &rarr; first room to search</h2>
+        <p>Seven classic symptoms. Click to reveal the room you enter <em>first</em> and why:</p>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">📞</span>
+            <span class="decision-tree-label">Can&rsquo;t register / phone shows offline</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> <span class="term" data-definition="Kamailio is the front-door proxy &mdash; it receives every SIP message first and routes calls to the right FreeSWITCH node. If the proxy logs show nothing, the phone never got past the front gate.">Kamailio</span> logs, then <code>sngrep</code> for REGISTER.</p>
+            <p>The common factor across every &ldquo;offline&rdquo; agent is <span class="term" data-definition="Registration is a phone announcing &lsquo;I am here, send my calls to this address&rsquo; by sending periodic REGISTER messages to the system. No registration = no inbound calls.">registration</span>. Something upstream &mdash; network, Kamailio, auth &mdash; is rejecting the phones before FreeSWITCH ever sees them.</p>
+          </div>
+        </details>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">🔔</span>
+            <span class="decision-tree-label">Rings but never answers</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> <code>fs_cli</code>, dialplan, xml_curl response from fsextension.</p>
+            <p>The call got in. The signal reached FreeSWITCH. The problem is the routing rulebook &mdash;
+              did the <span class="term" data-definition="The dialplan is FreeSWITCH&rsquo;s rulebook: &lsquo;when a call for extension X arrives, do Y&rsquo; &mdash; who to ring, where to bridge, when to give up.">dialplan</span> get served?
+              Did fsextension&rsquo;s xml_curl return the right rules?</p>
+          </div>
+        </details>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">🤫</span>
+            <span class="decision-tree-label">Connected but no audio / one-way audio</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> <code>sngrep</code> for RTP endpoints, SDP/NAT addresses.</p>
+            <p>Signaling worked perfectly. The media path did not. Classic SDP/NAT territory &mdash; the negotiated media addresses in the SIP invite do not match where RTP packets actually travel.</p>
+          </div>
+        </details>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">🕳️</span>
+            <span class="decision-tree-label">Calls fine but CDRs / records missing</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> fsevents <code>/metrics</code> &rarr; Kafka consumer lag &rarr; database.</p>
+            <p>The calls were fine. The narration dropped. You know this from Module 4 &mdash; follow the wire backwards from the database to the source event, and you will find the gap.</p>
+          </div>
+        </details>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">🤖</span>
+            <span class="decision-tree-label">Sounds terrible (robotic, choppy)</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> Grafana / Prometheus via fsagent dashboards, per-leg comparison.</p>
+            <p>Open fsagent&rsquo;s scorecards and compare legs side by side. Jitter and packet-loss graphs tell you which side of the conversation is suffering, and exactly how badly.</p>
+          </div>
+        </details>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">⚙️</span>
+            <span class="decision-tree-label">Cannot add agent to queue</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> FusionPBX web UI or fsextension management domain.</p>
+            <p>Nothing about active calls is broken &mdash; a management action is being rejected or lost. Queue membership flows IN through fsextension&rsquo;s APIs, not through the telephony path.</p>
+          </div>
+        </details>
+
+        <details class="decision-tree-item animate-in">
+          <summary class="decision-tree-trigger">
+            <span class="decision-tree-icon">🌊</span>
+            <span class="decision-tree-label">Intermittent drops after network change</span>
+          </summary>
+          <div class="decision-tree-body">
+            <p><strong>First room:</strong> Grafana dashboards for jitter/loss timeline, then <code>sngrep</code> for media renegotiations.</p>
+            <p>A network change mid-shift is a slow-burn clue. Grafana shows exactly when quality started slipping; <code>sngrep</code> shows whether calls are being re-INVITEd or silently failing.</p>
+          </div>
+        </details>
+      </section>
+
+      <!-- Screen 4: Code &harr; English translations -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Reading the fingerprints</h2>
+        <p>Two pieces of evidence you will touch on nearly every incident. First, the wire&rsquo;s
+          health fingerprint &mdash; you met it in Module 4, now read it like a detective:</p>
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE &mdash; fsevents/internal/esl/client.go</span>
+            <pre><code><span class="code-keyword">type</span> ConnectionStats <span class="code-keyword">struct</span> {
+	ConnectedAt       time.Time
+	EventsReceived    <span class="code-keyword">uint64</span>
+	EventsProcessed   <span class="code-keyword">uint64</span>
+	ReconnectAttempts <span class="code-keyword">uint64</span>
+	LastError         error
+	mu                sync.RWMutex
+}</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">If Received &gg; Processed, backlog is growing &mdash; consumers too slow, records arriving late.</p>
+              <p class="tl">If ReconnectAttempts climbs, the wire keeps dropping &mdash; expect data gaps in every downstream system.</p>
+              <p class="tl">ConnectedAt tells you if the process restarted recently without anyone planning it.</p>
+              <p class="tl">LastError names the culprit: refused connection, timeout, auth failure&hellip;</p>
+            </div>
+          </div>
+        </div>
+        <p>Second, the PBX&rsquo;s own diary. A real
+          <span class="term" data-definition="fs_cli is FreeSWITCH&rsquo;s command-line console &mdash; an interactive session where you can ask the PBX questions (&lsquo;show channels&rsquo;) and watch events as they happen live."><code>fs_cli</code></span>
+          session:</p>
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">TERMINAL &mdash; fs_cli</span>
+            <pre><code>freeswitch@pbx&gt; show channels count
+0 total, 0 active
+
+freeswitch@pbx&gt; version
+FreeSWITCH Version 1.10.8 (git abc123)</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">Ask: how many calls exist right now? Answer: zero total, zero active.</p>
+              <p class="tl">If Slack says &ldquo;phones are down&rdquo; but agents say calls connect &mdash; reconcile those two stories here, live.</p>
+              <p class="tl">Ask: which build am I running? Useful after deploys &mdash; &ldquo;did we just change anything?&rdquo; starts here.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 5: Final quiz -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">The final case file</h2>
+        <p>Four incidents. You have the whole map now &mdash; pick the first room for each.</p>
+        <div class="quiz-container" id="quiz-module7">
+          <div class="quiz-question-block"
+               data-correct="option-a"
+               data-explanation-right="Exactly! If every phone shows offline, the common factor is registration. Check whether REGISTER messages are reaching the system: Kamailio logs first, then sngrep."
+               data-explanation-wrong="Not quite &mdash; ALL agents failing at once points at something shared upstream of individual phones. What is the very first thing a phone must do each morning before it can receive any call?">
+            <h3 class="quiz-question">All agents show offline simultaneously. Where do you look first?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The registration path &mdash; Kamailio logs, then sngrep for REGISTER messages</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>fsextension&rsquo;s database &mdash; rebuild the agent tables</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Grafana MOS dashboards &mdash; check recent voice quality</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block"
+               data-correct="option-b"
+               data-explanation-right="Exactly &mdash; &lsquo;robotic since the network change&rsquo; is a media-quality story. fsagent&rsquo;s jitter/loss graphs will show exactly when it degraded and on which legs."
+               data-explanation-wrong="Think about the symptom itself: robotic audio is a media-quality complaint, not a missing-records or registration problem. Which tool exists precisely to score voice quality over time?">
+            <h3 class="quiz-question">Since this morning&rsquo;s network change, callers describe audio as robotic. Best first move?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Kamailio logs &mdash; verify calls are being routed</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>fsagent&rsquo;s jitter/loss graphs &mdash; see when quality dropped and on which legs</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Kafka consumer lag &mdash; the archive must be behind</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block"
+               data-correct="option-a"
+               data-explanation-right="Exactly! CDRs stop during a deploy &rarr; suspect the event wire restarted and never recovered, or consumers died mid-deploy. fsevents ConnectionStats around 03:00 is your first exhibit."
+               data-explanation-wrong="Remember Module 4: calls working but records missing means the narration broke, not the calls. What does a deploy do to long-lived connections like the ESL wire &mdash; and where is that recorded?">
+            <h3 class="quiz-question">CDRs stopped at exactly 03:00 &mdash; the same minute last night&rsquo;s deploy finished. Calls work fine today. Investigate what first?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>fsevents reconnect stats and Kafka consumers after the deploy &mdash; did the event wire come back?</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>sngrep &mdash; capture SIP traffic to see why calls fail</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Agent headsets &mdash; audio quality may be confusing the recordings</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block"
+               data-correct="option-c"
+               data-explanation-right="Exactly! Adding agents to queues is a management action &mdash; that flows INTO telephony via fsextension&rsquo;s APIs and its bus. This is the reverse direction from the event wire."
+               data-explanation-wrong="Careful &mdash; nothing is broken about existing calls here; a configuration change is being rejected or lost. Which component owns management actions like &lsquo;add this agent to that queue&rsquo;?">
+            <h3 class="quiz-question">An admin says a new agent cannot be added to a queue. Nothing about active calls is wrong. Which domain owns this problem?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Media path &mdash; check RTP flows in sngrep</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Event wire &mdash; check fsevents ConnectionStats</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>fsextension &mdash; queue membership is a management action flowing in through its APIs</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <button class="quiz-check-btn" onclick="checkQuiz('quiz-module7')">Check Answers</button>
+          <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module7')">Try Again</button>
+        </div>
+      </section>
+
+      <!-- Screen 6: Wrap-up -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">You made it. Here&rsquo;s your badge. 🎓</h2>
+        <p>Seven modules ago, a call was just&hellip; a call. Now you can trace a phone call end-to-end:
+          the signaling handshake, the media stream, the event wire narrating it all, the quality
+          scoreboard grading it, and the detective kit for when any piece breaks.</p>
+        <p>That is not trivia &mdash; that is the mental model senior engineers use on their worst
+          days. Every incident you will ever handle in this system walks one of the seven paths on
+          that decision tree.</p>
+        <div class="callout callout-accent animate-in">
+          <div class="callout-icon">🚀</div>
+          <div class="callout-content">
+            <strong class="callout-title">Your next steps</strong>
+            <p>Knowledge becomes skill by touching real components. Do these four things this week:</p>
+          </div>
+        </div>
+        <div class="step-cards stagger-children">
+          <div class="step-card animate-in">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong>Spin up the sandbox</strong>
+              <p>Run the local environment via <code>pbx/docker-compose.yml</code>. Breaking things on
+                your laptop teaches more than reading ever will.</p>
+            </div>
+          </div>
+          <div class="step-card animate-in">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <strong>Learn two tools deeply</strong>
+              <p><code>fs_cli</code> and <code>sngrep</code>. Make a test call while watching both &mdash;
+                watch your own call happen in the diary and in the envelopes.</p>
+            </div>
+          </div>
+          <div class="step-card animate-in">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <strong>Read the archive&rsquo;s topics</strong>
+              <p>Browse fsextension&rsquo;s Kafka topics and the tables they feed. Connect the group chat
+                from Module 4 to real rows in PostgreSQL.</p>
+            </div>
+          </div>
+          <div class="step-card animate-in">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <strong>Bookmark the dashboards</strong>
+              <p>Save the Grafana boards. On your first incident, you want them one click away &mdash; not
+                somewhere you will discover under pressure.</p>
+            </div>
+          </div>
+        </div>
+        <p style="text-align: center; margin-top: var(--space-10)"><strong>Now go answer that 9:05 AM page.
+          You are ready.</strong></p>
+      </section>
+
+    </div>
+  </div>
+</section>

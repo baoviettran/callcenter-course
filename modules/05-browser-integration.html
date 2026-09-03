@@ -1,0 +1,412 @@
+<section class="module" id="module-5">
+  <div class="module-content">
+    <header class="module-header animate-in">
+      <span class="module-number">05</span>
+      <h1 class="module-title">Browser Integration</h1>
+      <p class="module-subtitle">sip.js-worker + shared.io — the softphone and data layer that survive tab switches.</p>
+    </header>
+
+    <div class="module-body">
+
+      <!-- SCREEN 1: Hook — closing a tab shouldn't kill a call -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Closing a tab shouldn't kill a call</h2>
+        <p>You know that feeling when you accidentally close a browser tab during a call and the call drops? This system fixes that.</p>
+        <p>The softphone runs in a <span class="term" data-definition="A SharedWorker is a background script shared by ALL tabs of the same site — one worker that every tab talks to, instead of each tab running its own copy.">SharedWorker</span> — a background thread that survives tab reloads. And there is a second SharedWorker that keeps your <span class="term" data-definition="WebSocket is a protocol that lets a browser maintain a single, long-lived connection to a server — so the server can push data to the browser at any moment, instead of the browser constantly asking.">WebSocket</span> connection alive across all tabs.</p>
+        <p>Let's see how both work.</p>
+
+        <div class="pattern-cards animate-in">
+          <div class="pattern-card">
+            <div class="pattern-icon">📡</div>
+            <h3>sip.js-worker</h3>
+            <p>Runs the <span class="term" data-definition="SIP (Session Initiation Protocol) is the standard language phones use to set up, manage, and end calls. It carries 'who calls whom' messages, but never the voice itself.">SIP</span> phone engine in a background thread. One <span class="term" data-definition="WebSocket is a protocol that lets a browser maintain a single, long-lived connection to a server — so the server can push data to the browser at any moment, instead of the browser constantly asking.">WebSocket</span> registration shared by every tab.</p>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-icon">🔌</div>
+            <h3>shared.io</h3>
+            <p>Runs <span class="term" data-definition="Socket.IO is a library that wraps WebSocket with automatic reconnection, room-based broadcasting, and a request/response acknowledgement pattern — making real-time messaging more reliable.">Socket.IO</span> in a background thread. One data connection shared by every tab for status updates, notifications, and call state.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: The SharedWorker pattern -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">The SharedWorker pattern</h2>
+        <p>A <span class="term" data-definition="A WebWorker is a script that runs in a background thread, separate from the main page — it can do heavy computation without freezing the UI.">WebWorker</span> is a script that runs in a background thread, separate from the main page. A SharedWorker goes further: it is one worker instance shared by every tab of the same site.</p>
+        <p>Each tab connects to the worker through a <span class="term" data-definition="PostMessage is the mechanism that lets a browser tab and a WebWorker (or SharedWorker) send messages back and forth — a private, two-way channel between the page and the background thread.">PostMessage</span> channel — a form of <span class="term" data-definition="IPC (Inter-Process Communication) is how separate programs or threads exchange data. In the browser, tabs and workers use PostMessage as their IPC mechanism.">IPC</span> (Inter-Process Communication). The worker holds the single <span class="term" data-definition="SIP (Session Initiation Protocol) is the standard language phones use to set up, manage, and end calls. It carries 'who calls whom' messages, but never the voice itself.">SIP</span> registration and the single Socket connection, and routes messages to whichever tab needs them.</p>
+
+        <div class="arch-diagram animate-in">
+          <div class="arch-zone arch-zone-browser">
+            <h4 class="arch-zone-label">Browser Tabs</h4>
+            <div class="arch-component" data-desc="Each tab connects to the SharedWorker via a private MessagePort channel. Tabs never talk to each other directly — the worker routes everything."
+                >
+              <div class="arch-icon">📄</div>
+              <span>Tab 1</span>
+            </div>
+            <div class="arch-component" data-desc="Tab 2 has its own MessagePort to the same worker. It can initiate or receive calls, but the SIP registration is still the same one."
+                >
+              <div class="arch-icon">📄</div>
+              <span>Tab 2</span>
+            </div>
+            <div class="arch-component" data-desc="Tab 3 also shares the same worker. If Tab 1 closes mid-call, the worker auto-hangs-up — no orphaned SIP sessions."
+                >
+              <div class="arch-icon">📄</div>
+              <span>Tab 3</span>
+            </div>
+          </div>
+
+          <div class="arch-zone arch-zone-middleware">
+            <h4 class="arch-zone-label">SharedWorkers (background threads)</h4>
+            <div class="arch-component" data-desc="sip.js-worker: runs the SIP phone engine. Manages UserAgent, Registerer, and call sessions. One SIP registration for all tabs. AudioContext state is tracked centrally so audio does not break on tab switches."
+                >
+              <div class="arch-icon">📡</div>
+              <span>sip.js-worker</span>
+            </div>
+            <div class="arch-component" data-desc="shared.io: runs Socket.IO in a background thread. Manages the WebSocket to the backend, request/response ACKs, notification fan-out to all tabs, and long-polling fallback."
+                >
+              <div class="arch-icon">🔌</div>
+              <span>shared.io</span>
+            </div>
+          </div>
+
+          <div class="arch-zone arch-zone-external">
+            <h4 class="arch-zone-label">Servers</h4>
+            <div class="arch-component" data-desc="FreeSWITCH via WSS (secure WebSocket). Handles SIP signaling — call setup, routing, and teardown. The sip.js-worker maintains a persistent WebSocket connection here."
+                >
+              <div class="arch-icon">🏢</div>
+              <span>FreeSWITCH<br>(WSS)</span>
+            </div>
+            <div class="arch-component" data-desc="Socket.IO backend server. Handles agent status updates, queue notifications, CDR display, and all real-time data. The shared.io worker maintains one persistent connection here."
+                >
+              <div class="arch-icon">⚙️</div>
+              <span>Socket.IO<br>Backend</span>
+            </div>
+          </div>
+
+          <div class="arch-description" id="arch-desc">Click any component to learn what it does</div>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: sip.js-worker deep dive -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">sip.js-worker deep dive</h2>
+        <p>The worker starts by creating three managers: <strong>WorkerState</strong> tracks what is happening, <strong>MessageBroker</strong> routes messages between tabs, and <strong>SipCore</strong> is the actual SIP phone engine. Notice SipCore starts as <code>null</code> — it is created when the first tab sends a "register" message.</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">sip.js-worker/src/worker/index.ts</span>
+            <pre><code><span class="code-comment">/**
+ * Worker entry point
+ */</span>
+
+<span class="code-keyword">import</span> { <span class="code-property">MessageBroker</span> } <span class="code-keyword">from</span> <span class="code-string">'./message-broker'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">TabManager</span> } <span class="code-keyword">from</span> <span class="code-string">'./tab-manager'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">SipCore</span>, <span class="code-property">SipCoreOptions</span> } <span class="code-keyword">from</span> <span class="code-string">'./sip-core'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">WorkerState</span> } <span class="code-keyword">from</span> <span class="code-string">'./worker-state'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">SipWorker</span>, <span class="code-property">VERSION</span> } <span class="code-keyword">from</span> <span class="code-string">'../common/types'</span>;
+
+<span class="code-comment">// Khởi tạo WorkerState</span>
+<span class="code-keyword">const</span> workerState = <span class="code-keyword">new</span> <span class="code-function">WorkerState</span>();
+
+<span class="code-comment">// Khởi tạo MessageBroker</span>
+<span class="code-keyword">const</span> messageBroker = <span class="code-keyword">new</span> <span class="code-function">MessageBroker</span>();
+
+<span class="code-comment">// Set WorkerState reference cho MessageBroker</span>
+messageBroker.<span class="code-function">setWorkerState</span>(workerState);
+
+<span class="code-comment">// Biến lưu trữ SipCore</span>
+<span class="code-keyword">let</span> sipCore: <span class="code-property">SipCore</span> | <span class="code-keyword">null</span> = <span class="code-keyword">null</span>;</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">The SharedWorker starts by creating three managers: WorkerState (tracks what is happening), MessageBroker (routes messages between tabs), and SipCore (the SIP phone engine).</p>
+              <p class="tl">The Vietnamese comments say "Initialize WorkerState", "Initialize MessageBroker", "Set WorkerState reference for MessageBroker", and "Variable to store SipCore".</p>
+              <p class="tl">Notice SipCore starts as <code>null</code> — it is not created until the first tab sends a "register" message. This means the SIP connection is lazy: no resources are used until an agent actually needs the phone.</p>
+            </div>
+          </div>
+        </div>
+
+        <p>The <strong>TabManager</strong> watches for tabs closing. If a tab closes while on a call, it auto-hangs-up — nobody is listening anymore. It also tracks the <span class="term" data-definition="AudioContext is the browser API that handles audio playback. Browsers suspend it when no user interaction happens, so the worker needs to track state changes to resume audio when needed.">AudioContext</span> — browsers suspend audio when no user interaction happens, so the worker needs to know when audio state changes.</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">sip.js-worker/src/worker/index.ts</span>
+            <pre><code><span class="code-keyword">const</span> tabManager = <span class="code-keyword">new</span> <span class="code-function">TabManager</span>(messageBroker, workerState, {
+  <span class="code-function">onTabClosedWithCall</span>: <span class="code-keyword">async</span> (callId: <span class="code-property">string</span>, reason: <span class="code-property">string</span>) <span class="code-operator">=></span> {
+    <span class="code-keyword">if</span> (sipCore) {
+      console.<span class="code-function">log</span>(<span class="code-string">`Auto-hanging up call ${callId} due to: ${reason}`</span>);
+      <span class="code-keyword">await</span> sipCore.<span class="code-function">hangupCall</span>(callId);
+    } <span class="code-keyword">else</span> {
+      console.<span class="code-function">error</span>(<span class="code-string">`Cannot hangup call ${callId}: SipCore not initialized`</span>);
+    }
+  },
+  <span class="code-function">onAudioContextStateChanged</span>: (hasRunningAudioContext: <span class="code-property">boolean</span>, previousState: <span class="code-property">boolean</span>) <span class="code-operator">=></span> {
+    <span class="code-keyword">if</span> (sipCore) {
+      console.<span class="code-function">log</span>(<span class="code-string">`AudioContext state changed: ${previousState} → ${hasRunningAudioContext}`</span>);
+      sipCore.<span class="code-function">handleAudioContextStateChange</span>(hasRunningAudioContext, previousState);
+    }
+  }
+});</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">The TabManager receives two callbacks: one for when a tab closes during a call (auto-hang-up), and one for when audio state changes (resume or suspend).</p>
+              <p class="tl"><code>onTabClosedWithCall</code>: if a tab closes while on a call, the worker automatically hangs up — no orphaned SIP session left behind.</p>
+              <p class="tl"><code>onAudioContextStateChanged</code>: the browser may suspend audio after idle. When audio resumes, the worker notifies SipCore so it can re-establish the audio path.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: sip-core imports -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">SipCore: the SIP phone engine</h2>
+        <p>SipCore imports from <code>sip.js</code> — the SIP library that provides all the building blocks for making and receiving calls over <span class="term" data-definition="WebSocket is a protocol that lets a browser maintain a single, long-lived connection to a server — so the server can push data to the browser at any moment, instead of the browser constantly asking.">WebSocket</span>.</p>
+        <p>The <code>LenientTransport</code> is a custom patch that fixes real-world WebSocket quirks that the standard library does not handle.</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">sip.js-worker/src/worker/sip-core.ts</span>
+            <pre><code><span class="code-comment">/**
+ * SipCore - Lớp xử lý SIP signaling
+ */</span>
+
+<span class="code-keyword">import</span> { <span class="code-property">SipWorker</span> } <span class="code-keyword">from</span> <span class="code-string">'../common/types'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">MessageBroker</span> } <span class="code-keyword">from</span> <span class="code-string">'./message-broker'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">TabManager</span> } <span class="code-keyword">from</span> <span class="code-string">'./tab-manager'</span>;
+<span class="code-keyword">import</span> {
+  <span class="code-property">createWorkerSessionDescriptionHandlerFactory</span>,
+  <span class="code-property">WorkerSessionDescriptionHandlerOptions</span>,
+} <span class="code-keyword">from</span> <span class="code-string">'./worker-session-description-handler'</span>;
+<span class="code-keyword">import</span> {
+  <span class="code-property">UserAgent</span>,
+  <span class="code-property">UserAgentOptions</span>,
+  <span class="code-property">Registerer</span>,
+  <span class="code-property">RegistererState</span>,
+  <span class="code-property">Inviter</span>,
+  <span class="code-property">Invitation</span>,
+  <span class="code-property">Session</span>,
+  <span class="code-property">SessionState</span>,
+  <span class="code-property">Web</span>,
+  <span class="code-property">InviterOptions</span>
+} <span class="code-keyword">from</span> <span class="code-string">'sip.js'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">v7</span> <span class="code-keyword">as</span> <span class="code-property">uuidv7</span> } <span class="code-keyword">from</span> <span class="code-string">'uuid'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">WorkerState</span> } <span class="code-keyword">from</span> <span class="code-string">'./worker-state'</span>;
+<span class="code-keyword">import</span> { <span class="code-property">LenientTransport</span> } <span class="code-keyword">from</span> <span class="code-string">'./lenient-transport'</span>;</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">The Vietnamese comment at the top says "SipCore — SIP signaling handler class".</p>
+              <p class="tl"><code>UserAgent</code> is the phone identity — it tells the server who is registering. <code>Registerer</code> sends the "I am online" message to FreeSWITCH.</p>
+              <p class="tl"><code>Inviter</code> starts an outbound call. <code>Invitation</code> handles an inbound call. <code>Session</code> and <code>SessionState</code> track the call lifecycle (ringing, answered, terminated).</p>
+              <p class="tl"><code>LenientTransport</code> is a custom WebSocket transport that patches real-world quirks — some proxies strip headers or send malformed frames that the standard library rejects.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 5: shared.io deep dive -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">shared.io: Socket.IO over SharedWorker</h2>
+        <p>shared.io creates four managers: <strong>MessageRouter</strong> directs messages, <strong>AckManager</strong> tracks request/response pairs, <strong>NotificationManager</strong> broadcasts events to all tabs, and <strong>LongPollingManager</strong> provides a <span class="term" data-definition="Long-polling is a fallback technique where the browser sends a request to the server and holds the connection open until the server has data to send — like staying on the phone line instead of hanging up and calling back. Less efficient than WebSocket, but works everywhere.">long-polling</span> fallback for browsers without SharedWorker support.</p>
+        <p>When a tab connects, it sends a <span class="term" data-definition="PostMessage is the mechanism that lets a browser tab and a WebWorker (or SharedWorker) send messages back and forth — a private, two-way channel between the page and the background thread.">PostMessage</span> port — the worker uses this private channel to talk to that specific tab.</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">shared.io/src/worker/index.ts</span>
+            <pre><code><span class="code-comment">/**
+ * Shared Worker Entry Point
+ *
+ * This module is the entry point for the Shared Worker,
+ * handling connections from clients and coordinating messages.
+ */</span>
+
+<span class="code-keyword">import</span> { <span class="code-property">MessageType</span>, <span class="code-property">WorkerMessage</span> } <span class="code-keyword">from</span> <span class="code-string">'../common/types'</span>;
+<span class="code-keyword">import</span> { <span class="code-function">createMessageRouter</span>, <span class="code-property">IMessageRouter</span> } <span class="code-keyword">from</span> <span class="code-string">'./message-router'</span>;
+<span class="code-keyword">import</span> { <span class="code-function">createSocketManager</span>, <span class="code-property">ISocketManager</span> } <span class="code-keyword">from</span> <span class="code-string">'./socket-manager'</span>;
+<span class="code-keyword">import</span> { <span class="code-function">createAckManager</span>, <span class="code-property">IAckManager</span> } <span class="code-keyword">from</span> <span class="code-string">'./ack-manager'</span>;
+<span class="code-keyword">import</span> { <span class="code-function">createNotificationManager</span>, <span class="code-property">INotificationManager</span> } <span class="code-keyword">from</span> <span class="code-string">'./notification'</span>;
+<span class="code-keyword">import</span> { <span class="code-function">createLongPollingManager</span>, <span class="code-property">ILongPollingManager</span> } <span class="code-keyword">from</span> <span class="code-string">'./long-polling'</span>;
+
+<span class="code-comment">// Initialize managers</span>
+<span class="code-keyword">const</span> messageRouter: <span class="code-property">IMessageRouter</span> = <span class="code-function">createMessageRouter</span>();
+<span class="code-keyword">const</span> ackManager: <span class="code-property">IAckManager</span> = <span class="code-function">createAckManager</span>();
+<span class="code-keyword">const</span> notificationManager: <span class="code-property">INotificationManager</span> = <span class="code-function">createNotificationManager</span>(messageRouter);
+<span class="code-keyword">const</span> longPollingManager: <span class="code-property">ILongPollingManager</span> = <span class="code-function">createLongPollingManager</span>(messageRouter);
+<span class="code-keyword">const</span> socketManager: <span class="code-property">ISocketManager</span> = <span class="code-function">createSocketManager</span>(
+  messageRouter,
+  ackManager,
+  notificationManager,
+  longPollingManager
+);
+
+<span class="code-comment">/**
+ * Initialize the Shared Worker
+ */</span>
+<span class="code-keyword">export function</span> <span class="code-function">initializeWorker</span>(): <span class="code-keyword">void</span> {
+  <span class="code-keyword">try</span> {
+    <span class="code-comment">// Listen for connection events from clients</span>
+    self.<span class="code-function">addEventListener</span>(<span class="code-string">'connect'</span>, (event: <span class="code-property">MessageEvent</span>) <span class="code-operator">=></span> {
+      <span class="code-function">handleConnect</span>(event.ports[<span class="code-number">0</span>]);
+    });
+
+    console.<span class="code-function">log</span>(<span class="code-string">'Socket.IO Shared Worker initialized'</span>);
+  } <span class="code-keyword">catch</span> (error) {
+    console.<span class="code-function">error</span>(<span class="code-string">'Could not initialize Shared Worker:'</span>, error);
+  }
+}</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl">Four managers are created at startup: MessageRouter (directs messages), AckManager (tracks request/response pairs via <span class="term" data-definition="ACK (acknowledgement) is a pattern where the sender waits for the server to confirm it received a message — like sending a letter with return receipt. In Socket.IO, emitWithAck sends a message and waits for the server to acknowledge it.">ACK</span>), NotificationManager (broadcasts to all tabs), and LongPollingManager (fallback).</p>
+              <p class="tl"><code>self.addEventListener('connect', ...)</code> is how a SharedWorker receives new tab connections. Each tab sends a MessagePort — a private, two-way channel between that tab and the worker.</p>
+              <p class="tl">The Vietnamese comment says "Listen for connection events from clients" and "Initialize the Shared Worker".</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 6: socket-manager interface -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">SocketManager: the gateway</h2>
+        <p>The SocketManager interface is the gateway between the SharedWorker and the Socket.IO server. Every tab calls <code>connect</code>, <code>emit</code>, <code>on</code> through this single manager.</p>
+        <p>The key method is <code>emitWithAck</code> — the <span class="term" data-definition="ACK (acknowledgement) is a pattern where the sender waits for the server to confirm it received a message — like sending a letter with return receipt. In Socket.IO, emitWithAck sends a message and waits for the server to acknowledge it.">ACK</span>-based request/response pattern: send a message and wait for the server to acknowledge it.</p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">shared.io/src/worker/socket-manager.ts</span>
+            <pre><code><span class="code-keyword">export interface</span> <span class="code-property">ISocketManager</span> {
+  <span class="code-function">connect</span>(url: <span class="code-property">string</span>, options: <span class="code-property">SharedSocketIOOptions</span>, message: <span class="code-property">WorkerMessage</span>): <span class="code-keyword">void</span>;
+  <span class="code-function">disconnect</span>(message: <span class="code-property">WorkerMessage</span>): <span class="code-keyword">void</span>;
+  <span class="code-function">emit</span>(eventName: <span class="code-property">string</span>, args: <span class="code-property">any</span>[], message: <span class="code-property">WorkerMessage</span>): <span class="code-keyword">void</span>;
+  <span class="code-function">emitWithAck</span>(eventName: <span class="code-property">string</span>, args: <span class="code-property">any</span>[], message: <span class="code-property">WorkerMessage</span>): <span class="code-property">Promise</span>&lt;<span class="code-property">any</span>&gt;;
+  <span class="code-function">on</span>(eventName: <span class="code-property">string</span>, message: <span class="code-property">WorkerMessage</span>): <span class="code-keyword">void</span>;
+  <span class="code-function">off</span>(eventName: <span class="code-property">string</span>, message: <span class="code-property">WorkerMessage</span>): <span class="code-keyword">void</span>;
+  <span class="code-function">once</span>(eventName: <span class="code-property">string</span>, message: <span class="code-property">WorkerMessage</span>): <span class="code-keyword">void</span>;
+  <span class="code-function">getConnectionStatus</span>(): <span class="code-property">ConnectionStatus</span>;
+}</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p class="tl"><code>connect</code> / <code>disconnect</code>: open or close the Socket.IO connection to the backend server.</p>
+              <p class="tl"><code>emit</code>: fire-and-forget — send a message to the server without waiting for a response.</p>
+              <p class="tl"><code>emitWithAck</code>: request/response — send a message and get a Promise that resolves when the server acknowledges it. This is how reliable data flows work.</p>
+              <p class="tl"><code>on</code> / <code>off</code> / <code>once</code>: subscribe, unsubscribe, or listen once to server events — the same pattern as a DOM event listener.</p>
+              <p class="tl"><code>getConnectionStatus</code>: check whether the socket is currently connected, reconnecting, or disconnected.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 7: How they work together -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">How they work together</h2>
+        <p>sip.js-worker handles the call lifecycle: ringing, answering, talking, hanging up. shared.io handles everything else: agent status updates, queue notifications, CDR display.</p>
+        <p>They are independent — either can work without the other — but together they give the browser agent a complete real-time experience that survives tab switches.</p>
+
+        <div class="pattern-cards animate-in">
+          <div class="pattern-card">
+            <div class="pattern-icon">📡</div>
+            <h3>sip.js-worker owns</h3>
+            <p>SIP registration with FreeSWITCH. Call setup (INVITE). Call teardown (BYE). <span class="term" data-definition="WebRTC (Web Real-Time Communication) is the browser API that handles real-time audio and video — it manages the actual voice stream between the caller and callee, running alongside SIP signaling.">WebRTC</span> media negotiation. AudioContext state management.</p>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-icon">🔌</div>
+            <h3>shared.io owns</h3>
+            <p>Agent status (available, on-call, break). Queue notifications (new call waiting). CDR display (call records). Any real-time data the UI needs to stay in sync with the backend.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 8: Quiz -->
+      <section class="screen animate-in">
+        <h2 class="screen-heading">Check your understanding</h2>
+
+        <div class="quiz-container" id="quiz-module5">
+
+          <!-- Q1: SIP registrations -->
+          <div class="quiz-question-block"
+               data-correct="option-b"
+               data-explanation-right="Exactly. The SharedWorker registers once with FreeSWITCH, and all three tabs share that single registration. This is the whole point — one SIP line, not three."
+               data-explanation-wrong="Not quite. The SharedWorker holds ONE SIP registration that all tabs share. Each tab does not register separately — that would be wasteful and cause conflicts.">
+            <h3 class="quiz-question">An agent has 3 browser tabs open. How many SIP registrations does the system see?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Three — one per tab, each tab is independent</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>One — the SharedWorker registers once, all tabs share it</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Zero — SIP registrations only happen on the server side</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <!-- Q2: Long-polling fallback -->
+          <div class="quiz-question-block"
+               data-correct="option-c"
+               data-explanation-right="Correct. shared.io detects that SharedWorker is unavailable and falls back to long-polling so it still works — just less efficiently."
+               data-explanation-wrong="Not quite. Long-polling is a deliberate fallback, not an error. It kicks in when SharedWorker support is missing from the browser.">
+            <h3 class="quiz-question">shared.io shows "long-polling mode" instead of WebSocket. Why?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The WebSocket server is down</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The agent's internet connection is slow</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>The browser does not support SharedWorker, so shared.io falls back</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <!-- Q3: Why SharedWorker for SIP? -->
+          <div class="quiz-question-block"
+               data-correct="option-d"
+               data-explanation-right="All four are correct. A SharedWorker gives you all of these benefits — that is exactly why sip.js-worker exists."
+               data-explanation-wrong="Partially right, but incomplete. The SharedWorker gives you ALL of these benefits: surviving tab reloads, one registration, centralized audio, and crash isolation.">
+            <h3 class="quiz-question">Why put SIP signaling in a SharedWorker instead of directly in the page?</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>Calls survive tab reloads</span>
+              </button>
+              <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>One SIP registration for all tabs</span>
+              </button>
+              <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>AudioContext is managed centrally</span>
+              </button>
+              <button class="quiz-option" data-value="option-d" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div>
+                <span>All of the above</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <button class="quiz-check-btn" onclick="checkQuiz('quiz-module5')">Check Answers</button>
+          <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module5')">Try Again</button>
+        </div>
+      </section>
+
+    </div><!-- /.module-body -->
+  </div><!-- /.module-content -->
+</section>

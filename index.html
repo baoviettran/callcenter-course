@@ -61,9 +61,9 @@
       </div>
     </div>
 
-    <p style="max-width: 600px;">This platform is a <strong>self-hosted call center</strong> built on top of <span class="term" data-definition="An open-source telephony platform that handles the actual audio of phone calls — like the runways and terminals of an airport.">FreeSWITCH</span> and <span class="term" data-definition="An open-source web admin for FreeSWITCH — like the airport management office that configures gates, schedules, and staff.">FusionPBX</span>. Instead of one big box, it is a team of specialized programs working together.</p>
+    <p>This platform is a <strong>self-hosted call center</strong> built on top of <span class="term" data-definition="An open-source telephony platform that handles the actual audio of phone calls — like the runways and terminals of an airport.">FreeSWITCH</span> and <span class="term" data-definition="An open-source web admin for FreeSWITCH — like the airport management office that configures gates, schedules, and staff.">FusionPBX</span>. Instead of one big box, it is a team of specialized programs working together.</p>
 
-    <p style="max-width: 600px; color: var(--color-text-secondary); font-size: var(--text-sm);">Why does this matter? When someone says "calls are dropping," your first job is knowing <em>which program</em> to look at. This module gives you that map.</p>
+    <p style="color: var(--color-text-secondary); font-size: var(--text-sm);">Why does this matter? When someone says "calls are dropping," your first job is knowing <em>which program</em> to look at. This module gives you that map.</p>
 
   </div>
 
@@ -71,7 +71,7 @@
   <div class="module-content" style="margin-top: var(--space-12);">
 
     <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">The Journey of One Call</h3>
-    <p style="max-width: 600px; margin-bottom: var(--space-8);">Think of this platform as an <strong>airport</strong>. The agent is the traveler, the <span class="term" data-definition="A software phone that runs inside the browser — the app where agents make and receive calls.">softphone</span> is their boarding-pass app, <span class="term" data-definition="A SIP router and load balancer — like the security checkpoint funneling passengers to the right gates.">Kamailio</span> is the security checkpoint, FreeSWITCH is the terminal, and FusionPBX is the management office.</p>
+    <p style="margin-bottom: var(--space-8);">Think of this platform as an <strong>airport</strong>. The agent is the traveler, the <span class="term" data-definition="A software phone that runs inside the browser — the app where agents make and receive calls.">softphone</span> is their boarding-pass app, <span class="term" data-definition="A SIP router and load balancer — like the security checkpoint funneling passengers to the right gates.">Kamailio</span> is the security checkpoint, FreeSWITCH is the terminal, and FusionPBX is the management office.</p>
 
     <div class="flow-animation" data-steps='[
       {"highlight":"flow-actor-1","label":"Agent clicks Call in the browser softphone"},
@@ -117,7 +117,7 @@
   <div class="module-content" style="margin-top: var(--space-12);">
 
     <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">The Cast</h3>
-    <p style="max-width: 600px; margin-bottom: var(--space-8);">Every component has one job — like crew members in an airport, each with a clear role.</p>
+    <p style="margin-bottom: var(--space-8);">Every component has one job — like crew members in an airport, each with a clear role.</p>
 
     <div class="icon-rows">
 
@@ -185,7 +185,7 @@
   <div class="module-content" style="margin-top: var(--space-12);">
 
     <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">Seeing It in Code</h3>
-    <p style="max-width: 600px; margin-bottom: var(--space-8);">The "terminal" is just containers on a server. Here is how it is defined.</p>
+    <p style="margin-bottom: var(--space-8);">The "terminal" is just containers on a server. Here is how it is defined.</p>
 
     <!-- Translation 1: docker-compose -->
     <div class="translation-block animate-in">
@@ -215,7 +215,7 @@
       </div>
     </div>
 
-    <p style="max-width: 600px; margin-top: var(--space-8); margin-bottom: var(--space-2);">And here is how the browser softphone registers itself — the traveler picking up a boarding pass.</p>
+    <p style="margin-top: var(--space-8); margin-bottom: var(--space-2);">And here is how the browser softphone registers itself — the traveler picking up a boarding pass.</p>
 
     <!-- Translation 2: sip.js-worker -->
     <div class="translation-block animate-in">
@@ -349,7 +349,7 @@
 
   <!-- ==================== SCREEN 1: HOOK ==================== -->
   <div class="screen">
-    <div class="container animate-in">
+    <div class="module-content animate-in">
       <p class="eyebrow">Module 2</p>
       <h1 class="screen-title">The Telephony Engine</h1>
       <p class="screen-subtitle">The train station behind every call</p>
@@ -385,7 +385,7 @@
 
   <!-- ==================== SCREEN 2: ARCHITECTURE DIAGRAM ==================== -->
   <div class="screen">
-    <div class="container animate-in">
+    <div class="module-content animate-in">
       <p class="eyebrow">Architecture</p>
       <h2 class="screen-title">Four Layers, One System</h2>
       <p class="text-block">Click each component to see what it does and why it exists.</p>
@@ -434,7 +434,7 @@
 
   <!-- ==================== SCREEN 3: FREESWITCH + DOCKER ==================== -->
   <div class="screen">
-    <div class="container animate-in">
+    <div class="module-content animate-in">
       <p class="eyebrow">Layer 1 — The Engine</p>
       <h2 class="screen-title">FreeSWITCH + Docker</h2>
 
@@ -468,7 +468,7 @@
 
   <!-- ==================== SCREEN 4: FUSIONPBX ==================== -->
   <div class="screen">
-    <div class="container animate-in">
+    <div class="module-content animate-in">
       <p class="eyebrow">Layer 2 — The Admin Panel</p>
       <h2 class="screen-title">FusionPBX</h2>
 
@@ -503,7 +503,7 @@
 
   <!-- ==================== SCREEN 5: LUA SCRIPTS ==================== -->
   <div class="screen">
-    <div class="container animate-in">
+    <div class="module-content animate-in">
       <p class="eyebrow">Layer 3 — The Dispatchers</p>
       <h2 class="screen-title">Lua Scripts</h2>
 
@@ -541,7 +541,7 @@
 
   <!-- ==================== SCREEN 6: LUA TRANSLATION (bridge_to_agent) ==================== -->
   <div class="screen">
-    <div class="container animate-in">
+    <div class="module-content animate-in">
       <p class="eyebrow">Code Reading</p>
       <h2 class="screen-title">Reading the Agent Query</h2>
 
@@ -593,7 +593,7 @@
 
   <!-- ==================== SCREEN 7: QUEUE CASCADE ==================== -->
   <div class="screen">
-    <div class="container animate-in">
+    <div class="module-content animate-in">
       <p class="eyebrow">Layer 3 — Cascade Routing</p>
       <h2 class="screen-title">Trying Multiple Queues</h2>
 
@@ -638,7 +638,7 @@
 
   <!-- ==================== SCREEN 8: FAIL2BAN ==================== -->
   <div class="screen">
-    <div class="container animate-in">
+    <div class="module-content animate-in">
       <p class="eyebrow">Layer 4 — The Security Guard</p>
       <h2 class="screen-title">Fail2ban</h2>
 
@@ -689,7 +689,7 @@
 
   <!-- ==================== SCREEN 9: FAIL2BAN TRANSLATION ==================== -->
   <div class="screen">
-    <div class="container animate-in">
+    <div class="module-content animate-in">
       <p class="eyebrow">Code Reading</p>
       <h2 class="screen-title">Reading the Jail Config</h2>
 
@@ -736,7 +736,7 @@
 
   <!-- ==================== SCREEN 10: QUIZ ==================== -->
   <div class="screen">
-    <div class="container animate-in">
+    <div class="module-content animate-in">
       <p class="eyebrow">Check Your Understanding</p>
       <h2 class="screen-title">Quiz</h2>
 
@@ -819,7 +819,7 @@
 
   <!-- ==================== SCREEN 11: BRIDGE ==================== -->
   <div class="screen">
-    <div class="container animate-in">
+    <div class="module-content animate-in">
       <p class="eyebrow">What's Next</p>
       <h2 class="screen-title">The Control Tower</h2>
 
@@ -1168,7 +1168,7 @@
 
   <!-- ===== SCREEN 1: HOOK ===== -->
   <div class="screen" style="background: var(--color-bg-warm);">
-    <div class="container narrow">
+    <div class="module-content">
       <h2 class="screen-title animate-in">The Event Wire</h2>
       <p class="screen-subtitle animate-in">Everything That Happens, Gets Reported</p>
 
@@ -1216,7 +1216,7 @@
 
   <!-- ===== SCREEN 2: WHAT ESL IS ===== -->
   <div class="screen" style="background: var(--color-bg);">
-    <div class="container narrow">
+    <div class="module-content">
       <h2 class="screen-title animate-in">FreeSWITCH Opens a Door</h2>
       <p class="screen-subtitle animate-in">
         The
@@ -1256,7 +1256,7 @@
 
   <!-- ===== SCREEN 3: CODE TRANSLATION 1 & 2 — NewClientWithBuffer + ConnectionStats ===== -->
   <div class="screen" style="background: var(--color-bg-warm);">
-    <div class="container narrow">
+    <div class="module-content">
       <h2 class="screen-title animate-in">The Client That Listens</h2>
       <p class="screen-subtitle animate-in">How fsevents connects to FreeSWITCH and keeps track of its own health</p>
 
@@ -1332,7 +1332,7 @@
 
   <!-- ===== SCREEN 4: GROUP CHAT ANIMATION ===== -->
   <div class="screen" style="background: var(--color-bg);">
-    <div class="container narrow">
+    <div class="module-content">
       <h2 class="screen-title animate-in">The Wire in Action</h2>
       <p class="screen-subtitle animate-in">Watch four components talk to each other during a single call lifecycle</p>
 
@@ -1452,7 +1452,7 @@
 
   <!-- ===== SCREEN 5: DOWNSTREAM PATHS ===== -->
   <div class="screen" style="background: var(--color-bg-warm);">
-    <div class="container narrow">
+    <div class="module-content">
       <h2 class="screen-title animate-in">Where Events Go From Here</h2>
       <p class="screen-subtitle animate-in">Three downstream consumers, each with a different job</p>
 
@@ -1521,7 +1521,7 @@
 
   <!-- ===== SCREEN 6: QUIZ ===== -->
   <div class="screen" style="background: var(--color-bg);">
-    <div class="container narrow">
+    <div class="module-content">
       <h2 class="screen-title animate-in">Check Your Understanding</h2>
       <p class="screen-subtitle animate-in">Apply what you learned about the event wire</p>
 

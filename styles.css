@@ -139,10 +139,25 @@ body {
 }
 
 /* ── CODE GLOBALS ───────────────────────────────────────────── */
-pre, code {
+pre {
+  background: var(--color-bg-code);
+  color: #CDD6F4;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  margin: var(--space-4) 0;
+}
+pre code {
   white-space: pre-wrap;
   word-break: break-word;
   overflow-x: hidden;
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+code {
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 .translation-code::-webkit-scrollbar,
 pre::-webkit-scrollbar { display: none; }

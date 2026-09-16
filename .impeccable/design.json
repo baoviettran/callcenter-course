@@ -1,0 +1,788 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-16T14:34:41Z",
+  "title": "Design System: Call Center Platform: From Click to Conversation",
+  "extensions": {
+    "colorMeta": {
+      "signal-teal": {
+        "role": "primary",
+        "displayName": "Signal Teal",
+        "canonical": "oklch(54.9% 0.091 228.4)",
+        "tonalRamp": [
+          "#000E18",
+          "#002A3A",
+          "#004961",
+          "#136B8A",
+          "#3E8DAD",
+          "#63B0D2",
+          "#88D5F8",
+          "#DCF3FE"
+        ],
+        "purpose": "The sole accent. Marks position, identity, and interaction."
+      },
+      "signal-teal-deep": {
+        "role": "primary",
+        "displayName": "Deep Signal Teal",
+        "canonical": "oklch(46.9% 0.081 231.8)",
+        "tonalRamp": [
+          "#000D19",
+          "#00293B",
+          "#004864",
+          "#276987",
+          "#4B8BAB",
+          "#6EAECF",
+          "#92D3F5",
+          "#DDF2FE"
+        ],
+        "purpose": "Hover fill for accent elements only. Never at rest."
+      },
+      "signal-teal-soft": {
+        "role": "primary",
+        "displayName": "Soft Signal Teal",
+        "canonical": "oklch(95.2% 0.016 221.1)",
+        "tonalRamp": [
+          "#040D10",
+          "#1C272B",
+          "#394448",
+          "#586468",
+          "#788589",
+          "#9AA8AC",
+          "#BECCD1",
+          "#E3F1F6"
+        ],
+        "purpose": "Tinted fill behind selected, active, and hovered accent surfaces."
+      },
+      "signal-teal-muted": {
+        "role": "primary",
+        "displayName": "Muted Signal Teal",
+        "canonical": "oklch(66.2% 0.079 226.1)",
+        "tonalRamp": [
+          "#000E17",
+          "#002A39",
+          "#004960",
+          "#246A84",
+          "#498CA7",
+          "#6CB0CB",
+          "#90D4F1",
+          "#DAF3FF"
+        ],
+        "purpose": "Resting border and underline tone; signals interactive without full accent weight."
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Warm Paper",
+        "canonical": "oklch(97.7% 0.007 80.7)",
+        "tonalRamp": [
+          "#0D0B08",
+          "#272521",
+          "#44423E",
+          "#63615D",
+          "#85827D",
+          "#A7A5A0",
+          "#CCC9C4",
+          "#F1EEE9"
+        ],
+        "purpose": "The page ground."
+      },
+      "paper-warm": {
+        "role": "neutral",
+        "displayName": "Deep Paper",
+        "canonical": "oklch(95.7% 0.012 79.8)",
+        "tonalRamp": [
+          "#0E0B06",
+          "#28241F",
+          "#45413B",
+          "#65615A",
+          "#86827A",
+          "#A9A49D",
+          "#CDC8C1",
+          "#F3EEE6"
+        ],
+        "purpose": "Recessed fills inside artifacts."
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface White",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ],
+        "purpose": "Raised cards and panels."
+      },
+      "surface-warm": {
+        "role": "neutral",
+        "displayName": "Warm Surface",
+        "canonical": "oklch(98.4% 0.009 78.3)",
+        "tonalRamp": [
+          "#0D0B07",
+          "#272520",
+          "#45413D",
+          "#64615C",
+          "#85827C",
+          "#A8A49F",
+          "#CCC8C3",
+          "#F2EEE8"
+        ],
+        "purpose": "The reading half of a code-translation block."
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(28.6% 0.005 67.6)",
+        "tonalRamp": [
+          "#0C0B09",
+          "#272523",
+          "#44423F",
+          "#63615E",
+          "#84827F",
+          "#A7A4A2",
+          "#CBC9C6",
+          "#F1EEEB"
+        ],
+        "purpose": "Body and heading text."
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Secondary Ink",
+        "canonical": "oklch(51.1% 0.011 62.4)",
+        "tonalRamp": [
+          "#0F0A07",
+          "#292420",
+          "#46413C",
+          "#66605B",
+          "#87817C",
+          "#AAA49E",
+          "#CEC8C2",
+          "#F4EDE7"
+        ],
+        "purpose": "Supporting prose and captions."
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "oklch(68.0% 0.013 67.6)",
+        "tonalRamp": [
+          "#0F0A06",
+          "#29241E",
+          "#47413B",
+          "#666059",
+          "#88817A",
+          "#ABA49D",
+          "#CFC8C0",
+          "#F5EDE5"
+        ],
+        "purpose": "Quietest text: counters, zone labels, inactive nav dots."
+      },
+      "rule-line": {
+        "role": "neutral",
+        "displayName": "Rule Line",
+        "canonical": "oklch(90.6% 0.014 78.3)",
+        "tonalRamp": [
+          "#0E0A05",
+          "#29241E",
+          "#46413A",
+          "#666059",
+          "#878179",
+          "#AAA49C",
+          "#CEC8BF",
+          "#F4EEE4"
+        ],
+        "purpose": "Borders and dividers."
+      },
+      "rule-line-light": {
+        "role": "neutral",
+        "displayName": "Light Rule",
+        "canonical": "oklch(94.1% 0.009 84.6)",
+        "tonalRamp": [
+          "#0D0B07",
+          "#272520",
+          "#44423D",
+          "#63615C",
+          "#85827D",
+          "#A7A59F",
+          "#CCC9C3",
+          "#F1EEE8"
+        ],
+        "purpose": "Nav underline and list-row dividers."
+      },
+      "instrument-slab": {
+        "role": "neutral",
+        "displayName": "Instrument Slab",
+        "canonical": "oklch(24.3% 0.030 283.9)",
+        "tonalRamp": [
+          "#0A0917",
+          "#232333",
+          "#404052",
+          "#5F5F72",
+          "#808094",
+          "#A2A3B8",
+          "#C6C7DD",
+          "#ECEDFF"
+        ],
+        "purpose": "Every code block, tooltip, and nav tooltip."
+      },
+      "instrument-slab-ink": {
+        "role": "neutral",
+        "displayName": "Slab Ink",
+        "canonical": "oklch(87.9% 0.043 272.3)",
+        "tonalRamp": [
+          "#06091D",
+          "#1E243A",
+          "#3A4159",
+          "#59607A",
+          "#79819D",
+          "#9BA4C0",
+          "#BFC8E6",
+          "#E9EEFE"
+        ],
+        "purpose": "Text on the instrument slab."
+      },
+      "settled-green": {
+        "role": "tertiary",
+        "displayName": "Settled Green",
+        "canonical": "oklch(56.8% 0.121 154.2)",
+        "tonalRamp": [
+          "#001103",
+          "#002E15",
+          "#005029",
+          "#087440",
+          "#3B9760",
+          "#61BB82",
+          "#86E0A5",
+          "#C6FFD7"
+        ],
+        "purpose": "Correct quiz answer, correctly placed chip."
+      },
+      "settled-green-soft": {
+        "role": "tertiary",
+        "displayName": "Soft Green",
+        "canonical": "oklch(95.9% 0.017 162.7)",
+        "tonalRamp": [
+          "#050D09",
+          "#1E2823",
+          "#3A453F",
+          "#59645E",
+          "#7A867F",
+          "#9CA8A2",
+          "#C0CDC6",
+          "#E5F2EB"
+        ],
+        "purpose": "Fill behind a correct verdict."
+      },
+      "alert-red": {
+        "role": "tertiary",
+        "displayName": "Alert Red",
+        "canonical": "oklch(56.3% 0.179 25.0)",
+        "tonalRamp": [
+          "#220000",
+          "#4E0005",
+          "#81000F",
+          "#B02027",
+          "#D94A48",
+          "#FF726C",
+          "#FEB3AC",
+          "#FEE9E7"
+        ],
+        "purpose": "Incorrect answer, misplaced chip, warning callout."
+      },
+      "alert-red-soft": {
+        "role": "tertiary",
+        "displayName": "Soft Red",
+        "canonical": "oklch(94.8% 0.023 17.6)",
+        "tonalRamp": [
+          "#140708",
+          "#2F2121",
+          "#4E3D3D",
+          "#6E5C5C",
+          "#907D7D",
+          "#B3A0A0",
+          "#D8C4C4",
+          "#FEE9E9"
+        ],
+        "purpose": "Fill behind an incorrect verdict."
+      },
+      "actor-terracotta": {
+        "role": "secondary",
+        "displayName": "Actor Terracotta",
+        "canonical": "oklch(61.0% 0.179 34.1)",
+        "tonalRamp": [
+          "#230000",
+          "#4B0600",
+          "#7B1600",
+          "#AF2700",
+          "#D84E2F",
+          "#FF7556",
+          "#FEB4A2",
+          "#FFE9E4"
+        ],
+        "purpose": "Actor identity 1 \u2014 the Browser."
+      },
+      "actor-teal": {
+        "role": "secondary",
+        "displayName": "Actor Teal",
+        "canonical": "oklch(54.9% 0.091 228.4)",
+        "tonalRamp": [
+          "#000E18",
+          "#002A3A",
+          "#004961",
+          "#136B8A",
+          "#3E8DAD",
+          "#63B0D2",
+          "#88D5F8",
+          "#DCF3FE"
+        ],
+        "purpose": "Actor identity 2 \u2014 the SIP layer. Shares the accent hex today."
+      },
+      "actor-violet": {
+        "role": "secondary",
+        "displayName": "Actor Violet",
+        "canonical": "oklch(57.3% 0.093 293.8)",
+        "tonalRamp": [
+          "#10002D",
+          "#29184D",
+          "#45366E",
+          "#645691",
+          "#8577B5",
+          "#A89ADA",
+          "#CCBEFE",
+          "#EFECFE"
+        ],
+        "purpose": "Actor identity 3 \u2014 the telephony engine."
+      },
+      "actor-ochre": {
+        "role": "secondary",
+        "displayName": "Actor Ochre",
+        "canonical": "oklch(75.3% 0.127 84.9)",
+        "tonalRamp": [
+          "#140900",
+          "#322200",
+          "#553E00",
+          "#7C5C00",
+          "#A47B04",
+          "#CA9E37",
+          "#EFC25F",
+          "#FFEDC8"
+        ],
+        "purpose": "Actor identity 4 \u2014 the customer's phone."
+      },
+      "actor-moss": {
+        "role": "secondary",
+        "displayName": "Actor Moss",
+        "canonical": "oklch(56.8% 0.121 154.2)",
+        "tonalRamp": [
+          "#001103",
+          "#002E15",
+          "#005029",
+          "#087440",
+          "#3B9760",
+          "#61BB82",
+          "#86E0A5",
+          "#C6FFD7"
+        ],
+        "purpose": "Actor identity 5 \u2014 secondary participants."
+      },
+      "syntax-keyword": {
+        "role": "tertiary",
+        "displayName": "Syntax Keyword",
+        "canonical": "oklch(78.7% 0.119 304.8)",
+        "tonalRamp": [
+          "#150029",
+          "#330B52",
+          "#512D74",
+          "#714D97",
+          "#936FBB",
+          "#B691E1",
+          "#D8B9FE",
+          "#F3EAFF"
+        ],
+        "purpose": "Instrument-slab read-out."
+      },
+      "syntax-string": {
+        "role": "tertiary",
+        "displayName": "Syntax String",
+        "canonical": "oklch(85.8% 0.109 142.7)",
+        "tonalRamp": [
+          "#001100",
+          "#002F00",
+          "#155013",
+          "#387035",
+          "#599355",
+          "#7CB777",
+          "#9FDC9A",
+          "#CBFFC7"
+        ],
+        "purpose": "Instrument-slab read-out."
+      },
+      "syntax-function": {
+        "role": "tertiary",
+        "displayName": "Syntax Function",
+        "canonical": "oklch(76.6% 0.111 259.9)",
+        "tonalRamp": [
+          "#000039",
+          "#00205A",
+          "#1B3F7C",
+          "#3A60A0",
+          "#5A82C5",
+          "#7BA6EB",
+          "#AACBFF",
+          "#E6EFFF"
+        ],
+        "purpose": "Instrument-slab read-out."
+      },
+      "syntax-comment": {
+        "role": "tertiary",
+        "displayName": "Syntax Comment",
+        "canonical": "oklch(55.0% 0.034 277.1)",
+        "tonalRamp": [
+          "#080919",
+          "#212336",
+          "#3D4155",
+          "#5C6075",
+          "#7D8197",
+          "#9FA4BB",
+          "#C3C8E0",
+          "#EAEDFE"
+        ],
+        "purpose": "Instrument-slab read-out."
+      },
+      "syntax-number": {
+        "role": "tertiary",
+        "displayName": "Syntax Number",
+        "canonical": "oklch(82.4% 0.101 52.6)",
+        "tonalRamp": [
+          "#1C0300",
+          "#3F1900",
+          "#693000",
+          "#8D4F23",
+          "#B27046",
+          "#D79368",
+          "#FEB78B",
+          "#FEEADE"
+        ],
+        "purpose": "Instrument-slab read-out."
+      },
+      "syntax-property": {
+        "role": "tertiary",
+        "displayName": "Syntax Property",
+        "canonical": "oklch(91.9% 0.070 86.5)",
+        "tonalRamp": [
+          "#140900",
+          "#312300",
+          "#523F0C",
+          "#735E2F",
+          "#958050",
+          "#B8A372",
+          "#DDC795",
+          "#FFEDC6"
+        ],
+        "purpose": "Instrument-slab read-out."
+      },
+      "syntax-operator": {
+        "role": "tertiary",
+        "displayName": "Syntax Operator",
+        "canonical": "oklch(85.8% 0.079 182.7)",
+        "tonalRamp": [
+          "#00100C",
+          "#002D27",
+          "#014D45",
+          "#1B7065",
+          "#449286",
+          "#68B6A9",
+          "#8DDACE",
+          "#B9FFF3"
+        ],
+        "purpose": "Instrument-slab read-out."
+      },
+      "syntax-tag": {
+        "role": "tertiary",
+        "displayName": "Syntax Tag",
+        "canonical": "oklch(75.6% 0.130 2.8)",
+        "tonalRamp": [
+          "#210008",
+          "#4C0020",
+          "#75183C",
+          "#9A3B5A",
+          "#C05E7B",
+          "#E7809D",
+          "#FFAFC3",
+          "#FFE8ED"
+        ],
+        "purpose": "Instrument-slab read-out."
+      },
+      "syntax-text": {
+        "role": "tertiary",
+        "displayName": "Syntax Text",
+        "canonical": "oklch(87.9% 0.043 272.3)",
+        "tonalRamp": [
+          "#06091D",
+          "#1E243A",
+          "#3A4159",
+          "#59607A",
+          "#79819D",
+          "#9BA4C0",
+          "#BFC8E6",
+          "#E9EEFE"
+        ],
+        "purpose": "Default slab text."
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Module titles and the ghosted module numeral."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Screen headings inside a module."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Component-level titles: pattern cards, chat headers."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All running prose."
+      },
+      "label": {
+        "displayName": "Instrument Label",
+        "purpose": "System-wide mono-uppercase micro-label for identifiers."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Code at every size \u2014 translation slabs, badges, inline snippets."
+      }
+    },
+    "shadows": [
+      {
+        "name": "whisper",
+        "value": "0 1px 2px rgba(44,42,40,0.05)",
+        "purpose": "Resting depth for the lowest cards."
+      },
+      {
+        "name": "resting",
+        "value": "0 4px 12px rgba(44,42,40,0.08)",
+        "purpose": "Default raised surface \u2014 translation blocks, quiz containers, panels."
+      },
+      {
+        "name": "raised",
+        "value": "0 8px 24px rgba(44,42,40,0.10)",
+        "purpose": "Hover state for lifting cards, and floating tooltips."
+      },
+      {
+        "name": "float",
+        "value": "0 16px 48px rgba(44,42,40,0.12)",
+        "purpose": "High-floating surfaces. Defined but currently unreferenced."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Entrances and hover lifts."
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(0.65, 0, 0.35, 1)",
+        "purpose": "Defined in the token set; currently unreferenced."
+      },
+      {
+        "name": "duration-fast",
+        "value": "150ms",
+        "purpose": "State transitions: borders, colours, opacity."
+      },
+      {
+        "name": "duration-normal",
+        "value": "300ms",
+        "purpose": "Hover lifts and panel transitions."
+      },
+      {
+        "name": "duration-slow",
+        "value": "500ms",
+        "purpose": "Scroll-reveal entrance."
+      },
+      {
+        "name": "stagger-delay",
+        "value": "120ms",
+        "purpose": "Per-child delay in staggered entrances."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "sm",
+        "value": "480px"
+      }
+    ],
+    "layout": {
+      "contentWidth": "800px",
+      "contentWidthWide": "1000px",
+      "navHeight": "50px",
+      "scrollSnap": "y proximity",
+      "moduleHeight": "100dvh"
+    },
+    "knownDrift": [
+      {
+        "location": "body background-image radial tint",
+        "value": "rgba(217,79,48,0.03)",
+        "shouldBe": "an alpha of --color-accent"
+      },
+      {
+        "location": ".flow-actor.active .flow-actor-icon box-shadow",
+        "value": "rgba(217,79,48,0.15)",
+        "shouldBe": "an alpha of --color-accent"
+      },
+      {
+        "location": ".flow-packet box-shadow",
+        "value": "rgba(217,79,48,0.5)",
+        "shouldBe": "an alpha of --color-accent"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Filled teal action. Used for the single committing action in a block, e.g. Check answers.",
+      "html": "<button class=\"ds-btn-primary\">Check answers</button>",
+      "css": ".ds-btn-primary{background:var(--color-accent, #2A7B9B);color:#fff;border:1px solid var(--color-accent, #2A7B9B);border-radius:8px;padding:8px 20px;font-family:var(--font-body, 'DM Sans', sans-serif);font-size:.875rem;font-weight:600;cursor:pointer;transition:background 150ms,transform 150ms,border-color 150ms}.ds-btn-primary:hover{background:var(--color-accent-hover, #1F6280);border-color:var(--color-accent-hover, #1F6280);transform:translateY(-1px)}.ds-btn-primary:focus-visible{outline:2px solid var(--color-accent, #2A7B9B);outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outlined neutral action. Never fills \u2014 hover shifts border and text to accent.",
+      "html": "<button class=\"ds-btn-secondary\">Reset</button>",
+      "css": ".ds-btn-secondary{background:var(--color-surface, #fff);color:var(--color-text-secondary, #6B6560);border:1px solid var(--color-border, #E5DFD6);border-radius:8px;padding:8px 20px;font-family:var(--font-body, 'DM Sans', sans-serif);font-size:.875rem;font-weight:600;cursor:pointer;transition:border-color 150ms,color 150ms}.ds-btn-secondary:hover{border-color:var(--color-accent-muted, #5A9DB8);color:var(--color-accent, #2A7B9B)}.ds-btn-secondary:focus-visible{outline:2px solid var(--color-accent, #2A7B9B);outline-offset:2px}"
+    },
+    {
+      "name": "Quiz Option",
+      "kind": "custom",
+      "refersTo": "quiz-option",
+      "description": "The four-state answer row. Selected, correct, and incorrect each shift border, fill, and radio together.",
+      "html": "<div><button class=\"ds-quiz-option ds-selected\"><span class=\"ds-quiz-radio\"></span>The softphone runs in the browser</button><button class=\"ds-quiz-option ds-correct\"><span class=\"ds-quiz-radio\"></span>Kamailio routes the INVITE</button><button class=\"ds-quiz-option ds-incorrect\"><span class=\"ds-quiz-radio\"></span>Fail2ban throttles the call</button></div>",
+      "css": ".ds-quiz-option{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 18px;margin-bottom:8px;background:var(--color-surface, #fff);border:1px solid var(--color-border-light, #EEEBE5);border-radius:12px;font-family:var(--font-body, 'DM Sans', sans-serif);font-size:1rem;color:var(--color-text, #2C2A28);cursor:pointer;transition:border-color 150ms,background 150ms}.ds-quiz-option:hover{border-color:var(--color-accent-muted, #5A9DB8)}.ds-quiz-option:focus-visible{outline:2px solid var(--color-accent, #2A7B9B);outline-offset:2px}.ds-quiz-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--color-border, #E5DFD6);flex-shrink:0;transition:all 150ms}.ds-selected{border-color:var(--color-accent, #2A7B9B);background:var(--color-accent-light, #E4F2F7)}.ds-selected .ds-quiz-radio{border-color:var(--color-accent, #2A7B9B);background:var(--color-accent, #2A7B9B);box-shadow:inset 0 0 0 3px #fff}.ds-correct{border-color:var(--color-success, #2D8B55);background:var(--color-success-light, #E8F5EE)}.ds-correct .ds-quiz-radio{border-color:var(--color-success, #2D8B55);background:var(--color-success, #2D8B55);box-shadow:inset 0 0 0 3px #fff}.ds-incorrect{border-color:var(--color-error, #C93B3B);background:var(--color-error-light, #FDE8E8)}.ds-incorrect .ds-quiz-radio{border-color:var(--color-error, #C93B3B);background:var(--color-error, #C93B3B);box-shadow:inset 0 0 0 3px #fff}"
+    },
+    {
+      "name": "Code Translation Block",
+      "kind": "custom",
+      "refersTo": "code-slab",
+      "description": "The signature two-tone component: real code on the instrument slab, plain-English reading on warm paper beside it.",
+      "html": "<div class=\"ds-translation\"><pre class=\"ds-translation-code\"><span class=\"ds-k\">services:</span>\n  <span class=\"ds-f\">pbx:</span>\n    <span class=\"ds-p\">image:</span> <span class=\"ds-s\">luongld/pbx:1.10.8</span></pre><div class=\"ds-translation-english\"><span class=\"ds-label\">In English</span><p>One container runs the whole phone system.</p></div></div>",
+      "css": ".ds-translation{display:grid;grid-template-columns:1fr 1fr;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(44,42,40,.08);font-size:.875rem}.ds-translation-code{margin:0;background:var(--color-bg-code, #1E1E2E);color:var(--syntax-text, #CDD6F4);padding:24px;font-family:var(--font-mono, 'JetBrains Mono', monospace);line-height:1.7;white-space:pre-wrap}.ds-k{color:var(--syntax-keyword, #CBA6F7)}.ds-f{color:var(--syntax-function, #89B4FA)}.ds-p{color:var(--syntax-property, #F9E2AF)}.ds-s{color:var(--syntax-string, #A6E3A1)}.ds-translation-english{background:var(--color-surface-warm, #FDF9F3);border-left:3px solid var(--color-accent, #2A7B9B);padding:24px;font-family:var(--font-body, 'DM Sans', sans-serif)}.ds-translation-english p{margin:8px 0 0;color:var(--color-text-secondary, #6B6560);line-height:1.6}.ds-label{font-family:var(--font-mono, 'JetBrains Mono', monospace);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--color-text-muted, #9E9790)}"
+    },
+    {
+      "name": "Pattern Card",
+      "kind": "card",
+      "refersTo": "pattern-card",
+      "description": "A feature card distinguished by its 3px accent top edge instead of a border. Lifts 4px on hover.",
+      "html": "<div class=\"ds-pattern-card\"><div class=\"ds-pattern-icon\">\u25ce</div><div class=\"ds-pattern-title\">SharedWorker</div><p class=\"ds-pattern-desc\">Keeps the softphone registered across every open tab.</p></div>",
+      "css": ".ds-pattern-card{background:var(--color-surface, #fff);border-radius:12px;border-top:3px solid var(--color-accent, #2A7B9B);padding:24px;box-shadow:0 1px 2px rgba(44,42,40,.05);font-family:var(--font-body, 'DM Sans', sans-serif);transition:transform 300ms cubic-bezier(.16,1,.3,1),box-shadow 300ms}.ds-pattern-card:hover{transform:translateY(-4px);box-shadow:0 4px 12px rgba(44,42,40,.08)}.ds-pattern-icon{width:40px;height:40px;border-radius:8px;background:var(--color-accent-light, #E4F2F7);color:var(--color-accent, #2A7B9B);display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:12px}.ds-pattern-title{font-family:var(--font-display, 'Bricolage Grotesque', serif);font-size:1rem;font-weight:700;margin-bottom:8px;color:var(--color-text, #2C2A28)}.ds-pattern-desc{margin:0;font-size:.875rem;line-height:1.6;color:var(--color-text-secondary, #6B6560)}"
+    },
+    {
+      "name": "Callout",
+      "kind": "custom",
+      "refersTo": "callout",
+      "description": "An aside marked by a 4px accent-coloured left edge and a matching soft fill. Three variants.",
+      "html": "<div class=\"ds-callout\"><span class=\"ds-callout-icon\">\u25b2</span><div><strong class=\"ds-callout-title\">Watch for drift</strong><p>Literal colours survive a re-theme. Reference the token instead.</p></div></div>",
+      "css": ".ds-callout{display:flex;gap:16px;padding:20px;border-radius:12px;border-left:4px solid var(--color-accent, #2A7B9B);background:var(--color-accent-light, #E4F2F7);font-family:var(--font-body, 'DM Sans', sans-serif);margin:24px 0}.ds-callout-icon{font-size:1.25rem;flex-shrink:0;color:var(--color-accent, #2A7B9B)}.ds-callout-title{display:block;font-weight:700;margin-bottom:4px;color:var(--color-text, #2C2A28)}.ds-callout p{margin:0;font-size:.875rem;color:var(--color-text-secondary, #6B6560)}"
+    },
+    {
+      "name": "Module Navigation",
+      "kind": "nav",
+      "refersTo": "nav-dots",
+      "description": "Seven 10px dots tracking module position: resting, visited, active with a soft-accent halo.",
+      "html": "<div class=\"ds-nav-dots\"><button class=\"ds-nav-dot ds-visited\"></button><button class=\"ds-nav-dot ds-visited\"></button><button class=\"ds-nav-dot ds-active\"></button><button class=\"ds-nav-dot\"></button><button class=\"ds-nav-dot\"></button></div>",
+      "css": ".ds-nav-dots{display:flex;align-items:center;gap:8px;padding:16px}.ds-nav-dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--color-text-muted, #9E9790);background:transparent;cursor:pointer;padding:0;transition:all 150ms}.ds-nav-dot:hover{border-color:var(--color-accent-muted, #5A9DB8)}.ds-nav-dot:focus-visible{outline:2px solid var(--color-accent, #2A7B9B);outline-offset:3px}.ds-visited{border-color:var(--color-accent-muted, #5A9DB8);background:var(--color-accent-muted, #5A9DB8)}.ds-active{border-color:var(--color-accent, #2A7B9B);background:var(--color-accent, #2A7B9B);box-shadow:0 0 0 3px var(--color-accent-light, #E4F2F7)}"
+    },
+    {
+      "name": "Flow Actor",
+      "kind": "custom",
+      "refersTo": "flow-actor",
+      "description": "A named participant in a data-flow diagram. The active state scales and glows to show the packet's location.",
+      "html": "<div class=\"ds-flow-actors\"><div class=\"ds-flow-actor ds-active\"><span class=\"ds-flow-icon\">B</span><span class=\"ds-flow-name\">Browser</span></div><div class=\"ds-flow-actor\"><span class=\"ds-flow-icon\">K</span><span class=\"ds-flow-name\">Kamailio</span></div><div class=\"ds-flow-actor\"><span class=\"ds-flow-icon\">F</span><span class=\"ds-flow-name\">FreeSWITCH</span></div></div>",
+      "css": ".ds-flow-actors{display:flex;align-items:center;gap:24px;padding:24px;background:var(--color-surface, #fff);border-radius:16px;box-shadow:0 4px 12px rgba(44,42,40,.08)}.ds-flow-actor{display:flex;flex-direction:column;align-items:center;gap:8px;transition:all 300ms cubic-bezier(.16,1,.3,1)}.ds-flow-icon{width:56px;height:56px;border-radius:12px;background:var(--color-bg-warm, #F5F0E8);border:2px solid var(--color-border, #E5DFD6);display:flex;align-items:center;justify-content:center;font-family:var(--font-display, 'Bricolage Grotesque', serif);font-size:1.25rem;font-weight:700;color:var(--color-text, #2C2A28);transition:all 300ms cubic-bezier(.16,1,.3,1)}.ds-flow-name{font-family:var(--font-mono, 'JetBrains Mono', monospace);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--color-text-secondary, #6B6560)}.ds-active .ds-flow-icon{border-color:var(--color-accent, #2A7B9B);background:var(--color-accent-light, #E4F2F7);transform:scale(1.1);box-shadow:0 0 0 3px var(--color-accent-light, #E4F2F7)}"
+    },
+    {
+      "name": "Module Header",
+      "kind": "custom",
+      "refersTo": "module-header",
+      "description": "The oversized ghosted module numeral above the Bricolage title. Identity without shouting.",
+      "html": "<header class=\"ds-module-header\"><span class=\"ds-module-number\">03</span><h2 class=\"ds-module-title\">The Control Tower</h2><p class=\"ds-module-subtitle\">The Java brain behind the telephony brawn</p></header>",
+      "css": ".ds-module-header{font-family:var(--font-body, 'DM Sans', sans-serif);padding:24px 0}.ds-module-number{display:block;font-family:var(--font-display, 'Bricolage Grotesque', serif);font-size:3.75rem;font-weight:800;line-height:1;color:var(--color-accent, #2A7B9B);opacity:.15;margin-bottom:8px}.ds-module-title{margin:0;font-family:var(--font-display, 'Bricolage Grotesque', serif);font-size:2.25rem;font-weight:700;line-height:1.15;color:var(--color-text, #2C2A28)}.ds-module-subtitle{margin:12px 0 0;font-size:1.125rem;line-height:1.3;color:var(--color-text-secondary, #6B6560)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Annotated Field Manual",
+    "overview": "This is a working engineer's field manual, not a slide deck. The ground is warm off-white paper (#FAF7F2) that never reads as a screen; the text is warm charcoal rather than black; and the technical artifacts laid on top of it are hard-edged and cold. That contrast is the whole system. The page is calm and unhurried \u2014 generous whitespace, no urgency, nothing demanding attention \u2014 while everything inside the page is precise and instrumented.\n\nThe course teaches a live production call center, so the design's job is to make real system artifacts legible: a real code excerpt in a dark slab, a real data-flow diagram with named actors, a real quiz verdict. Each of these arrives as an object placed on the paper, not as decoration integrated into it. The dark code slab (#1E1E2E) is deliberately a different world from the page around it \u2014 it is the machine talking, quoted verbatim, with a plain-language translation in warm paper sitting right beside it.\n\nDensity is moderate and rhythmic. Every module opens with an oversized ghosted numeral, then proceeds through screens at a consistent vertical cadence. The learner always knows where they are: a 2px accent progress bar tracks scroll, and seven navigation dots mark module position.",
+    "keyCharacteristics": [
+      "Warm paper ground, warm-charcoal ink, no pure white page or pure black text",
+      "One accent (teal) applied through a single per-course override slot",
+      "Two opposed surfaces: calm paper for prose, a dark instrument slab for code",
+      "Warm-tinted shadows at rest (rgba(44,42,40, \u2026)), never neutral black",
+      "Monospace-uppercase micro-labels used system-wide as instrumentation"
+    ],
+    "rules": [
+      {
+        "name": "The Per-Course Accent Rule",
+        "section": "colors",
+        "body": "The accent is a slot, not a constant. styles.css declares a default; _base.html overrides --color-accent, --color-accent-hover, --color-accent-light, and --color-accent-muted in an inline :root block. Any new accent-derived color must be written as a var() reference or an alpha of the accent token \u2014 never as a literal hex or rgba(), because literals silently survive a re-theme."
+      },
+      {
+        "name": "The Warm Ground Rule",
+        "section": "colors",
+        "body": "No pure white page, no pure black text, no neutral-gray shadow. Every neutral is warm (hue ~30\u201340). A cool neutral in this system reads as a defect."
+      },
+      {
+        "name": "The Instrument Label Rule",
+        "section": "typography",
+        "body": "Any small identifier \u2014 a zone name, a file path, an actor label, a step counter, a config key \u2014 is monospace, uppercase, letter-spaced 0.1em, and muted ink. This is a system-wide rule, not a diagram-only treatment: it is how the design distinguishes \"the system talking\" from \"the author explaining.\""
+      },
+      {
+        "name": "The One Display Family Rule",
+        "section": "typography",
+        "body": "Bricolage Grotesque is for headings, numerals, and initials only. It never sets running prose. If a paragraph is in Bricolage, it is a defect."
+      },
+      {
+        "name": "The Warm Shadow Rule",
+        "section": "elevation",
+        "body": "Every shadow is rgba(44,42,40, \u03b1). A black or neutral-gray shadow is a defect \u2014 it makes a raised surface look like it belongs to a different design."
+      },
+      {
+        "name": "The Lift-On-Hover Rule",
+        "section": "elevation",
+        "body": "Interactive cards translate up 4px and step one shadow level on hover. The lift is the acknowledgement; it is never accompanied by a scale change on cards (only the drag chip scales, because it is being picked up)."
+      }
+    ],
+    "dos": [
+      "Do write every accent-derived color as var(--color-accent*) or an alpha of the accent token, so a re-theme reaches it.",
+      "Do tint every shadow with ink \u2014 rgba(44,42,40, \u03b1) \u2014 at one of the four documented steps.",
+      "Do set small identifiers (zones, paths, actor names, counters, config keys) in monospace, uppercase, 0.1em tracking, muted ink.",
+      "Do give content cards medium (12px) radius and full-width panels large (16px), with 1.5rem or 2rem internal padding respectively.",
+      "Do pair every code excerpt with its plain-language translation in the same block \u2014 the two-tone split is the course's core teaching device.",
+      "Do let Bricolage Grotesque carry headings and numerals only, and DM Sans carry all prose.",
+      "Do mark interactive cards with a 4px lift and one shadow step on hover.",
+      "Do keep 4xl\u20136xl display sizes on the documented compression path at 768px and 480px."
+    ],
+    "donts": [
+      "Don't introduce a second accent hue. The system has exactly one saturated color; semantic green and red are verdict-only and never used for brand, emphasis, or decoration.",
+      "Don't hardcode a hex or rgba() where an accent value belongs \u2014 that is the exact failure already present in three glow values.",
+      "Don't put a neutral-gray or black shadow on a raised surface.",
+      "Don't use pure white as a page background or pure black as text.",
+      "Don't set running prose in Bricolage Grotesque.",
+      "Don't round a container to full \u2014 pills are reserved for the circular markers and the drag chip.",
+      "Don't use the 16px large radius on a small inline element, or the 8px small radius on a full-width panel.",
+      "Don't reduce the accent to a decorative wash. It marks position, identity, and interaction \u2014 if it is on screen, it is saying something."
+    ]
+  }
+}

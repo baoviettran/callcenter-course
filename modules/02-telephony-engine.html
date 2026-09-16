@@ -3,9 +3,11 @@
   <!-- ==================== SCREEN 1: HOOK ==================== -->
   <div class="screen">
     <div class="module-content animate-in">
-      <p class="eyebrow">Module 2</p>
-      <h1 class="screen-title">The Telephony Engine</h1>
-      <p class="screen-subtitle">The train station behind every call</p>
+      <header class="module-header">
+        <span class="module-number">02</span>
+        <h1 class="module-title">The Telephony Engine</h1>
+        <p class="module-subtitle">The train station behind every call</p>
+      </header>
 
       <p class="text-block">Module 1 showed you the whole airport from above. Now let's walk into the terminal and meet the engine that actually makes calls happen — plus the admin panel, the custom scripts, and the security system that keep it running.</p>
 
@@ -40,7 +42,7 @@
   <div class="screen">
     <div class="module-content animate-in">
       <p class="eyebrow">Architecture</p>
-      <h2 class="screen-title">Four Layers, One System</h2>
+      <h2 class="screen-heading">Four Layers, One System</h2>
       <p class="text-block">Click each component to see what it does and why it exists.</p>
 
       <div class="arch-diagram">
@@ -89,7 +91,7 @@
   <div class="screen">
     <div class="module-content animate-in">
       <p class="eyebrow">Layer 1 — The Engine</p>
-      <h2 class="screen-title">FreeSWITCH + Docker</h2>
+      <h2 class="screen-heading">FreeSWITCH + Docker</h2>
 
       <p class="text-block">The entire telephony stack runs inside
         <span class="term" data-definition="Docker is a platform that packages applications into isolated environments called containers. Each container has its own filesystem, network, and processes — like a lightweight virtual machine, but sharing the host OS kernel.">Docker</span>
@@ -123,7 +125,7 @@
   <div class="screen">
     <div class="module-content animate-in">
       <p class="eyebrow">Layer 2 — The Admin Panel</p>
-      <h2 class="screen-title">FusionPBX</h2>
+      <h2 class="screen-heading">FusionPBX</h2>
 
       <p class="text-block">FusionPBX is a
         <span class="term" data-definition="PHP is a server-side scripting language designed for web development. It runs on the server (not in the browser) and generates HTML pages dynamically. FusionPBX is written entirely in PHP.">PHP</span>
@@ -158,7 +160,7 @@
   <div class="screen">
     <div class="module-content animate-in">
       <p class="eyebrow">Layer 3 — The Dispatchers</p>
-      <h2 class="screen-title">Lua Scripts</h2>
+      <h2 class="screen-heading">Lua Scripts</h2>
 
       <p class="text-block">
         <span class="term" data-definition="Lua is a lightweight scripting language embedded in FreeSWITCH. Lua scripts run inside the telephony engine and can access the database, control call routing, and interact with the SIP stack via the FreeSWITCH Event Socket.">Lua</span>
@@ -196,7 +198,7 @@
   <div class="screen">
     <div class="module-content animate-in">
       <p class="eyebrow">Code Reading</p>
-      <h2 class="screen-title">Reading the Agent Query</h2>
+      <h2 class="screen-heading">Reading the Agent Query</h2>
 
       <p class="text-block">This is the core logic of bridge_to_agent.lua — the database query that checks whether an agent is actually available before connecting a call.</p>
 
@@ -248,7 +250,7 @@
   <div class="screen">
     <div class="module-content animate-in">
       <p class="eyebrow">Layer 3 — Cascade Routing</p>
-      <h2 class="screen-title">Trying Multiple Queues</h2>
+      <h2 class="screen-heading">Trying Multiple Queues</h2>
 
       <p class="text-block">Cascade routing tries multiple queues in order. If queue #1 has no available agents, it falls through to queue #2, then #3, and so on.</p>
 
@@ -293,7 +295,7 @@
   <div class="screen">
     <div class="module-content animate-in">
       <p class="eyebrow">Layer 4 — The Security Guard</p>
-      <h2 class="screen-title">Fail2ban</h2>
+      <h2 class="screen-heading">Fail2ban</h2>
 
       <p class="text-block">Fail2ban monitors log files for failed authentication attempts. When an IP crosses the threshold, it adds a firewall rule to block that IP entirely.</p>
 
@@ -344,7 +346,7 @@
   <div class="screen">
     <div class="module-content animate-in">
       <p class="eyebrow">Code Reading</p>
-      <h2 class="screen-title">Reading the Jail Config</h2>
+      <h2 class="screen-heading">Reading the Jail Config</h2>
 
       <p class="text-block">This is the Fail2ban
         <span class="term" data-definition="In Fail2ban, a 'jail' is a configuration block that defines what to monitor, how to detect attacks, and how to punish offenders. Each jail targets a specific service (like FreeSWITCH SIP) with its own thresholds and ban rules.">jail</span>
@@ -391,7 +393,7 @@
   <div class="screen">
     <div class="module-content animate-in">
       <p class="eyebrow">Check Your Understanding</p>
-      <h2 class="screen-title">Quiz</h2>
+      <h2 class="screen-heading">Quiz</h2>
 
       <div class="quiz-container" id="quiz-module2">
 
@@ -474,7 +476,7 @@
   <div class="screen">
     <div class="module-content animate-in">
       <p class="eyebrow">What's Next</p>
-      <h2 class="screen-title">The Control Tower</h2>
+      <h2 class="screen-heading">The Control Tower</h2>
 
       <p class="text-block">You've met the engine that makes calls happen. Now it's time to zoom into the Java backend that manages agents, queues, and serves dialplans to FreeSWITCH.</p>
 

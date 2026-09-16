@@ -33,7 +33,7 @@
     const scrollTop    = window.scrollY;
     const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
     const pct          = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-    progressBar.style.width = pct + '%';
+    progressBar.style.transform = 'scaleX(' + pct / 100 + ')';
     progressBar.setAttribute('aria-valuenow', Math.round(pct));
     updateNavDots();
   }
@@ -120,7 +120,6 @@
     left = Math.max(8, Math.min(left, window.innerWidth - tipWidth - 8));
     tip.style.left  = left + 'px';
     tip.style.width = tipWidth + 'px';
-    document.body.appendChild(tip);
     const tipHeight = tip.offsetHeight;
     if (rect.top - tipHeight - 12 < 0) {
       tip.style.top = (rect.bottom + 8) + 'px';
@@ -131,10 +130,10 @@
     }
   }
 
+  // Tips stay in the DOM so aria-describedby always resolves; opacity carries the reveal.
   function showTooltip(term, tip) {
     if (activeTooltip && activeTooltip !== tip) {
       activeTooltip.classList.remove('visible');
-      activeTooltip.remove();
     }
     positionTooltip(term, tip);
     requestAnimationFrame(() => tip.classList.add('visible'));
@@ -143,25 +142,44 @@
 
   function hideTooltip(tip) {
     tip.classList.remove('visible');
-    setTimeout(() => { if (!tip.classList.contains('visible')) tip.remove(); }, 150);
     if (activeTooltip === tip) activeTooltip = null;
   }
 
+  let termIndex = 0;
   $$('.term').forEach(term => {
     const tip = document.createElement('span');
     tip.className = 'term-tooltip';
+    tip.id = 'term-tip-' + termIndex++;
     tip.textContent = term.dataset.definition;
+    document.body.appendChild(tip);
+
+    // Keyboard reachable: the course is read by keyboard users too.
+    term.tabIndex = 0;
+    term.setAttribute('role', 'button');
+    term.setAttribute('aria-describedby', tip.id);
+
+    const toggle = () => tip.classList.contains('visible') ? hideTooltip(tip) : showTooltip(term, tip);
 
     term.addEventListener('mouseenter', () => showTooltip(term, tip));
     term.addEventListener('mouseleave', () => hideTooltip(tip));
     term.addEventListener('click', e => {
       e.stopPropagation();
-      tip.classList.contains('visible') ? hideTooltip(tip) : showTooltip(term, tip);
+      toggle();
+    });
+    term.addEventListener('focus', () => showTooltip(term, tip));
+    term.addEventListener('blur', () => hideTooltip(tip));
+    term.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        toggle();
+      } else if (e.key === 'Escape') {
+        hideTooltip(tip);
+      }
     });
   });
 
   document.addEventListener('click', () => {
-    if (activeTooltip) { activeTooltip.classList.remove('visible'); activeTooltip.remove(); activeTooltip = null; }
+    if (activeTooltip) { activeTooltip.classList.remove('visible'); activeTooltip = null; }
   });
 
   /* ── QUIZ ENGINE ───────────────────────────────────────────── */

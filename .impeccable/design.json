@@ -630,23 +630,7 @@
       "scrollSnap": "y proximity",
       "moduleHeight": "100dvh"
     },
-    "knownDrift": [
-      {
-        "location": "body background-image radial tint",
-        "value": "rgba(217,79,48,0.03)",
-        "shouldBe": "an alpha of --color-accent"
-      },
-      {
-        "location": ".flow-actor.active .flow-actor-icon box-shadow",
-        "value": "rgba(217,79,48,0.15)",
-        "shouldBe": "an alpha of --color-accent"
-      },
-      {
-        "location": ".flow-packet box-shadow",
-        "value": "rgba(217,79,48,0.5)",
-        "shouldBe": "an alpha of --color-accent"
-      }
-    ]
+    "knownDrift": []
   },
   "components": [
     {

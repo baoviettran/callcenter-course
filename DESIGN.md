@@ -162,7 +162,7 @@ A warm neutral page carrying one cool accent and one dark slab. The palette is q
 
 ### Neutral
 
-- **Warm Paper** (`#FAF7F2`): the page ground. Carries a barely-visible radial tint at 20%/50% — see Known Drift.
+- **Warm Paper** (`#FAF7F2`): the page ground. Carries a barely-visible radial tint at 20%/50%, derived from the accent.
 - **Deep Paper** (`#F5F0E8`): recessed fills inside artifacts — actor icon wells, step labels, description plates.
 - **Surface White** (`#FFFFFF`): raised cards — quiz containers, pattern cards, flow and architecture panels, chat windows.
 - **Warm Surface** (`#FDF9F3`): the reading half of a code-translation block.
@@ -180,6 +180,10 @@ A warm neutral page carrying one cool accent and one dark slab. The palette is q
 ### Instrument slab
 
 **Instrument Slab** (`#1E1E2E`) with **Slab Ink** (`#CDD6F4`): every code block, every tooltip, every nav-dot tooltip. A deep desaturated indigo-charcoal, not black. Its read-out palette (`syntax-*`, Catppuccin-derived) is documented in the frontmatter and rendered in the sidecar.
+
+### Actors
+
+Five identity colors, deliberately outside the accent slot: terracotta (`#D94F30`), teal (`#2A7B9B`), violet (`#7B6DAA`), ochre (`#D4A843`), moss (`#2D8B55`). Actor identity is exempt from The Per-Course Accent Rule — the named participants should not re-theme. Actor 1's terracotta equals `styles.css`'s default accent; that is a template-default coincidence, not a value to collapse into the accent.
 
 ### Named Rules
 
@@ -241,7 +245,7 @@ Every shadow is warm-tinted with the ink color, never neutral black: `rgba(44,42
 - **Raised** (`box-shadow: 0 8px 24px rgba(44,42,40,0.10)`): hover state for cards that lift, and floating tooltips.
 - **Float** (`box-shadow: 0 16px 48px rgba(44,42,40,0.12)`): defined in the token set for high-floating surfaces. Currently unreferenced.
 
-The accent also casts a soft glow in two places where an actor is "live" — see Known Drift, because both are still hardcoded to the template's terracotta.
+The accent also casts a soft glow in two places where an actor is "live" — the active actor icon and the travelling packet — both derived from the accent.
 
 ### Named Rules
 
@@ -327,22 +331,10 @@ The accent also casts a soft glow in two places where an actor is "live" — see
 ### Don't:
 
 - **Don't** introduce a second accent hue. The system has exactly one saturated color; semantic green and red are verdict-only and never used for brand, emphasis, or decoration.
-- **Don't** hardcode a hex or `rgba()` where an accent value belongs — that is the exact failure already present in three glow values (see Known Drift).
+- **Don't** hardcode a hex or `rgba()` where an accent value belongs — a literal silently survives a re-theme and keeps rendering the old hue (see The Per-Course Accent Rule).
 - **Don't** put a neutral-gray or black shadow on a raised surface.
 - **Don't** use pure white as a page background or pure black as text.
 - **Don't** set running prose in Bricolage Grotesque.
 - **Don't** round a container to `full` — pills are reserved for the circular markers and the drag chip.
 - **Don't** use the 16px large radius on a small inline element, or the 8px small radius on a full-width panel.
 - **Don't** reduce the accent to a decorative wash. It marks position, identity, and interaction — if it is on screen, it is saying something.
-
-## Known Drift
-
-Three values in `styles.css` predate the per-course accent override and were written as literal terracotta instead of accent references. Under this course's teal they still render orange:
-
-| Location | Value | Should be |
-|---|---|---|
-| `body` background-image radial tint | `rgba(217,79,48,0.03)` | an alpha of `--color-accent` |
-| `.flow-actor.active .flow-actor-icon` glow | `rgba(217,79,48,0.15)` | an alpha of `--color-accent` |
-| `.flow-packet` glow | `rgba(217,79,48,0.5)` | an alpha of `--color-accent` |
-
-`--color-actor-1` is also `#D94F30` (the template default accent) and is a genuine actor identity color, not drift — actor 1 is the Browser, and it substitutes cleanly with the accent only if that is intended.
